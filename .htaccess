@@ -1,0 +1,30 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Force HTTPS (uncomment in production behind SSL)
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Block access to dotfiles (.env, .git, etc.)
+    RewriteRule "(^|/)\." - [F]
+
+    # Block access to sensitive Laravel directories
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|storage|tests|vendor)(/|$) - [F,L]
+
+    # Block access to sensitive files at root
+    RewriteRule ^(artisan|composer\.(json|lock)|package(-lock)?\.json|\.env.*|README\.md|server\.php)$ - [F,L]
+
+    # Send everything else to public/, preserving the request path
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+<IfModule mod_negotiation.c>
+    Options -MultiViews -Indexes
+</IfModule>

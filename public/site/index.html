@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>العرب — قوة. تميّز. الإنسان العربي.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cairo:wght@300;400;500;600;700;900&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --cream:#f8f4ee;--cream-dark:#ede7db;--ink:#0d0c0a;--ink-mid:#2a2720;
+  --ink-soft:#5c574e;--gold:#b8922a;--gold-lt:#d4ae5a;--red:#9b2020;
+  --rule:rgba(13,12,10,.12);--rule-gold:rgba(184,146,42,.25);--white:#fff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--cream);color:var(--ink);
+  font-family:'Cairo',sans-serif;
+  overflow-x:hidden;cursor:none;
+  direction:rtl;
+}
+
+/* ── PRELOADER ── */
+#preloader{
+  position:fixed;inset:0;z-index:10000;background:var(--ink);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.pre-logo-ar{
+  font-family:'Amiri',serif;font-size:clamp(4rem,10vw,9rem);font-weight:700;
+  color:var(--cream);letter-spacing:.05em;line-height:1;overflow:hidden;display:flex;
+}
+.pre-logo-ar span{display:inline-block;transform:translateY(110%);}
+.pre-logo-en{
+  font-family:'Cinzel',serif;font-size:clamp(.8rem,1.5vw,1.2rem);
+  font-weight:500;letter-spacing:.5em;color:var(--gold);margin-top:.8rem;opacity:0;
+  text-transform:uppercase;
+}
+.pre-line{width:0;height:1px;background:var(--gold);margin-top:1.2rem;}
+
+/* ── CURSOR ── */
+.cur{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+.cur-ring{position:fixed;width:32px;height:32px;border:1px solid var(--gold);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.5;}
+
+/* ── TICKER ── */
+.ticker-bar{
+  background:var(--ink);display:flex;align-items:center;
+  height:38px;overflow:hidden;position:relative;z-index:200;
+  flex-direction:row-reverse;
+}
+.ticker-label{
+  background:var(--gold);color:var(--ink);font-size:.7rem;font-weight:700;
+  letter-spacing:.05em;padding:0 1.2rem;height:100%;
+  display:flex;align-items:center;flex-shrink:0;white-space:nowrap;
+  font-family:'Cairo',sans-serif;
+}
+.ticker-wrap{overflow:hidden;flex:1;}
+.ticker-track{
+  display:flex;gap:4rem;white-space:nowrap;will-change:transform;
+  /* RTL ticker scrolls right to left same as LTR visually */
+}
+.ticker-item{font-size:.75rem;letter-spacing:.02em;color:rgba(248,244,238,.65);flex-shrink:0;font-family:'Cairo',sans-serif;}
+.ticker-item b{color:#d4ae5a;font-weight:600;margin-left:.5rem;}
+.ticker-sep{color:var(--gold);margin:0 1.5rem;}
+
+/* ── MASTHEAD ── */
+.masthead{background:var(--white);border-bottom:3px solid var(--ink);position:sticky;top:0;z-index:100;}
+.masthead-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.8rem 3rem;border-bottom:1px solid var(--rule);
+}
+.logo-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;}
+.logo-eyebrow{font-family:'Cairo',sans-serif;font-size:.7rem;letter-spacing:.1em;color:var(--ink-soft);margin-bottom:.2rem;}
+.logo-ar{
+  font-family:'Amiri',serif;font-size:3.2rem;font-weight:700;
+  color:var(--ink);line-height:1;text-decoration:none;display:block;
+  letter-spacing:.02em;
+}
+.logo-ar span{color:var(--gold);}
+.logo-en{font-family:'Cinzel',serif;font-size:.9rem;letter-spacing:.4em;color:var(--ink-soft);margin-top:.2rem;text-transform:uppercase;}
+.masthead-meta{font-size:.72rem;color:var(--ink-soft);text-align:left;line-height:1.9;font-family:'Cairo',sans-serif;}
+.masthead-meta b{color:var(--ink);}
+.btn-subscribe{
+  background:var(--ink);color:var(--cream);padding:.65rem 1.6rem;
+  font-size:.75rem;letter-spacing:.05em;text-decoration:none;
+  font-weight:600;transition:background .25s;font-family:'Cairo',sans-serif;
+}
+.btn-subscribe:hover{background:var(--gold);}
+.btn-login{
+  font-size:.72rem;color:var(--ink-soft);text-decoration:none;
+  border-bottom:1px solid transparent;transition:color .2s,border-color .2s;
+  font-family:'Cairo',sans-serif;
+}
+.btn-login:hover{color:var(--gold);border-color:var(--gold);}
+
+/* NAV */
+.nav-bar{display:flex;align-items:center;justify-content:center;padding:0 3rem;background:var(--white);flex-direction:row-reverse;}
+.nav-bar a{
+  font-size:.78rem;color:var(--ink);text-decoration:none;
+  padding:.75rem 1.2rem;border-bottom:2px solid transparent;
+  transition:color .2s,border-color .2s;white-space:nowrap;
+  font-weight:600;font-family:'Cairo',sans-serif;
+}
+.nav-bar a:hover,.nav-bar a.active{color:var(--gold);border-bottom-color:var(--gold);}
+.nav-divider{width:1px;height:12px;background:var(--rule);}
+
+/* ── HERO ── */
+.hero-section{background:var(--white);border-bottom:1px solid var(--rule);}
+.hero-grid{display:grid;grid-template-columns:380px 1fr;}
+.hero-main{border-left:1px solid var(--rule);position:relative;overflow:hidden;}
+.hero-img-wrap{width:100%;height:560px;overflow:hidden;position:relative;}
+.hero-img-wrap img{width:100%;height:100%;object-fit:cover;will-change:transform;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(13,12,10,.92) 0%,rgba(13,12,10,.3) 55%,rgba(13,12,10,.1) 100%);}
+.hero-content{position:absolute;bottom:0;right:0;left:0;padding:2.5rem;text-align:right;}
+.hero-kicker{
+  display:inline-flex;align-items:center;gap:.6rem;background:var(--gold);
+  color:var(--ink);font-size:.72rem;font-weight:700;padding:.3rem .9rem;
+  margin-bottom:1rem;font-family:'Cairo',sans-serif;
+}
+.hero-headline{
+  font-family:'Amiri',serif;font-size:clamp(1.8rem,3.5vw,3.4rem);
+  font-weight:700;color:var(--cream);line-height:1.35;margin-bottom:.8rem;
+}
+.hero-headline em{font-style:normal;color:#d4ae5a;}
+.hero-deck{font-size:.92rem;color:rgba(248,244,238,.65);line-height:1.85;max-width:560px;margin-bottom:1rem;margin-right:auto;}
+.hero-byline{font-size:.7rem;color:rgba(248,244,238,.4);font-family:'Cairo',sans-serif;}
+.hero-byline b{color:#d4ae5a;}
+
+/* Sidebar */
+.hero-sidebar{display:flex;flex-direction:column;}
+.sidebar-story{padding:1.2rem;border-bottom:1px solid var(--rule);cursor:pointer;transition:background .2s;flex:1;}
+.sidebar-story:last-child{border-bottom:none;}
+.sidebar-story:hover{background:var(--cream);}
+.sidebar-img{width:100%;height:118px;overflow:hidden;margin-bottom:.8rem;}
+.sidebar-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s;}
+.sidebar-story:hover .sidebar-img img{transform:scale(1.06);}
+.story-kicker{font-size:.7rem;font-weight:700;color:var(--gold);margin-bottom:.4rem;font-family:'Cairo',sans-serif;}
+.story-headline{font-family:'Amiri',serif;font-size:1.05rem;font-weight:700;line-height:1.5;color:var(--ink);margin-bottom:.4rem;}
+.story-meta{font-size:.68rem;color:var(--ink-soft);font-family:'Cairo',sans-serif;}
+
+/* ── SECTION HEADER ── */
+.sh{
+  display:flex;align-items:center;gap:1.2rem;
+  padding:1.2rem 3rem;border-top:3px solid var(--ink);
+  border-bottom:1px solid var(--rule);background:var(--white);
+  flex-direction:row-reverse;
+}
+.sh-title{
+  font-family:'Cairo',sans-serif;font-size:.85rem;font-weight:700;
+  letter-spacing:.08em;color:var(--ink);white-space:nowrap;
+}
+.sh-rule{flex:1;height:1px;background:var(--rule);}
+.sh-more{
+  font-size:.7rem;color:var(--gold);text-decoration:none;
+  white-space:nowrap;border-bottom:1px solid var(--rule-gold);
+  padding-bottom:1px;transition:color .2s;font-family:'Cairo',sans-serif;font-weight:600;
+}
+.sh-more:hover{color:var(--ink);}
+
+/* ── CATEGORIES SHOWCASE ── */
+.cats-section{background:var(--ink);padding:4rem 3rem;}
+.cats-title{
+  font-family:'Amiri',serif;font-size:clamp(2rem,4vw,4rem);font-weight:700;
+  color:var(--cream);text-align:center;margin-bottom:.5rem;line-height:1.3;
+}
+.cats-title em{color:var(--gold-lt);font-style:normal;}
+.cats-sub{
+  font-size:.9rem;color:rgba(248,244,238,.4);text-align:center;
+  margin-bottom:3rem;font-family:'Cairo',sans-serif;
+}
+.cats-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  gap:1px;background:rgba(248,244,238,.06);
+}
+.cat-card{
+  background:var(--ink);padding:2.5rem 1rem;
+  text-align:center;cursor:pointer;
+  transition:background .3s;border-top:2px solid transparent;
+  text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:.8rem;
+}
+.cat-card:hover{background:rgba(184,146,42,.08);border-top-color:var(--gold);}
+.cat-icon{font-size:2rem;display:block;}
+.cat-name{
+  font-family:'Cairo',sans-serif;font-size:.82rem;font-weight:700;
+  color:var(--cream);line-height:1.4;
+}
+.cat-name-en{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.2em;color:rgba(184,146,42,.5);text-transform:uppercase;margin-top:.2rem;}
+.cat-count{font-size:.62rem;color:var(--gold);font-family:'Cairo',sans-serif;}
+
+/* ── FEATURED GRID ── */
+.featured-section{background:var(--cream);}
+.featured-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--rule);
+}
+.feat-card{
+  background:var(--white);cursor:pointer;overflow:hidden;
+  transition:background .25s;position:relative;
+}
+.feat-card:hover{background:var(--cream);}
+.feat-card.large{grid-column:span 2;}
+.feat-img{overflow:hidden;position:relative;}
+.feat-img img{width:100%;object-fit:cover;transition:transform .8s;display:block;}
+.feat-card:hover .feat-img img{transform:scale(1.06);}
+.feat-img.h400{height:400px;}
+.feat-img.h280{height:280px;}
+.feat-img-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(13,12,10,.88) 0%,transparent 55%);
+}
+.feat-img-content{position:absolute;bottom:0;right:0;left:0;padding:1.8rem;text-align:right;}
+.feat-kicker{font-size:.68rem;font-weight:700;color:var(--gold-lt);margin-bottom:.5rem;font-family:'Cairo',sans-serif;}
+.feat-headline{
+  font-family:'Amiri',serif;font-size:1.3rem;font-weight:700;
+  color:var(--cream);line-height:1.4;margin-bottom:.4rem;
+}
+.feat-headline-lg{font-size:1.9rem;}
+.feat-meta{font-size:.65rem;color:rgba(248,244,238,.45);font-family:'Cairo',sans-serif;}
+.feat-body-card{padding:1.5rem;text-align:right;}
+.feat-body-kicker{font-size:.68rem;font-weight:700;color:var(--gold);margin-bottom:.4rem;font-family:'Cairo',sans-serif;}
+.feat-body-headline{
+  font-family:'Amiri',serif;font-size:1.15rem;font-weight:700;
+  color:var(--ink);line-height:1.4;margin-bottom:.5rem;
+}
+.feat-body-excerpt{font-size:.85rem;line-height:1.8;color:var(--ink-soft);margin-bottom:.7rem;font-family:'Cairo',sans-serif;}
+.feat-body-meta{font-size:.65rem;color:rgba(90,85,78,.5);font-family:'Cairo',sans-serif;}
+.feat-body-meta b{color:var(--gold);}
+
+/* ── INFLUENCERS ── */
+.influencers-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--rule);
+}
+.inf-card{background:var(--white);cursor:pointer;overflow:hidden;transition:background .25s;}
+.inf-card:hover{background:var(--cream);}
+.inf-img{height:300px;overflow:hidden;position:relative;}
+.inf-img img{width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .7s;}
+.inf-card:hover .inf-img img{transform:scale(1.07);}
+.inf-img-ov{
+  position:absolute;bottom:0;left:0;right:0;height:100px;
+  background:linear-gradient(to top,var(--white),transparent);
+  transition:background .25s;
+}
+.inf-card:hover .inf-img-ov{background:linear-gradient(to top,var(--cream),transparent);}
+.inf-body{padding:1.5rem;text-align:right;}
+.inf-cat{font-size:.65rem;font-weight:700;letter-spacing:.05em;color:var(--gold);margin-bottom:.4rem;font-family:'Cairo',sans-serif;}
+.inf-name{font-family:'Amiri',serif;font-size:1.3rem;font-weight:700;color:var(--ink);margin-bottom:.3rem;}
+.inf-handle{font-size:.72rem;color:var(--ink-soft);margin-bottom:.6rem;font-family:'Cairo',sans-serif;}
+.inf-followers{
+  font-family:'Playfair Display',serif;font-size:1.6rem;
+  font-weight:700;color:var(--ink);line-height:1;margin-bottom:.2rem;
+}
+.inf-followers-label{font-size:.6rem;letter-spacing:.08em;color:var(--gold);font-family:'Cairo',sans-serif;}
+
+/* ── EDITORIAL COLUMNS ── */
+.editorial-grid{
+  display:grid;grid-template-columns:2fr 1fr 1fr;
+  border-bottom:1px solid var(--rule);background:var(--cream);
+}
+.ed-col{border-left:1px solid var(--rule);padding:2.5rem;text-align:right;}
+.ed-col:last-child{border-left:none;}
+.ed-col:first-child{border-left:1px solid var(--rule);}
+.ed-col-title{
+  font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1.5rem;padding-bottom:.8rem;
+  border-bottom:1px solid var(--rule);font-weight:700;font-family:'Cairo',sans-serif;
+}
+.ed-story{padding:1.5rem 0;border-bottom:1px solid var(--rule);cursor:pointer;}
+.ed-story:last-child{border-bottom:none;}
+.ed-story:hover .ed-headline{color:var(--gold);}
+.ed-headline{
+  font-family:'Amiri',serif;font-size:1.1rem;font-weight:700;
+  line-height:1.5;color:var(--ink);margin-bottom:.5rem;transition:color .2s;
+}
+.ed-excerpt{font-size:.85rem;line-height:1.8;color:var(--ink-soft);margin-bottom:.6rem;font-family:'Cairo',sans-serif;}
+.ed-meta{font-size:.65rem;color:rgba(90,85,78,.5);font-family:'Cairo',sans-serif;}
+.ed-meta b{color:var(--gold);}
+
+/* ── ARTISTS BAND ── */
+.artists-band{
+  background:var(--ink);
+  display:grid;grid-template-columns:320px 1fr;
+}
+.artists-text{
+  padding:4rem;border-left:1px solid rgba(248,244,238,.06);
+  display:flex;flex-direction:column;justify-content:center;text-align:right;
+}
+.artists-label{font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;font-weight:700;font-family:'Cairo',sans-serif;}
+.artists-headline{
+  font-family:'Amiri',serif;font-size:clamp(2rem,3vw,3.2rem);
+  font-weight:700;color:var(--cream);line-height:1.35;margin-bottom:1.2rem;
+}
+.artists-headline em{font-style:normal;color:#d4ae5a;}
+.artists-body{font-size:.88rem;line-height:1.9;color:rgba(248,244,238,.5);margin-bottom:2rem;font-family:'Cairo',sans-serif;}
+.btn-gold{
+  display:inline-flex;align-items:center;gap:.7rem;background:var(--gold);
+  color:var(--ink);padding:.85rem 2rem;font-size:.78rem;font-weight:700;
+  text-decoration:none;transition:background .25s;font-family:'Cairo',sans-serif;
+  align-self:flex-end;
+}
+.btn-gold:hover{background:#d4ae5a;}
+.artists-profiles{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:rgba(248,244,238,.04);
+}
+.ap{cursor:pointer;transition:background .25s;overflow:hidden;}
+.ap:hover{background:rgba(184,146,42,.06);}
+.ap-img{height:170px;overflow:hidden;}
+.ap-img img{width:100%;height:100%;object-fit:cover;object-position:top;filter:grayscale(25%);transition:transform .7s,filter .5s;}
+.ap:hover .ap-img img{transform:scale(1.07);filter:grayscale(0%);}
+.ap-body{padding:1.4rem;text-align:right;}
+.ap-num{
+  font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;
+  color:rgba(184,146,42,.15);margin-bottom:.3rem;line-height:1;transition:color .3s;
+}
+.ap:hover .ap-num{color:rgba(184,146,42,.4);}
+.ap-role{font-size:.65rem;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;font-weight:700;font-family:'Cairo',sans-serif;}
+.ap-name{font-family:'Amiri',serif;font-size:1.1rem;font-weight:700;color:var(--cream);margin-bottom:.2rem;}
+.ap-country{font-size:.65rem;color:rgba(248,244,238,.35);margin-bottom:.5rem;font-family:'Cairo',sans-serif;}
+.ap-excerpt{font-size:.78rem;color:rgba(248,244,238,.4);line-height:1.7;font-family:'Cairo',sans-serif;}
+
+/* ── DOCTORS SECTION ── */
+.doctors-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--rule);
+}
+.doc-card{background:var(--white);cursor:pointer;overflow:hidden;transition:background .25s;}
+.doc-card:hover{background:var(--cream);}
+.doc-img{height:260px;overflow:hidden;position:relative;}
+.doc-img img{width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .7s;}
+.doc-card:hover .doc-img img{transform:scale(1.06);}
+.doc-img-ov{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,var(--white),transparent);transition:background .25s;}
+.doc-card:hover .doc-img-ov{background:linear-gradient(to top,var(--cream),transparent);}
+.doc-body{padding:1.4rem;text-align:right;}
+.doc-spec{font-size:.65rem;font-weight:700;color:var(--gold);margin-bottom:.4rem;font-family:'Cairo',sans-serif;}
+.doc-name{font-family:'Amiri',serif;font-size:1.2rem;font-weight:700;color:var(--ink);margin-bottom:.3rem;}
+.doc-hospital{font-size:.75rem;color:var(--ink-soft);margin-bottom:.5rem;font-family:'Cairo',sans-serif;}
+.doc-badge{
+  display:inline-block;background:rgba(184,146,42,.1);
+  color:var(--gold);font-size:.62rem;font-weight:700;padding:.2rem .7rem;
+  font-family:'Cairo',sans-serif;
+}
+
+/* ── FASHION ── */
+.fashion-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--rule);
+}
+.fash{position:relative;overflow:hidden;cursor:pointer;height:460px;}
+.fash img{width:100%;height:100%;object-fit:cover;transition:transform .9s;display:block;}
+.fash:hover img{transform:scale(1.08);}
+.fash-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(13,12,10,.88) 0%,rgba(13,12,10,.08) 60%,transparent 100%);}
+.fash-body{position:absolute;bottom:0;right:0;left:0;padding:2rem;z-index:2;text-align:right;}
+.fash-kicker{font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;color:#d4ae5a;margin-bottom:.5rem;font-weight:700;font-family:'Cairo',sans-serif;}
+.fash-headline{font-family:'Amiri',serif;font-size:1.25rem;font-weight:700;color:var(--cream);line-height:1.4;}
+
+/* ── NEWS & BLOGS ── */
+.news-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--rule);
+}
+.news-card{background:var(--white);cursor:pointer;overflow:hidden;transition:background .25s;}
+.news-card:hover{background:var(--cream);}
+.news-img{height:200px;overflow:hidden;}
+.news-img img{width:100%;height:100%;object-fit:cover;transition:transform .7s;}
+.news-card:hover .news-img img{transform:scale(1.06);}
+.news-body{padding:1.6rem;text-align:right;}
+.news-kicker{font-size:.68rem;font-weight:700;color:var(--gold);margin-bottom:.5rem;font-family:'Cairo',sans-serif;}
+.news-headline{font-family:'Amiri',serif;font-size:1.1rem;font-weight:700;line-height:1.4;color:var(--ink);margin-bottom:.6rem;}
+.news-excerpt{font-size:.82rem;line-height:1.8;color:var(--ink-soft);margin-bottom:.8rem;font-family:'Cairo',sans-serif;}
+.news-meta{font-size:.65rem;color:rgba(90,85,78,.45);font-family:'Cairo',sans-serif;}
+.news-meta b{color:var(--ink-mid);}
+
+/* ── NEWSLETTER ── */
+.nl-section{
+  background:var(--ink);padding:6rem 3rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;
+}
+.nl-eyebrow{font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;font-weight:700;font-family:'Cairo',sans-serif;}
+.nl-headline{
+  font-family:'Amiri',serif;font-size:clamp(2.2rem,4vw,4rem);
+  font-weight:700;color:var(--cream);line-height:1.3;margin-bottom:1rem;text-align:right;
+}
+.nl-headline em{color:#d4ae5a;font-style:normal;}
+.nl-sub{font-size:.9rem;color:rgba(248,244,238,.45);line-height:1.9;text-align:right;font-family:'Cairo',sans-serif;}
+.nl-form{display:flex;flex-direction:row-reverse;border:1px solid rgba(248,244,238,.12);}
+.nl-input{
+  flex:1;background:transparent;border:none;padding:1rem 1.2rem;
+  color:var(--cream);font-family:'Cairo',sans-serif;font-size:.9rem;outline:none;
+  text-align:right;direction:rtl;
+}
+.nl-input::placeholder{color:rgba(248,244,238,.25);}
+.nl-btn{
+  background:var(--gold);color:var(--ink);border:none;padding:1rem 1.8rem;
+  font-family:'Cairo',sans-serif;font-size:.78rem;font-weight:700;
+  cursor:pointer;transition:background .25s;
+}
+.nl-btn:hover{background:#d4ae5a;}
+
+/* ── FOOTER ── */
+footer{background:#080705;border-top:3px solid var(--ink);}
+.footer-top{
+  display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr 1fr;
+  gap:3rem;padding:4rem 3rem;
+  border-bottom:1px solid rgba(248,244,238,.06);
+}
+.footer-logo{
+  font-family:'Amiri',serif;font-size:2.2rem;font-weight:700;
+  color:var(--cream);text-decoration:none;display:block;margin-bottom:.6rem;
+}
+.footer-logo span{color:var(--gold);}
+.footer-logo-en{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.3em;color:rgba(184,146,42,.5);margin-bottom:.8rem;display:block;text-transform:uppercase;}
+.footer-about{font-size:.82rem;line-height:1.9;color:rgba(248,244,238,.35);margin-bottom:1.5rem;font-family:'Cairo',sans-serif;text-align:right;}
+.footer-socials{display:flex;gap:.6rem;justify-content:flex-end;}
+.fsoc{width:34px;height:34px;border:1px solid rgba(248,244,238,.1);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:rgba(248,244,238,.4);text-decoration:none;transition:border-color .25s,color .25s;}
+.fsoc:hover{border-color:var(--gold);color:var(--gold);}
+.fcol{text-align:right;}
+.fcol-title{font-size:.72rem;letter-spacing:.05em;color:var(--gold);margin-bottom:1.2rem;font-weight:700;font-family:'Cairo',sans-serif;}
+.fcol ul{list-style:none;}
+.fcol li{margin-bottom:.6rem;}
+.fcol a{font-size:.8rem;color:rgba(248,244,238,.35);text-decoration:none;transition:color .2s;font-family:'Cairo',sans-serif;}
+.fcol a:hover{color:var(--gold);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 3rem;flex-direction:row-reverse;}
+.fcopy{font-size:.68rem;color:rgba(248,244,238,.18);font-family:'Cairo',sans-serif;}
+.flegal{display:flex;gap:2rem;}
+.flegal a{font-size:.68rem;color:rgba(248,244,238,.18);text-decoration:none;transition:color .2s;font-family:'Cairo',sans-serif;}
+.flegal a:hover{color:var(--gold);}
+
+/* ── SKELETONS ── */
+.skel{background:linear-gradient(90deg,rgba(13,12,10,.08) 25%,rgba(13,12,10,.15) 50%,rgba(13,12,10,.08) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(184,146,42,.3);}
+
+/* MOBILE */
+@media(max-width:900px){
+  .masthead-top{padding:.8rem 1rem;flex-wrap:wrap;gap:.8rem;}
+  .nav-bar{overflow-x:auto;justify-content:flex-start;padding:0 1rem;}
+  .hero-grid{grid-template-columns:1fr;}
+  .hero-sidebar{display:none;}
+  .cats-grid{grid-template-columns:repeat(3,1fr);}
+  .featured-grid,.editorial-grid,.news-grid,.fashion-grid{grid-template-columns:1fr;}
+  .feat-card.large{grid-column:span 1;}
+  .influencers-grid,.doctors-grid{grid-template-columns:1fr 1fr;}
+  .artists-band{grid-template-columns:1fr;}
+  .artists-profiles{grid-template-columns:1fr 1fr;}
+  .nl-section{grid-template-columns:1fr;gap:3rem;padding:4rem 1.5rem;}
+  .footer-top{grid-template-columns:1fr 1fr;gap:2rem;padding:3rem 1.5rem;}
+  .footer-bottom{flex-direction:column;gap:.8rem;text-align:center;padding:1.5rem;}
+  .sh{padding:1.2rem 1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="pre-logo-ar">
+    <span>ا</span><span>ل</span><span>ع</span><span>ر</span><span>ب</span>
+  </div>
+  <div class="pre-logo-en">AL ARAB MAGAZINE</div>
+  <div class="pre-line"></div>
+</div>
+
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-label">عاجل</div>
+  <div class="ticker-wrap">
+    <div class="ticker-track" id="tickerTrack">
+      <div style="display:flex;gap:4rem;flex-shrink:0" id="tickerInner">
+        <span class="ticker-item"><b>الأعمال:</b> قائمة العرب 50 — أقوى رجال الأعمال العرب لعام 2026</span>
+        <span class="ticker-sep">◆</span>
+        <span class="ticker-item"><b>الفن:</b> نجمة لبنانية تفوز بجائزة أفضل ممثلة في مهرجان كان</span>
+        <span class="ticker-sep">◆</span>
+        <span class="ticker-item"><b>الموضة:</b> مصمم سعودي يطلق أول دار أزياء عربية في باريس</span>
+        <span class="ticker-sep">◆</span>
+        <span class="ticker-item"><b>الصحة:</b> طبيب عربي يحقق اكتشافاً طبياً يغير قواعد علاج السرطان</span>
+        <span class="ticker-sep">◆</span>
+        <span class="ticker-item"><b>المؤثرون:</b> مؤثر إماراتي يتخطى 50 مليون متابع على إنستغرام</span>
+      </div>
+      <div style="display:flex;gap:4rem;flex-shrink:0" id="tickerInner2">
+        <span class="ticker-item"><b>الأعمال:</b> قائمة العرب 50 — أقوى رجال الأعمال العرب لعام 2026</span>
+        <span class="ticker-sep">◆</span>
+        <span class="ticker-item"><b>الفن:</b> نجمة لبنانية تفوز بجائزة أفضل ممثلة في مهرجان كان</span>
+        <span class="ticker-sep">◆</span>
+        <span class="ticker-item"><b>الموضة:</b> مصمم سعودي يطلق أول دار أزياء عربية في باريس</span>
+        <span class="ticker-sep">◆</span>
+        <span class="ticker-item"><b>الصحة:</b> طبيب عربي يحقق اكتشافاً طبياً يغير قواعد علاج السرطان</span>
+        <span class="ticker-sep">◆</span>
+        <span class="ticker-item"><b>المؤثرون:</b> مؤثر إماراتي يتخطى 50 مليون متابع على إنستغرام</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-top">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <a href="#" class="btn-login">تسجيل الدخول</a>
+    </div>
+    <div class="logo-wrap">
+      <div class="logo-eyebrow">المجلة العربية الأولى للإنسان العربي المتميّز</div>
+      <a href="/" class="logo-ar">ال<span>عـرب</span></a>
+      <div class="logo-en">AL ARAB · MAGAZINE</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:1.5rem;">
+      <div class="masthead-meta" style="text-align:right;"><b>العدد الثاني عشر</b> · ربيع 2026<br>دبي، الإمارات العربية المتحدة</div>
+      <a href="#newsletter" class="btn-subscribe">اشترك الآن</a>
+    </div>
+  </div>
+  <nav class="nav-bar">
+    <a href="#" class="active">الرئيسية</a><div class="nav-divider"></div>
+    <a href="#influencers">المؤثرون العرب</a><div class="nav-divider"></div>
+    <a href="#artists">الفنانون العرب</a><div class="nav-divider"></div>
+    <a href="#business">الأعمال العربية</a><div class="nav-divider"></div>
+    <a href="#doctors">أطباء عرب</a><div class="nav-divider"></div>
+    <a href="#fashion">الموضة العربية</a><div class="nav-divider"></div>
+    <a href="#news">الأخبار</a><div class="nav-divider"></div>
+    <a href="#blogs">المدونات</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero-section">
+  <div class="hero-grid">
+    <div class="hero-sidebar">
+      <div class="sidebar-story">
+        <div class="sidebar-img"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="مؤثرة"></div>
+        <div class="story-kicker">المؤثرون العرب</div>
+        <h3 class="story-headline">نورا المنصوري: كيف حوّلت شغفها بالموضة إلى إمبراطورية رقمية</h3>
+        <div class="story-meta">8 دقائق للقراءة · قسم المؤثرين</div>
+      </div>
+      <div class="sidebar-story">
+        <div class="sidebar-img"><img src="https://images.unsplash.com/photo-1559181567-c3190ca9be46?auto=format&fit=crop&w=600&q=80" alt="موضة"></div>
+        <div class="story-kicker">الموضة العربية</div>
+        <h3 class="story-headline">أول دار أزياء سعودية في أسبوع باريس للأزياء: لحظة تاريخية</h3>
+        <div class="story-meta">6 دقائق للقراءة · قسم الموضة</div>
+      </div>
+      <div class="sidebar-story">
+        <div class="sidebar-img"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=600&q=80" alt="طبيب"></div>
+        <div class="story-kicker">أطباء عرب</div>
+        <h3 class="story-headline">د. خالد العمري: الطبيب العربي الذي يُعالج المستحيل في مايو كلينيك</h3>
+        <div class="story-meta">7 دقائق للقراءة · قسم الأطباء</div>
+      </div>
+    </div>
+    <div class="hero-main">
+      <div class="hero-img-wrap">
+        <img id="heroImg" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1400&q=85" alt="غلاف">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hero-kicker">✦ قصة الغلاف · أعمال عربية · رجل الأعمال العربي لعام 2026</div>
+          <h1 class="hero-headline">أحمد الراشدي:<br>الرجل الذي <em>يُعيد كتابة</em><br>قواعد الاقتصاد العربي</h1>
+          <p class="hero-deck">ثلاث شركات يونيكورن قبل سن الأربعين. جولة استثمارية بـ400 مليون دولار. ورؤية تجعل الوطن العربي المركز المالي التالي للعالم.</p>
+          <div class="hero-byline">بقلم <b>ليلى منصور</b> · المحررة الأولى · قراءة 12 دقيقة</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="sh"><div class="sh-title">أقسام المجلة</div><div class="sh-rule"></div><a href="#" class="sh-more">استكشف الكل →</a></div>
+<div class="cats-section">
+  <h2 class="cats-title">اكتشف عالم <em>الإنسان العربي</em></h2>
+  <p class="cats-sub">من المؤثرين إلى الأطباء، من الفنانين إلى رجال الأعمال — قصص تُلهم</p>
+  <div class="cats-grid">
+    <a href="#influencers" class="cat-card">
+      <span class="cat-icon">📱</span>
+      <div class="cat-name">المؤثرون العرب</div>
+      <div class="cat-name-en">Arab Influencers</div>
+      <div class="cat-count">28 ملف</div>
+    </a>
+    <a href="#artists" class="cat-card">
+      <span class="cat-icon">🎭</span>
+      <div class="cat-name">الفنانون العرب</div>
+      <div class="cat-name-en">Arab Artists</div>
+      <div class="cat-count">34 ملف</div>
+    </a>
+    <a href="#business" class="cat-card">
+      <span class="cat-icon">💼</span>
+      <div class="cat-name">الأعمال العربية</div>
+      <div class="cat-name-en">Arab Business</div>
+      <div class="cat-count">22 قصة</div>
+    </a>
+    <a href="#doctors" class="cat-card">
+      <span class="cat-icon">🩺</span>
+      <div class="cat-name">أطباء عرب</div>
+      <div class="cat-name-en">Arab Doctors</div>
+      <div class="cat-count">16 ملف</div>
+    </a>
+    <a href="#news" class="cat-card">
+      <span class="cat-icon">📰</span>
+      <div class="cat-name">الأخبار</div>
+      <div class="cat-name-en">News</div>
+      <div class="cat-count">يومياً</div>
+    </a>
+    <a href="#blogs" class="cat-card">
+      <span class="cat-icon">✍️</span>
+      <div class="cat-name">المدونات</div>
+      <div class="cat-name-en">Blogs</div>
+      <div class="cat-count">19 مقال</div>
+    </a>
+    <a href="#fashion" class="cat-card">
+      <span class="cat-icon">👗</span>
+      <div class="cat-name">الموضة العربية</div>
+      <div class="cat-name-en">Arab Fashion</div>
+      <div class="cat-count">25 تقرير</div>
+    </a>
+  </div>
+</div>
+
+<!-- INFLUENCERS -->
+<div id="influencers">
+  <div class="sh"><div class="sh-title">المؤثرون العرب</div><div class="sh-rule"></div><a href="#" class="sh-more">عرض الكل →</a></div>
+  <div class="influencers-grid">
+    <div class="inf-card">
+      <div class="inf-img"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="نورا"><div class="inf-img-ov"></div></div>
+      <div class="inf-body">
+        <div class="inf-cat">موضة ونمط حياة · الإمارات</div>
+        <div class="inf-name">نورا المنصوري</div>
+        <div class="inf-handle">@nora.mansouri</div>
+        <div class="inf-followers">12.4M</div>
+        <div class="inf-followers-label">متابع على إنستغرام</div>
+      </div>
+    </div>
+    <div class="inf-card">
+      <div class="inf-img"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="خالد"><div class="inf-img-ov"></div></div>
+      <div class="inf-body">
+        <div class="inf-cat">تقنية وريادة أعمال · السعودية</div>
+        <div class="inf-name">خالد الشمراني</div>
+        <div class="inf-handle">@k.shamrani</div>
+        <div class="inf-followers">8.9M</div>
+        <div class="inf-followers-label">متابع عبر المنصات</div>
+      </div>
+    </div>
+    <div class="inf-card">
+      <div class="inf-img"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" alt="سارة"><div class="inf-img-ov"></div></div>
+      <div class="inf-body">
+        <div class="inf-cat">طبخ وثقافة · لبنان</div>
+        <div class="inf-name">سارة الخوري</div>
+        <div class="inf-handle">@sara.khoury</div>
+        <div class="inf-followers">6.2M</div>
+        <div class="inf-followers-label">متابع على يوتيوب</div>
+      </div>
+    </div>
+    <div class="inf-card">
+      <div class="inf-img"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" alt="محمد"><div class="inf-img-ov"></div></div>
+      <div class="inf-body">
+        <div class="inf-cat">رياضة ولياقة · مصر</div>
+        <div class="inf-name">محمد حسين</div>
+        <div class="inf-handle">@mo.hussein.fit</div>
+        <div class="inf-followers">5.7M</div>
+        <div class="inf-followers-label">متابع على تيك توك</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURED STORIES -->
+<div id="business">
+  <div class="sh"><div class="sh-title">الأعمال العربية</div><div class="sh-rule"></div><a href="#" class="sh-more">جميع القصص →</a></div>
+  <div class="featured-section">
+    <div class="featured-grid">
+      <div class="feat-card large">
+        <div class="feat-img h400">
+          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=1200&q=85" alt="أعمال">
+          <div class="feat-img-overlay"></div>
+          <div class="feat-img-content">
+            <div class="feat-kicker">✦ قصة الغلاف · رجل الأعمال العربي لعام 2026</div>
+            <h2 class="feat-headline feat-headline-lg">أحمد الراشدي: ثلاث شركات يونيكورن<br>قبل سن الأربعين</h2>
+            <div class="feat-meta">بقلم ليلى منصور · 12 دقيقة للقراءة</div>
+          </div>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-img h280">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80" alt="سيدة أعمال">
+          <div class="feat-img-overlay"></div>
+          <div class="feat-img-content">
+            <div class="feat-kicker">ريادة الأعمال · الإمارات</div>
+            <h3 class="feat-headline">الشيخة نورة: أقوى امرأة في الأسهم الخاصة الخليجية</h3>
+            <div class="feat-meta">5 دقائق للقراءة</div>
+          </div>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-body-card" style="height:280px;display:flex;flex-direction:column;justify-content:center;">
+          <div class="feat-body-kicker">تحليل · الاقتصاد العربي</div>
+          <h3 class="feat-body-headline">كيف تُعيد رؤية 2030 رسم خريطة الاقتصاد السعودي من الداخل</h3>
+          <p class="feat-body-excerpt">اثنتا عشرة علامة تجارية محلية تجاوزت 100 مليون دولار في 18 شهراً فقط.</p>
+          <div class="feat-body-meta">بقلم <b>عمر الفيصل</b> · 7 دقائق</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDITORIAL -->
+<div>
+  <div class="sh"><div class="sh-title">أبرز القصص</div><div class="sh-rule"></div><a href="#" class="sh-more">الكل →</a></div>
+  <div class="editorial-grid">
+    <div class="ed-col">
+      <div class="ed-col-title">قصص مميزة</div>
+      <div class="ed-story">
+        <div class="story-kicker">مقابلة حصرية</div>
+        <h3 class="ed-headline">لينا الرفاعي: بنت شركة بمليار دولار من عمّان دون أن تغادر الوطن العربي</h3>
+        <p class="ed-excerpt">رفضت عروض وادي السيليكون. بنت فريقها كاملاً من المواهب العربية. والآن تتلقى عروض الاستحواذ من أمازون.</p>
+        <div class="ed-meta">بقلم <b>سارة خليل</b> · 10 دقائق · أعمال</div>
+      </div>
+      <div class="ed-story">
+        <h3 class="ed-headline">الثروة الهادئة: رجال الأعمال العرب الذين يحكمون العالم من خلف الكواليس</h3>
+        <p class="ed-excerpt">لا تجدهم في الصحف، لكنهم يديرون محافظ استثمارية بمليارات الدولارات.</p>
+        <div class="ed-meta">بقلم <b>عمر الفيصل</b> · 8 دقائق · تحليل</div>
+      </div>
+      <div class="ed-story">
+        <h3 class="ed-headline">صندوق الثروة السيادي القطري يضخ 20 مليار دولار في جنوب شرق آسيا</h3>
+        <div class="ed-meta">تحليل · 6 دقائق · قطر</div>
+      </div>
+      <div class="ed-story">
+        <h3 class="ed-headline">الشباب العربي والشركات الناشئة: جيل يُغيّر قواعد اللعبة</h3>
+        <div class="ed-meta">تقرير · 9 دقائق · الشباب</div>
+      </div>
+    </div>
+    <div class="ed-col">
+      <div class="ed-col-title">الخليج</div>
+      <div class="ed-story">
+        <h3 class="ed-headline">محمد المري: امبراطورية اللوجستيك التي تُحرّك 40% من شحن الخليج</h3>
+        <p class="ed-excerpt">جلس مع مجلة العرب في أول مقابلة له منذ خمس سنوات.</p>
+        <div class="ed-meta">ملف · 8 دقائق · الإمارات</div>
+      </div>
+      <div class="ed-story">
+        <h3 class="ed-headline">أبوظبي تنافس دبي: المركز المالي الجديد يأخذ مكانه على الخريطة</h3>
+        <div class="ed-meta">تحليل · 5 دقائق · أبوظبي</div>
+      </div>
+      <div class="ed-story">
+        <h3 class="ed-headline">30 رائد أعمال دون الثلاثين يقودون الاقتصاد الإماراتي</h3>
+        <div class="ed-meta">قائمة · 12 دقيقة · الإمارات</div>
+      </div>
+    </div>
+    <div class="ed-col">
+      <div class="ed-col-title">المشرق العربي</div>
+      <div class="ed-story">
+        <h3 class="ed-headline">المغتربون اللبنانيون يُعيدون استثمار مليارات الدولارات في الوطن</h3>
+        <div class="ed-meta">لبنان · 6 دقائق</div>
+      </div>
+      <div class="ed-story">
+        <h3 class="ed-headline">الأردن: وادي السيليكون العربي القادم في صمت</h3>
+        <div class="ed-meta">الأردن · 5 دقائق</div>
+      </div>
+      <div class="ed-story">
+        <h3 class="ed-headline">مصر تُنتج خامس يونيكورن لها خلال 18 شهراً</h3>
+        <div class="ed-meta">مصر · 5 دقائق</div>
+      </div>
+      <div class="ed-story">
+        <h3 class="ed-headline">العراق الجديد: رواد الأعمال الذين يُعيدون البناء</h3>
+        <div class="ed-meta">العراق · 7 دقائق</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ARTISTS BAND -->
+<div id="artists" class="artists-band">
+  <div class="artists-text">
+    <div class="artists-label">الفنانون العرب</div>
+    <h2 class="artists-headline">أصوات تُعبّر عن<br><em>روح الأمة</em></h2>
+    <p class="artists-body">من مسارح بيروت إلى صالات العرض في باريس، الفنان العربي يفرض حضوره على الخريطة العالمية بشروطه الخاصة.</p>
+    <a href="#" class="btn-gold">استكشف الفنانين العرب →</a>
+  </div>
+  <div class="artists-profiles">
+    <div class="ap">
+      <div class="ap-img"><img src="https://images.unsplash.com/photo-1518834107812-67b0b7c58434?auto=format&fit=crop&w=500&q=80" alt="رقص"></div>
+      <div class="ap-body">
+        <div class="ap-num">01</div>
+        <div class="ap-role">رقص معاصر</div>
+        <div class="ap-name">نور خليل</div>
+        <div class="ap-country">🇱🇧 لبنان</div>
+        <p class="ap-excerpt">قاعة كارنيجي وأوبرا باريس. تعيد الآن الإبداع إلى مسارح بيروت.</p>
+      </div>
+    </div>
+    <div class="ap">
+      <div class="ap-img"><img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=500&q=80" alt="موسيقى"></div>
+      <div class="ap-body">
+        <div class="ap-num">02</div>
+        <div class="ap-role">منتج موسيقي</div>
+        <div class="ap-name">طارق نور</div>
+        <div class="ap-country">🇪🇬 مصر</div>
+        <p class="ap-excerpt">يدمج المقامات العربية بالإلكترونيك. سبوتيفاي تسمّيه الأكثر استماعاً.</p>
+      </div>
+    </div>
+    <div class="ap">
+      <div class="ap-img"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=500&q=80" alt="سينما"></div>
+      <div class="ap-body">
+        <div class="ap-num">03</div>
+        <div class="ap-role">مخرجة سينمائية</div>
+        <div class="ap-name">ريما الحسن</div>
+        <div class="ap-country">🇯🇴 الأردن</div>
+        <p class="ap-excerpt">جائزة أفضل مخرجة في كان 2026. فيلمها القادم الأكثر ترقباً.</p>
+      </div>
+    </div>
+    <div class="ap">
+      <div class="ap-img"><img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=500&q=80" alt="فن"></div>
+      <div class="ap-body">
+        <div class="ap-num">04</div>
+        <div class="ap-role">فنانة تشكيلية</div>
+        <div class="ap-name">هدى الرشيد</div>
+        <div class="ap-country">🇸🇦 السعودية</div>
+        <p class="ap-excerpt">منحوتتها في آرت بازل بيعت في 90 دقيقة. كريستيز تنتظر.</p>
+      </div>
+    </div>
+    <div class="ap">
+      <div class="ap-img"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80" alt="مسرح"></div>
+      <div class="ap-body">
+        <div class="ap-num">05</div>
+        <div class="ap-role">مخرج مسرحي</div>
+        <div class="ap-name">سامي الخوري</div>
+        <div class="ap-country">🇱🇧 لبنان</div>
+        <p class="ap-excerpt">عروضه تُباع في بيروت ولندن وباريس في نفس الليلة.</p>
+      </div>
+    </div>
+    <div class="ap">
+      <div class="ap-img"><img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80" alt="تصوير"></div>
+      <div class="ap-body">
+        <div class="ap-num">06</div>
+        <div class="ap-role">مصورة صحفية</div>
+        <div class="ap-name">ياسمين بركات</div>
+        <div class="ap-country">🇦🇪 الإمارات</div>
+        <p class="ap-excerpt">أصغر مراسلة لناشيونال جيوغرافيك في الشرق الأوسط.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DOCTORS -->
+<div id="doctors">
+  <div class="sh"><div class="sh-title">أطباء عرب</div><div class="sh-rule"></div><a href="#" class="sh-more">عرض الكل →</a></div>
+  <div class="doctors-grid">
+    <div class="doc-card">
+      <div class="doc-img">
+        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=600&q=80" alt="طبيب">
+        <div class="doc-img-ov"></div>
+      </div>
+      <div class="doc-body">
+        <div class="doc-spec">جراحة الأعصاب · مايو كلينيك</div>
+        <div class="doc-name">د. خالد العمري</div>
+        <div class="doc-hospital">🇸🇦 مايو كلينيك · أمريكا</div>
+        <div class="doc-badge">أفضل طبيب في العالم 2025</div>
+      </div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-img">
+        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80" alt="طبيبة">
+        <div class="doc-img-ov"></div>
+      </div>
+      <div class="doc-body">
+        <div class="doc-spec">أورام وعلاج السرطان · لندن</div>
+        <div class="doc-name">د. سمر النجار</div>
+        <div class="doc-hospital">🇱🇧 مستشفى رويال مارسدن · لندن</div>
+        <div class="doc-badge">اكتشاف علمي 2026</div>
+      </div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-img">
+        <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80" alt="طبيب">
+        <div class="doc-img-ov"></div>
+      </div>
+      <div class="doc-body">
+        <div class="doc-spec">زراعة الأعضاء · دبي</div>
+        <div class="doc-name">د. عمر بن راشد</div>
+        <div class="doc-hospital">🇦🇪 مستشفى كليفلاند كلينيك · أبوظبي</div>
+        <div class="doc-badge">100 عملية ناجحة</div>
+      </div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-img">
+        <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=600&q=80" alt="طبيبة">
+        <div class="doc-img-ov"></div>
+      </div>
+      <div class="doc-body">
+        <div class="doc-spec">طب الأطفال · مصر وأمريكا</div>
+        <div class="doc-name">د. رانيا مصطفى</div>
+        <div class="doc-hospital">🇪🇬 جامعة هارفارد الطبية</div>
+        <div class="doc-badge">زميلة هارفارد</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FASHION -->
+<div id="fashion">
+  <div class="sh"><div class="sh-title">الموضة العربية</div><div class="sh-rule"></div><a href="#" class="sh-more">كل الموضة →</a></div>
+  <div class="fashion-grid">
+    <div class="fash">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=900&q=85" alt="موضة">
+      <div class="fash-overlay"></div>
+      <div class="fash-body">
+        <div class="fash-kicker">أزياء السعودية</div>
+        <h3 class="fash-headline">أول دار أزياء سعودية في أسبوع باريس: لحظة تغيّر التاريخ</h3>
+      </div>
+    </div>
+    <div class="fash">
+      <img src="https://images.unsplash.com/photo-1559181567-c3190ca9be46?auto=format&fit=crop&w=900&q=85" alt="موضة">
+      <div class="fash-overlay"></div>
+      <div class="fash-body">
+        <div class="fash-kicker">المصمم العربي</div>
+        <h3 class="fash-headline">إيلي صعب: نصف قرن من الأناقة العربية على منصات العالم</h3>
+      </div>
+    </div>
+    <div class="fash">
+      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=900&q=85" alt="موضة">
+      <div class="fash-overlay"></div>
+      <div class="fash-body">
+        <div class="fash-kicker">الموضة المستدامة</div>
+        <h3 class="fash-headline">جيل جديد من المصممين العرب يُعيد اكتشاف الأقمشة التراثية</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEWS & BLOGS -->
+<div id="news">
+  <div class="sh"><div class="sh-title">الأخبار</div><div class="sh-rule"></div><a href="#" class="sh-more">كل الأخبار →</a></div>
+  <div class="news-grid" id="newsGrid"></div>
+  <div id="blogs" style="height:1px;"></div>
+</div>
+
+<!-- NEWSLETTER -->
+<div id="newsletter" class="nl-section">
+  <div>
+    <div class="nl-eyebrow">انضم لأكثر من 240,000 مشترك</div>
+    <h2 class="nl-headline">احصل على مجلة<br><em>العرب</em><br>قبل الجميع.</h2>
+    <p class="nl-sub">قوائم الأقوى، قصص الغلاف، تحليلات السوق، والملفات التي تُحرّك الحديث العربي — كل أربعاء في بريدك.</p>
+  </div>
+  <div>
+    <div class="nl-form">
+      <button class="nl-btn" id="nlBtn">اشترك مجاناً</button>
+      <input type="email" class="nl-input" placeholder="أدخل بريدك الإلكتروني" id="nlEmail">
+    </div>
+    <p style="margin-top:.8rem;font-size:.7rem;color:rgba(248,244,238,.2);text-align:right;font-family:'Cairo',sans-serif;">لا رسائل مزعجة. يمكنك إلغاء الاشتراك في أي وقت.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div style="text-align:right;">
+      <a href="/" class="footer-logo">ال<span>عـرب</span></a>
+      <span class="footer-logo-en">AL ARAB · MAGAZINE</span>
+      <p class="footer-about">المجلة العربية الأولى التي تحتفي بالإنسان العربي المتميّز في كل مكان. نحكي قصص المؤثرين والفنانين والأطباء ورواد الأعمال الذين يُلهمون الأمة. صادرة من دبي، للعالم العربي.</p>
+      <div class="footer-socials">
+        <a href="#" class="fsoc">𝕏</a>
+        <a href="#" class="fsoc">in</a>
+        <a href="#" class="fsoc">📷</a>
+        <a href="#" class="fsoc">▶</a>
+        <a href="#" class="fsoc">📘</a>
+      </div>
+    </div>
+    <div class="fcol">
+      <div class="fcol-title">الأقسام</div>
+      <ul>
+        <li><a href="#influencers">المؤثرون العرب</a></li>
+        <li><a href="#artists">الفنانون العرب</a></li>
+        <li><a href="#business">الأعمال العربية</a></li>
+        <li><a href="#doctors">أطباء عرب</a></li>
+        <li><a href="#fashion">الموضة العربية</a></li>
+        <li><a href="#news">الأخبار</a></li>
+        <li><a href="#blogs">المدونات</a></li>
+      </ul>
+    </div>
+    <div class="fcol">
+      <div class="fcol-title">المناطق</div>
+      <ul>
+        <li><a href="#">الإمارات</a></li>
+        <li><a href="#">السعودية</a></li>
+        <li><a href="#">قطر</a></li>
+        <li><a href="#">الكويت</a></li>
+        <li><a href="#">لبنان</a></li>
+        <li><a href="#">مصر</a></li>
+        <li><a href="#">الأردن</a></li>
+        <li><a href="#">العراق</a></li>
+      </ul>
+    </div>
+    <div class="fcol">
+      <div class="fcol-title">المجلة</div>
+      <ul>
+        <li><a href="#">عن العرب</a></li>
+        <li><a href="#">هيئة التحرير</a></li>
+        <li><a href="#">الإعلان معنا</a></li>
+        <li><a href="#">الترشيح للمجلة</a></li>
+        <li><a href="#">الفعاليات</a></li>
+        <li><a href="#">وظائف</a></li>
+      </ul>
+    </div>
+    <div class="fcol">
+      <div class="fcol-title">الاشتراك</div>
+      <ul>
+        <li><a href="#">النشرة المجانية</a></li>
+        <li><a href="#">الاشتراك الرقمي</a></li>
+        <li><a href="#">الطبعة الورقية</a></li>
+        <li><a href="#">اشتراك المؤسسات</a></li>
+        <li><a href="#">هدية الاشتراك</a></li>
+        <li><a href="#">الأعداد السابقة</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="flegal">
+      <a href="#">سياسة الخصوصية</a>
+      <a href="#">شروط الاستخدام</a>
+      <a href="#">إعدادات الكوكيز</a>
+    </div>
+    <div class="fcopy">© 2026 مجلة العرب. جميع الحقوق محفوظة. مدينة دبي للإعلام، الإمارات العربية المتحدة.</div>
+  </div>
+</footer>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+/* ── DYNAMIC NEWS & BLOGS FROM API ── */
+(async function loadNewsGrid(){
+  const grid = document.getElementById('newsGrid');
+  if (!grid) return;
+
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmtAgo = iso => {
+    if (!iso) return '';
+    const d = new Date(iso.replace(' ','T'));
+    const diff = (Date.now() - d.getTime())/1000;
+    if (diff < 3600) return `منذ ${Math.max(1,Math.floor(diff/60))} دقيقة`;
+    if (diff < 86400) return `منذ ${Math.floor(diff/3600)} ساعة`;
+    if (diff < 2592000) return `منذ ${Math.floor(diff/86400)} يوم`;
+    return d.toISOString().slice(0,10);
+  };
+  const fallback = 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=800&q=80';
+
+  try {
+    const [aRes, bRes] = await Promise.all([
+      fetch('/api/articles?status=published&limit=4'),
+      fetch('/api/blogs?status=published&limit=4'),
+    ]);
+    const aJson = await aRes.json();
+    const bJson = await bRes.json();
+    const articles = (aJson.data || []).map(x => ({...x, _type:'article'}));
+    const blogs    = (bJson.data || []).map(x => ({...x, _type:'blog'}));
+    const items = [...articles, ...blogs]
+      .sort((x,y) => new Date(y.created_at) - new Date(x.created_at))
+      .slice(0, 6);
+
+    if (!items.length) { grid.innerHTML = '<p style="opacity:.6;text-align:center;padding:40px;">لا توجد أخبار حالياً</p>'; return; }
+
+    grid.innerHTML = items.map(it => {
+      const kicker = it._type === 'blog'
+        ? `مدونة · ${esc(it.author || 'فريق التحرير')}`
+        : `${esc(it.category || 'عام')}${it.region ? ' · ' + esc(it.region) : ''}`;
+      const meta = it._type === 'blog'
+        ? `بقلم <b>${esc(it.author || 'فريق التحرير')}</b>`
+        : `قسم ${esc(it.category || 'عام')} · <b>${fmtAgo(it.created_at)}</b>`;
+      return `
+        <div class="news-card">
+          <div class="news-img"><img src="${esc(it.image_url || fallback)}" alt="${esc(it.title)}" onerror="this.src='${fallback}'"></div>
+          <div class="news-body">
+            <div class="news-kicker">${kicker}</div>
+            <h3 class="news-headline">${esc(it.title)}</h3>
+            <p class="news-excerpt">${esc(it.excerpt || '')}</p>
+            <div class="news-meta">${meta}</div>
+          </div>
+        </div>`;
+    }).join('');
+  } catch (e) {
+    console.error('Failed to load news:', e);
+    grid.innerHTML = '<p style="opacity:.6;text-align:center;padding:40px;">تعذّر تحميل الأخبار</p>';
+  }
+})();
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* ── PRELOADER ── */
+gsap.timeline({onComplete(){
+  gsap.to('#preloader',{yPercent:-100,duration:1.1,ease:'power4.inOut',
+    onComplete(){document.getElementById('preloader').style.display='none';}
+  });
+  gsap.from('.hero-kicker,.hero-headline,.hero-deck,.hero-byline',
+    {y:30,opacity:0,stagger:.18,duration:.9,ease:'power3.out',delay:.1});
+  gsap.from('.sidebar-story',{y:24,opacity:0,stagger:.15,duration:.8,ease:'power3.out',delay:.3});
+}})
+.to('.pre-logo-ar span',{y:0,stagger:.1,duration:.75,ease:'power3.out'})
+.to('.pre-line',{width:'140px',duration:.6,ease:'power2.inOut'},'-=.2')
+.to('.pre-logo-en',{opacity:1,duration:.5,ease:'power2.out'})
+.to({},{duration:.55});
+
+/* ── HERO PARALLAX ── */
+gsap.to('#heroImg',{
+  yPercent:18,ease:'none',
+  scrollTrigger:{trigger:'.hero-section',start:'top top',end:'bottom top',scrub:1.2}
+});
+
+/* ── TICKER ── */
+const tr=document.getElementById('tickerTrack');
+gsap.to(tr,{x:-tr.scrollWidth/2,duration:38,repeat:-1,ease:'none'});
+
+/* ── SECTION HEADERS ── */
+gsap.utils.toArray('.sh').forEach(el=>{
+  gsap.from(el,{opacity:0,x:30,duration:.7,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 90%'}});
+});
+
+/* ── CATEGORIES ── */
+gsap.from('.cat-card',{
+  y:40,opacity:0,stagger:.06,duration:.7,ease:'power3.out',
+  scrollTrigger:{trigger:'.cats-grid',start:'top 82%'}
+});
+gsap.from('.cats-title,.cats-sub',{
+  y:30,opacity:0,stagger:.12,duration:.8,ease:'power3.out',
+  scrollTrigger:{trigger:'.cats-section',start:'top 80%'}
+});
+
+/* ── IMAGE CLIP REVEALS ── */
+document.querySelectorAll('.feat-img img,.inf-img img,.ap-img img,.doc-img img,.fash img,.news-img img,.sidebar-img img').forEach(img=>{
+  gsap.fromTo(img,
+    {clipPath:'inset(0 0 100% 0)',scale:1.1},
+    {clipPath:'inset(0 0 0% 0)',scale:1,duration:1.1,ease:'power4.out',
+     scrollTrigger:{trigger:img.parentElement,start:'top 87%'}}
+  );
+});
+
+/* ── STAGGER GRIDS ── */
+['.influencers-grid .inf-card','.doctors-grid .doc-card',
+ '.artists-profiles .ap','.news-grid .news-card','.featured-grid .feat-card'].forEach(sel=>{
+  const els=document.querySelectorAll(sel);
+  if(!els.length) return;
+  gsap.from(els,{y:40,opacity:0,stagger:.1,duration:.8,ease:'power3.out',
+    scrollTrigger:{trigger:els[0].closest('div'),start:'top 85%'}});
+});
+
+/* ── FASHION PARALLAX ── */
+document.querySelectorAll('.fash img').forEach(img=>{
+  gsap.to(img,{yPercent:14,ease:'none',
+    scrollTrigger:{trigger:img.parentElement,start:'top bottom',end:'bottom top',scrub:1.4}});
+});
+
+/* ── ARTISTS BAND ── */
+gsap.from('.artists-text > *',{y:30,opacity:0,stagger:.12,duration:.85,ease:'power3.out',
+  scrollTrigger:{trigger:'.artists-band',start:'top 78%'}});
+
+/* ── EDITORIAL ── */
+gsap.utils.toArray('.ed-story').forEach((el,i)=>{
+  gsap.from(el,{y:20,opacity:0,duration:.65,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 90%'},delay:(i%4)*.07});
+});
+
+/* ── NEWSLETTER ── */
+gsap.from('.nl-headline,.nl-eyebrow,.nl-sub',{y:35,opacity:0,stagger:.15,duration:.9,ease:'power3.out',
+  scrollTrigger:{trigger:'.nl-section',start:'top 80%'}});
+
+/* ── MAGNETIC BUTTONS ── */
+document.querySelectorAll('.btn-gold,.btn-subscribe').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    gsap.to(btn,{x:(e.clientX-r.left-r.width/2)*.25,y:(e.clientY-r.top-r.height/2)*.25,duration:.3,ease:'power2.out'});
+  });
+  btn.addEventListener('mouseleave',()=>gsap.to(btn,{x:0,y:0,duration:.5,ease:'elastic.out(1,.4)'}));
+});
+
+/* ── CURSOR ── */
+const cur=document.getElementById('cur'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('a,button,.cat-card,.feat-card,.inf-card,.ap,.doc-card,.fash,.news-card')){
+    gsap.to(cur,{width:16,height:16,duration:.2});gsap.to(ring,{width:52,height:52,opacity:.3,duration:.3});
+  }else{
+    gsap.to(cur,{width:8,height:8,duration:.2});gsap.to(ring,{width:32,height:32,opacity:.5,duration:.3});
+  }
+});
+
+/* ── NAV ACTIVE ── */
+window.addEventListener('scroll',()=>{
+  let c='';
+  document.querySelectorAll('[id]').forEach(s=>{if(window.scrollY>=s.offsetTop-100)c=s.id;});
+  document.querySelectorAll('.nav-bar a').forEach(a=>{
+    a.classList.toggle('active',a.getAttribute('href')==='#'+c);
+  });
+});
+
+/* ── NEWSLETTER ── */
+document.getElementById('nlBtn').addEventListener('click',()=>{
+  const inp=document.getElementById('nlEmail');
+  if(inp.value&&inp.value.includes('@')){
+    gsap.to(inp,{opacity:0,duration:.2,onComplete(){
+      inp.value='✓ أهلاً بك في مجلة العرب — تفقّد بريدك الإلكتروني';
+      inp.style.color='#d4ae5a';
+      gsap.to(inp,{opacity:1,duration:.4});
+    }});
+  }
+});
+</script>
+</body>
+</html>
