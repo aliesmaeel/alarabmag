@@ -17,7 +17,7 @@ class StatsOverview extends BaseWidget
         $totalViews = (int) (Article::sum('views') + Blog::sum('views'));
 
         return [
-            Stat::make('المقالات', Article::count())
+            Stat::make('الأخبار', Article::count())
                 ->description(Article::where('status', 'published')->count() . ' منشور · ' . Article::where('status', 'draft')->count() . ' مسودة')
                 ->descriptionIcon('heroicon-m-newspaper')
                 ->color('primary'),
@@ -38,7 +38,7 @@ class StatsOverview extends BaseWidget
                 ->color('success'),
 
             Stat::make('إجمالي المشاهدات', number_format($totalViews))
-                ->description('عبر المقالات والتدوينات')
+                ->description('عبر الأخبار والتدوينات')
                 ->descriptionIcon('heroicon-m-eye')
                 ->color('warning'),
         ];

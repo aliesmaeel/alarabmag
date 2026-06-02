@@ -9,15 +9,36 @@ class Article extends Model
 {
     use HasFactory;
 
+    protected static function booted(): void
+    {
+        static::saving(function (Article $article) {
+            if ($article->in_ticker) {
+                if ((int) $article->ticker_order === 0) {
+                    $query = static::query()->where('in_ticker', true);
+                    if ($article->exists) {
+                        $query->where('id', '!=', $article->id);
+                    }
+                    $article->ticker_order = (int) $query->max('ticker_order') + 1;
+                }
+            } else {
+                $article->ticker_order = 0;
+            }
+        });
+    }
+
     protected $fillable = [
         'title', 'subtitle', 'excerpt', 'body',
         'category', 'author', 'image_url', 'read_time',
-        'featured', 'status', 'region', 'views',
+        'featured', 'in_ticker', 'ticker_order', 'status', 'region', 'views',
+        'meta_title', 'meta_description', 'meta_keywords',
+        'og_title', 'og_description', 'og_image',
     ];
 
     protected $casts = [
-        'featured' => 'boolean',
-        'views'    => 'integer',
+        'featured'   => 'boolean',
+        'in_ticker'  => 'boolean',
+        'ticker_order' => 'integer',
+        'views'      => 'integer',
     ];
 
     // Scopes
@@ -29,6 +50,11 @@ class Article extends Model
     public function scopeFeatured($query)
     {
         return $query->where('featured', true);
+    }
+
+    public function scopeInTicker($query)
+    {
+        return $query->where('in_ticker', true);
     }
 
     public function scopeCategory($query, string $category)

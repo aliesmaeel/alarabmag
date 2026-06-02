@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PersonResource\Pages;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\SeoFields;
 use App\Models\Person;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -23,6 +24,7 @@ class PersonResource extends Resource
     protected static ?string $pluralModelLabel = 'الشخصيات';
     protected static ?string $navigationGroup = 'المحتوى';
     protected static ?int $navigationSort = 3;
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Form $form): Form
     {
@@ -77,6 +79,8 @@ class PersonResource extends Resource
                     Forms\Components\TextInput::make('company')->label('الشركة'),
                     Forms\Components\TextInput::make('net_worth')->label('الثروة'),
                 ])->columns(2),
+
+            SeoFields::section(),
         ]);
     }
 

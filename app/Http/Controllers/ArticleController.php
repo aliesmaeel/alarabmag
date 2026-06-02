@@ -10,7 +10,7 @@ class ArticleController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Article::query()->orderByDesc('created_at');
+        $query = Article::query();
 
         if ($request->filled('category')) {
             $query->where('category', $request->category);
@@ -20,6 +20,11 @@ class ArticleController extends Controller
         }
         if ($request->boolean('featured')) {
             $query->where('featured', true);
+        }
+        if ($request->boolean('in_ticker')) {
+            $query->where('in_ticker', true)->orderBy('ticker_order')->orderByDesc('created_at');
+        } else {
+            $query->orderByDesc('created_at');
         }
         if ($request->filled('region')) {
             $query->where('region', $request->region);
@@ -51,9 +56,11 @@ class ArticleController extends Controller
             'author'    => 'nullable|string|max:200',
             'image_url' => 'nullable|string|max:1000',
             'read_time' => 'nullable|string|max:50',
-            'featured'  => 'nullable|boolean',
-            'status'    => 'nullable|in:published,draft',
-            'region'    => 'nullable|string|max:100',
+            'featured'     => 'nullable|boolean',
+            'in_ticker'    => 'nullable|boolean',
+            'ticker_order' => 'nullable|integer|min:0',
+            'status'       => 'nullable|in:published,draft',
+            'region'       => 'nullable|string|max:100',
         ]);
 
         $validated['category'] = $validated['category'] ?? 'عام';
@@ -79,9 +86,11 @@ class ArticleController extends Controller
             'author'    => 'nullable|string|max:200',
             'image_url' => 'nullable|string|max:1000',
             'read_time' => 'nullable|string|max:50',
-            'featured'  => 'nullable|boolean',
-            'status'    => 'nullable|in:published,draft',
-            'region'    => 'nullable|string|max:100',
+            'featured'     => 'nullable|boolean',
+            'in_ticker'    => 'nullable|boolean',
+            'ticker_order' => 'nullable|integer|min:0',
+            'status'       => 'nullable|in:published,draft',
+            'region'       => 'nullable|string|max:100',
         ]);
 
         $article->update($validated);

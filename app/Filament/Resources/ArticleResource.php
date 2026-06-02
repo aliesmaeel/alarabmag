@@ -3,7 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ArticleResource\Pages;
+use App\Filament\Support\AiAssist;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\SeoFields;
 use App\Models\Article;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -17,30 +19,49 @@ class ArticleResource extends Resource
 {
     protected static ?string $model = Article::class;
 
+    protected static ?string $slug = 'news';
+
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
-    protected static ?string $navigationLabel = 'المقالات';
-    protected static ?string $modelLabel = 'مقال';
-    protected static ?string $pluralModelLabel = 'المقالات';
+    protected static ?string $navigationLabel = 'الأخبار';
+    protected static ?string $modelLabel = 'خبر';
+    protected static ?string $pluralModelLabel = 'الأخبار';
     protected static ?string $navigationGroup = 'المحتوى';
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('المحتوى')->schema([
-                Forms\Components\TextInput::make('title')
-                    ->label('العنوان')
-                    ->required()
-                    ->maxLength(1000)
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('subtitle')
-                    ->label('العنوان الفرعي')
-                    ->maxLength(500)
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('excerpt')
-                    ->label('المقتطف')
-                    ->rows(3)
-                    ->columnSpanFull(),
+            Forms\Components\Section::make('المحتوى')
+                ->headerActions([
+                    AiAssist::generateFullArticleAction('article'),
+                    AiAssist::fillExcerptAction('article'),
+                ])
+                ->schema([
+                AiAssist::apply(
+                    Forms\Components\TextInput::make('title')
+                        ->label('العنوان')
+                        ->required()
+                        ->maxLength(1000)
+                        ->columnSpanFull(),
+                    'title',
+                    'article'
+                ),
+                AiAssist::apply(
+                    Forms\Components\TextInput::make('subtitle')
+                        ->label('العنوان الفرعي')
+                        ->maxLength(500)
+                        ->columnSpanFull(),
+                    'subtitle',
+                    'article'
+                ),
+                AiAssist::apply(
+                    Forms\Components\Textarea::make('excerpt')
+                        ->label('المقتطف')
+                        ->rows(3)
+                        ->columnSpanFull(),
+                    'excerpt',
+                    'article'
+                ),
                 Forms\Components\RichEditor::make('body')
                     ->label('النص الكامل')
                     ->columnSpanFull(),
@@ -70,11 +91,23 @@ class ArticleResource extends Resource
                     ->native(false),
                 Forms\Components\Toggle::make('featured')
                     ->label('مميز'),
+                Forms\Components\Toggle::make('in_ticker')
+                    ->label('عرض في شريط العاجل')
+                    ->helperText('يظهر العنوان في الشريط المتحرك أعلى الموقع')
+                    ->live(),
+                Forms\Components\TextInput::make('ticker_order')
+                    ->label('ترتيب الشريط')
+                    ->numeric()
+                    ->minValue(0)
+                    ->default(0)
+                    ->visible(fn (Forms\Get $get) => (bool) $get('in_ticker')),
             ])->columns(2),
 
             Forms\Components\Section::make('الصورة')->schema([
-                ImageUpload::make('image_url', 'صورة المقال'),
+                ImageUpload::make('image_url', 'صورة الخبر'),
             ]),
+
+            SeoFields::section('article'),
         ]);
     }
 
@@ -89,6 +122,7 @@ class ArticleResource extends Resource
                 Tables\Columns\TextColumn::make('author')->label('الكاتب')->searchable()->toggleable(),
                 Tables\Columns\TextColumn::make('region')->label('المنطقة')->toggleable(),
                 Tables\Columns\IconColumn::make('featured')->label('مميز')->boolean(),
+                Tables\Columns\IconColumn::make('in_ticker')->label('الشريط')->boolean()->toggleable(),
                 Tables\Columns\TextColumn::make('status')->label('الحالة')->badge()
                     ->color(fn (string $state): string => $state === 'published' ? 'success' : 'gray')
                     ->formatStateUsing(fn (string $state) => $state === 'published' ? 'منشور' : 'مسودة'),
@@ -101,6 +135,7 @@ class ArticleResource extends Resource
                 SelectFilter::make('category')->label('القسم')
                     ->options(fn () => Article::query()->distinct()->pluck('category', 'category')->toArray()),
                 TernaryFilter::make('featured')->label('مميز فقط'),
+                TernaryFilter::make('in_ticker')->label('في شريط العاجل'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

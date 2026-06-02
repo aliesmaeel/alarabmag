@@ -13,6 +13,8 @@ class Blog extends Model
         'title', 'excerpt', 'body',
         'author', 'author_bio', 'author_img',
         'image_url', 'tags', 'featured', 'status', 'views',
+        'meta_title', 'meta_description', 'meta_keywords',
+        'og_title', 'og_description', 'og_image',
     ];
 
     protected $casts = [

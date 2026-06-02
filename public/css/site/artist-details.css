@@ -1,0 +1,70 @@
+/* ARTIST DETAIL — full-bleed editorial dark hero */
+.art-hero{position:relative;background:var(--ink);height:720px;overflow:hidden;}
+.art-hero-img{position:absolute;inset:0;}
+.art-hero-img img{width:100%;height:100%;object-fit:cover;object-position:center 20%;filter:grayscale(20%);}
+.art-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(13,12,10,.97) 0%,rgba(13,12,10,.5) 55%,rgba(13,12,10,.25) 100%);}
+.art-hero-inner{position:absolute;bottom:0;right:0;left:0;padding:5rem 3rem;text-align:right;max-width:1200px;margin:0 auto;}
+.art-hero-num{font-family:'Playfair Display',serif;font-size:8rem;font-weight:900;color:rgba(184,146,42,.22);line-height:1;margin-bottom:.5rem;}
+.art-hero-eyebrow{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;}
+.art-hero-role{font-size:.95rem;font-weight:700;color:var(--gold-lt);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.8rem;font-family:'Cairo',sans-serif;}
+.art-hero-name{font-family:'Amiri',serif;font-size:clamp(3rem,6vw,6rem);font-weight:700;line-height:1.05;color:var(--cream);margin-bottom:1rem;}
+.art-hero-name-en{font-family:'Cinzel',serif;font-size:1rem;letter-spacing:.4em;color:rgba(248,244,238,.4);text-transform:uppercase;margin-bottom:1.5rem;}
+.art-hero-tagline{font-family:'Amiri',serif;font-style:italic;font-size:1.4rem;line-height:1.7;color:rgba(248,244,238,.7);max-width:780px;margin-bottom:1.8rem;}
+.art-hero-meta{display:flex;gap:1.5rem;flex-wrap:wrap;font-size:.82rem;color:rgba(248,244,238,.55);font-family:'Cairo',sans-serif;flex-direction:row-reverse;border-top:1px solid rgba(248,244,238,.12);padding-top:1.3rem;}
+.art-hero-meta b{color:var(--gold-lt);}
+
+/* BIO SECTION — magazine style with deep gold */
+.art-body-section{background:var(--cream);padding:6rem 0;}
+.art-body-wrap{max-width:760px;margin:0 auto;padding:0 1.5rem;}
+.art-body-pullquote{font-family:'Amiri',serif;font-style:italic;font-size:1.8rem;line-height:1.6;color:var(--ink);text-align:center;padding:2rem 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-bottom:3rem;}
+.art-body-pullquote em{color:var(--gold);font-style:normal;}
+.art-body{font-family:'Cairo',sans-serif;font-size:1.08rem;line-height:2.15;color:var(--ink-mid);text-align:right;}
+.art-body p{margin-bottom:1.6rem;}
+.art-body p:first-of-type::first-letter{font-family:'Amiri',serif;font-size:3.8rem;font-weight:700;float:right;line-height:1;margin:.3rem 0 0 .6rem;color:var(--gold);}
+.art-body h2{font-family:'Amiri',serif;font-size:1.8rem;font-weight:700;color:var(--ink);margin:2.5rem 0 1rem;line-height:1.4;}
+.art-body h3{font-family:'Amiri',serif;font-size:1.4rem;font-weight:700;color:var(--ink);margin:2rem 0 .8rem;}
+.art-body a{color:var(--gold);text-decoration:underline;text-decoration-color:var(--rule-gold);text-underline-offset:3px;}
+.art-body blockquote{font-family:'Amiri',serif;font-style:italic;font-size:1.5rem;line-height:1.7;color:var(--ink);border-right:3px solid var(--gold);padding:1rem 1.5rem;margin:2rem 0;background:var(--white);}
+.art-body img{max-width:100%;height:auto;margin:2rem 0;display:block;}
+
+/* STAT STRIP */
+.art-strip{background:var(--ink);padding:3rem;text-align:center;}
+.art-strip-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:3rem;align-items:center;}
+.astat-num{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:900;color:var(--cream);line-height:1;margin-bottom:.5rem;}
+.astat-num.small{font-size:1.3rem;color:var(--gold);line-height:1.3;}
+.astat-lbl{font-size:.72rem;color:var(--gold);letter-spacing:.08em;font-family:'Cairo',sans-serif;font-weight:600;text-transform:uppercase;}
+
+/* RELATED */
+.related-section{background:var(--ink);padding:4rem 0 6rem;border-top:1px solid rgba(248,244,238,.08);}
+.related-title{font-family:'Amiri',serif;font-size:2rem;font-weight:700;text-align:center;color:var(--cream);margin-bottom:2.5rem;}
+.related-title em{color:var(--gold);font-style:normal;}
+.related-grid{max-width:1200px;margin:0 auto;padding:0 3rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(248,244,238,.06);}
+
+.notfound{padding:7rem 2rem;text-align:center;background:var(--cream);}
+.notfound h1{font-family:'Amiri',serif;font-size:3rem;color:var(--ink);margin-bottom:1rem;}
+.notfound p{color:var(--ink-soft);margin-bottom:2rem;font-family:'Cairo',sans-serif;}
+.notfound a{display:inline-flex;gap:.6rem;background:var(--ink);color:var(--cream);padding:1rem 2rem;font-size:.78rem;font-weight:700;text-decoration:none;font-family:'Cairo',sans-serif;}
+
+@media(max-width:900px){
+  .art-hero{height:560px;}
+  .art-hero-inner{padding:2.5rem 1.5rem;}
+  .art-hero-num{font-size:4rem;}
+  .art-body-section{padding:3rem 0;}
+  .art-strip-inner{grid-template-columns:1fr;gap:1.5rem;}
+  .related-grid{grid-template-columns:1fr;padding:0 1rem;}
+}
+</style>
+      <style>
+        .art-list-card{background:var(--ink);cursor:pointer;overflow:hidden;transition:background .35s;text-decoration:none;color:inherit;display:flex;flex-direction:column;position:relative;}
+        .art-list-card:hover{background:rgba(184,146,42,.07);}
+        .art-list-img{height:340px;overflow:hidden;position:relative;}
+        .art-list-img img{width:100%;height:100%;object-fit:cover;object-position:top;filter:grayscale(35%);transition:transform .9s,filter .6s;}
+        .art-list-card:hover .art-list-img img{transform:scale(1.08);filter:grayscale(0%);}
+        .art-list-img-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(13,12,10,.92) 0%,transparent 50%);}
+        .art-list-num{position:absolute;top:1rem;left:1.5rem;font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:rgba(184,146,42,.18);line-height:1;}
+        .art-list-card:hover .art-list-num{color:rgba(184,146,42,.55);}
+        .art-list-body{padding:1.6rem;text-align:right;}
+        .art-list-role{font-size:.7rem;font-weight:700;letter-spacing:.06em;color:var(--gold);text-transform:uppercase;margin-bottom:.5rem;font-family:'Cairo',sans-serif;}
+        .art-list-name{font-family:'Amiri',serif;font-size:1.4rem;font-weight:700;color:var(--cream);margin-bottom:.4rem;}
+        .art-list-country{font-size:.78rem;color:rgba(248,244,238,.4);margin-bottom:.8rem;font-family:'Cairo',sans-serif;}
+        .art-list-excerpt{font-size:.85rem;line-height:1.8;color:rgba(248,244,238,.5);font-family:'Cairo',sans-serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}

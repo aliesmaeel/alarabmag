@@ -1,0 +1,35 @@
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="page-hero-eyebrow">News · الأخبار</div>
+  <h1 class="page-hero-title">نبض <em>العالم العربي</em></h1>
+  <p class="page-hero-sub">أحدث الأخبار والتحليلات والتقارير الميدانية من قلب المنطقة العربية — قصص تُحرّك الحديث وتُعيد رسم المشهد.</p>
+  <div class="crumb">
+    <a href="/">الرئيسية</a>
+    <span>›</span>
+    <span>الأخبار</span>
+  </div>
+</section>
+
+<!-- FEATURED ARTICLE -->
+<section id="featured" class="feat-hero" style="display:none">
+  <div class="feat-hero-grid" id="featuredGrid"></div>
+</section>
+
+<!-- FILTERS -->
+<div class="sh"><div class="sh-title">تصفّح الأخبار حسب القسم</div><div class="sh-rule"></div><span class="sh-more" id="resultsCount">—</span></div>
+<div class="filters" id="filters">
+  <button class="chip active" data-category="all">جميع الأقسام</button>
+</div>
+
+<!-- LIST -->
+<section class="list-section">
+  <div class="list-grid" id="newsGrid">
+    <div class="loading">جاري تحميل الأخبار…</div>
+  </div>
+  <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
+    <button class="load-more" id="loadMoreBtn">عرض المزيد ↓</button>
+  </div>
+</section>
+
+<?php /**PATH /home/ali/Downloads/alarab/alarab-laravel-project/alarab-laravel/resources/views/site/partials/content/news.blade.php ENDPATH**/ ?>

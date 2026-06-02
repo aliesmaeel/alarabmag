@@ -27,6 +27,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('dashboard')
             ->brandName('مجلة العرب')
+            ->brandLogo(asset('logo.png'))
+            ->brandLogoHeight('2.25rem')
             ->login()
             ->colors([
                 'primary' => Color::Amber,

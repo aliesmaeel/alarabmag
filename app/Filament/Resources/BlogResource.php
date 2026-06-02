@@ -3,7 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BlogResource\Pages;
+use App\Filament\Support\AiAssist;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\SeoFields;
 use App\Models\Blog;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -27,9 +29,21 @@ class BlogResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('المحتوى')->schema([
-                Forms\Components\TextInput::make('title')->label('العنوان')->required()->maxLength(1000)->columnSpanFull(),
-                Forms\Components\Textarea::make('excerpt')->label('المقتطف')->rows(3)->columnSpanFull(),
+            Forms\Components\Section::make('المحتوى')
+                ->headerActions([
+                    AiAssist::fillExcerptAction('blog'),
+                ])
+                ->schema([
+                AiAssist::apply(
+                    Forms\Components\TextInput::make('title')->label('العنوان')->required()->maxLength(1000)->columnSpanFull(),
+                    'title',
+                    'blog'
+                ),
+                AiAssist::apply(
+                    Forms\Components\Textarea::make('excerpt')->label('المقتطف')->rows(3)->columnSpanFull(),
+                    'excerpt',
+                    'blog'
+                ),
                 Forms\Components\RichEditor::make('body')->label('النص الكامل')->columnSpanFull(),
             ]),
 
@@ -47,6 +61,8 @@ class BlogResource extends Resource
                 Forms\Components\Toggle::make('featured')->label('مميز'),
                 ImageUpload::make('image_url', 'صورة الغلاف')->columnSpanFull(),
             ])->columns(2),
+
+            SeoFields::section('blog'),
         ]);
     }
 
