@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\RobotsController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SiteController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +28,9 @@ Route::get('/business/{id}', [SiteController::class, 'businessShow'])->whereNumb
 
 Route::get('/fashion', [SiteController::class, 'fashion'])->name('fashion.index');
 Route::get('/fashion/{id}', [SiteController::class, 'fashionShow'])->whereNumber('id')->name('fashion.show');
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');
 
 // ── Admin Dashboard ─────────────────────────────────────────
 // Mounted by Filament's AdminPanelProvider at /dashboard.

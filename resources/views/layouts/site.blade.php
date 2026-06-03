@@ -6,7 +6,8 @@
     @isset($seo)
         <x-site.seo-meta :seo="$seo" />
     @else
-        <title>@yield('title', 'مجلة العرب')</title>
+        <title>@yield('title', 'مجلة العرب | Al Arab Magazine')</title>
+        <meta name="description" content="مجلة العرب (Al Arab Magazine) — المجلة العربية الأولى للإنسان العربي المتميّز.">
     @endisset
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cairo:wght@300;400;500;600;700;900&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@500;700&display=swap" rel="stylesheet">

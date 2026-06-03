@@ -11,8 +11,8 @@
     <div class="masthead-top">
 
         <div class="logo-wrap">
-            <a href="{{ $onHome ? '#top' : url('/') }}" class="logo-link" aria-label="مجلة العرب — AL ARAB">
-                <img src="{{ asset('logo.png') }}" alt="AL ARAB" class="site-logo">
+            <a href="{{ $onHome ? '#top' : url('/') }}" class="logo-link" aria-label="مجلة العرب — Al Arab Magazine">
+                <img src="{{ asset('logo.png') }}" alt="مجلة العرب — Al Arab Magazine" class="site-logo">
             </a>
         </div>
         <div style="display:flex;align-items:center;gap:1.5rem;">

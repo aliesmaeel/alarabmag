@@ -6,6 +6,7 @@
 @endpush
 
 @section('content')
+    <h1 class="sr-only">مجلة العرب — Al Arab Magazine</h1>
     @include('site.partials.content.index')
 @endsection
 

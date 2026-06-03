@@ -8,6 +8,7 @@ use App\Models\Blog;
 use App\Models\Person;
 use App\Models\Setting;
 use App\Support\SeoMeta;
+use App\Support\SiteBrand;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -27,15 +28,17 @@ class SeoService
 
     public function page(string $pageKey, ?string $canonical = null): SeoMeta
     {
-        $siteName = $this->setting('site_name', 'مجلة العرب');
+        $siteName = $this->setting('site_name', SiteBrand::NAME_AR);
         $title = $this->setting("seo_{$pageKey}_title")
-            ?: $this->setting('seo_title')
-            ?: $siteName;
+            ?: ($pageKey === 'home' ? SiteBrand::homeTitle() : $this->setting('seo_title'))
+            ?: ($pageKey === 'home' ? SiteBrand::homeTitle() : SiteBrand::defaultTitle());
         $description = $this->setting("seo_{$pageKey}_description")
             ?: $this->setting('seo_description')
+            ?: ($pageKey === 'home' ? SiteBrand::homeDescription() : SiteBrand::defaultDescription())
             ?: $this->setting('site_description');
         $keywords = $this->setting("seo_{$pageKey}_keywords")
-            ?: $this->setting('seo_keywords');
+            ?: $this->setting('seo_keywords')
+            ?: SiteBrand::KEYWORDS;
 
         return $this->makeMeta(
             title: $this->suffixSiteName($title, $siteName, $pageKey === 'home'),
@@ -51,7 +54,7 @@ class SeoService
 
     public function fromArticle(Article $article, string $routeName = 'news.show'): SeoMeta
     {
-        $siteName = $this->setting('site_name', 'مجلة العرب');
+        $siteName = $this->setting('site_name', SiteBrand::NAME_AR);
         $title = $article->meta_title ?: $article->title;
         $description = $article->meta_description ?: $article->excerpt ?: Str::limit(strip_tags($article->body ?? ''), 160);
         $canonical = route($routeName, $article);
@@ -70,7 +73,7 @@ class SeoService
 
     public function fromBlog(Blog $blog): SeoMeta
     {
-        $siteName = $this->setting('site_name', 'مجلة العرب');
+        $siteName = $this->setting('site_name', SiteBrand::NAME_AR);
         $title = $blog->meta_title ?: $blog->title;
         $description = $blog->meta_description ?: $blog->excerpt ?: Str::limit(strip_tags($blog->body ?? ''), 160);
         $canonical = route('blogs.show', $blog);
@@ -89,7 +92,7 @@ class SeoService
 
     public function fromPerson(Person $person, string $routeName): SeoMeta
     {
-        $siteName = $this->setting('site_name', 'مجلة العرب');
+        $siteName = $this->setting('site_name', SiteBrand::NAME_AR);
         $title = $person->meta_title ?: $person->name;
         $description = $person->meta_description ?: $person->excerpt ?: Str::limit(strip_tags($person->bio ?? ''), 160);
         $canonical = route($routeName, $person);
@@ -126,7 +129,7 @@ class SeoService
             ogImage: $ogImage ?: $this->defaultOgImage(),
             ogUrl: $canonical,
             ogType: $ogType,
-            ogSiteName: $this->setting('og_site_name') ?: $this->setting('site_name', 'مجلة العرب'),
+            ogSiteName: $this->setting('og_site_name') ?: $this->setting('site_name', SiteBrand::NAME_AR),
             twitterCard: $this->setting('twitter_card', 'summary_large_image') ?: 'summary_large_image',
         );
     }
@@ -173,6 +176,103 @@ class SeoService
             'business' => route('business.index'),
             'fashion' => route('fashion.index'),
             default => url('/'),
+        };
+    }
+
+    /** @return list<array<string, mixed>> */
+    public function jsonLd(?SeoMeta $seo = null): array
+    {
+        $graphs = [$this->organizationSchema()];
+
+        if (request()->routeIs('home')) {
+            $graphs[] = $this->websiteSchema();
+        }
+
+        if ($seo) {
+            $graphs[] = $this->webPageSchema($seo);
+        }
+
+        return $graphs;
+    }
+
+    /** @return array<string, mixed> */
+    protected function organizationSchema(): array
+    {
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Organization',
+            '@id' => url('/') . '#organization',
+            'name' => SiteBrand::NAME_AR,
+            'alternateName' => SiteBrand::alternateNames(),
+            'url' => url('/'),
+            'logo' => $this->defaultOgImage(),
+            'description' => $this->setting('site_description', SiteBrand::defaultDescription()),
+        ];
+
+        if ($email = $this->setting('editor_email')) {
+            $schema['email'] = $email;
+        }
+
+        $sameAs = array_values(array_filter([
+            $this->socialUrl('instagram'),
+            $this->socialUrl('twitter'),
+            $this->socialUrl('youtube'),
+            $this->socialUrl('facebook'),
+            $this->socialUrl('tiktok'),
+        ]));
+
+        if ($sameAs !== []) {
+            $schema['sameAs'] = $sameAs;
+        }
+
+        return $schema;
+    }
+
+    /** @return array<string, mixed> */
+    protected function websiteSchema(): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            '@id' => url('/') . '#website',
+            'name' => SiteBrand::NAME_AR,
+            'alternateName' => SiteBrand::alternateNames(),
+            'url' => url('/'),
+            'inLanguage' => 'ar',
+            'publisher' => ['@id' => url('/') . '#organization'],
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    protected function webPageSchema(SeoMeta $seo): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebPage',
+            '@id' => ($seo->canonical ?: url('/')) . '#webpage',
+            'url' => $seo->canonical ?: url('/'),
+            'name' => $seo->title,
+            'description' => $seo->description,
+            'inLanguage' => 'ar',
+            'isPartOf' => ['@id' => url('/') . '#website'],
+            'about' => ['@id' => url('/') . '#organization'],
+        ];
+    }
+
+    protected function socialUrl(string $platform): ?string
+    {
+        $value = $this->setting($platform);
+        if (! filled($value)) {
+            return null;
+        }
+
+        return match ($platform) {
+            'instagram' => str_starts_with($value, 'http') ? $value : 'https://instagram.com/' . ltrim($value, '@'),
+            'twitter' => str_starts_with($value, 'http') ? $value : 'https://x.com/' . ltrim($value, '@'),
+            'youtube' => str_starts_with($value, 'http') ? $value : 'https://youtube.com/' . ltrim($value, '@'),
+            'facebook' => str_starts_with($value, 'http') ? $value : 'https://facebook.com/' . ltrim($value, '@'),
+            'tiktok' => str_starts_with($value, 'http') ? $value : 'https://tiktok.com/@' . ltrim($value, '@'),
+            default => null,
         };
     }
 }

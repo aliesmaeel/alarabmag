@@ -3,8 +3,8 @@
 <footer>
     <div class="footer-top">
         <div style="text-align:right;">
-            <a href="{{ url('/') }}" class="footer-logo-link" aria-label="مجلة العرب — AL ARAB">
-                <img src="{{ asset('logo.png') }}" alt="AL ARAB" class="footer-logo-img">
+            <a href="{{ url('/') }}" class="footer-logo-link" aria-label="مجلة العرب — Al Arab Magazine">
+                <img src="{{ asset('logo.png') }}" alt="مجلة العرب — Al Arab Magazine" class="footer-logo-img">
             </a>
             <p class="footer-about">
                 @if($variant === 'full')
