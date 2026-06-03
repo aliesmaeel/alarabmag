@@ -15,6 +15,8 @@
         <link rel="stylesheet" href="{{ asset('css/site/chrome.css') }}">
     @endunless
     @stack('styles')
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6158011037590169"
+     crossorigin="anonymous"></script>
 </head>
 <body>
     @if($showPreloader ?? false)
