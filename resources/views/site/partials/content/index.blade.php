@@ -1,4 +1,3 @@
-
 <div id="top"></div>
 
 <!-- HERO -->
@@ -40,7 +39,10 @@
 </div>
 
 <!-- CATEGORIES -->
-<div class="sh"><div class="sh-title">أقسام المجلة</div><div class="sh-rule"></div><a href="#" class="sh-more">استكشف الكل →</a></div>
+<div class="sh">
+  <div class="sh-title">أقسام المجلة</div>
+  <div class="sh-rule"></div><a href="#" class="sh-more">استكشف الكل →</a>
+</div>
 <div class="cats-section">
   <h2 class="cats-title">اكتشف عالم <em>الإنسان العربي</em></h2>
   <p class="cats-sub">من المؤثرين إلى الأطباء، من الفنانين إلى رجال الأعمال — قصص تُلهم</p>
@@ -92,10 +94,15 @@
 
 <!-- INFLUENCERS -->
 <div id="influencers">
-  <div class="sh"><div class="sh-title">المؤثرون العرب</div><div class="sh-rule"></div><a href="/influencers" class="sh-more">عرض الكل →</a></div>
+  <div class="sh">
+    <div class="sh-title">المؤثرون العرب</div>
+    <div class="sh-rule"></div><a href="/influencers" class="sh-more">عرض الكل →</a>
+  </div>
   <div class="influencers-grid">
     <div class="inf-card">
-      <div class="inf-img"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="نورا"><div class="inf-img-ov"></div></div>
+      <div class="inf-img"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="نورا">
+        <div class="inf-img-ov"></div>
+      </div>
       <div class="inf-body">
         <div class="inf-cat">موضة ونمط حياة · الإمارات</div>
         <div class="inf-name">نورا المنصوري</div>
@@ -105,7 +112,9 @@
       </div>
     </div>
     <div class="inf-card">
-      <div class="inf-img"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="خالد"><div class="inf-img-ov"></div></div>
+      <div class="inf-img"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="خالد">
+        <div class="inf-img-ov"></div>
+      </div>
       <div class="inf-body">
         <div class="inf-cat">تقنية وريادة أعمال · السعودية</div>
         <div class="inf-name">خالد الشمراني</div>
@@ -115,7 +124,9 @@
       </div>
     </div>
     <div class="inf-card">
-      <div class="inf-img"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" alt="سارة"><div class="inf-img-ov"></div></div>
+      <div class="inf-img"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80" alt="سارة">
+        <div class="inf-img-ov"></div>
+      </div>
       <div class="inf-body">
         <div class="inf-cat">طبخ وثقافة · لبنان</div>
         <div class="inf-name">سارة الخوري</div>
@@ -125,7 +136,9 @@
       </div>
     </div>
     <div class="inf-card">
-      <div class="inf-img"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" alt="محمد"><div class="inf-img-ov"></div></div>
+      <div class="inf-img"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" alt="محمد">
+        <div class="inf-img-ov"></div>
+      </div>
       <div class="inf-body">
         <div class="inf-cat">رياضة ولياقة · مصر</div>
         <div class="inf-name">محمد حسين</div>
@@ -139,7 +152,10 @@
 
 <!-- FEATURED STORIES -->
 <div id="business">
-  <div class="sh"><div class="sh-title">الأعمال العربية</div><div class="sh-rule"></div><a href="{{ route('business.index') }}" class="sh-more">جميع القصص →</a></div>
+  <div class="sh">
+    <div class="sh-title">الأعمال العربية</div>
+    <div class="sh-rule"></div><a href="{{ route('business.index') }}" class="sh-more">جميع القصص →</a>
+  </div>
   <div class="featured-section">
     <div class="featured-grid">
       <div class="feat-card large">
@@ -177,68 +193,7 @@
 </div>
 
 <!-- EDITORIAL -->
-<div>
-  <div class="sh"><div class="sh-title">أبرز القصص</div><div class="sh-rule"></div><a href="#" class="sh-more">الكل →</a></div>
-  <div class="editorial-grid">
-    <div class="ed-col">
-      <div class="ed-col-title">قصص مميزة</div>
-      <div class="ed-story">
-        <div class="story-kicker">مقابلة حصرية</div>
-        <h3 class="ed-headline">لينا الرفاعي: بنت شركة بمليار دولار من عمّان دون أن تغادر الوطن العربي</h3>
-        <p class="ed-excerpt">رفضت عروض وادي السيليكون. بنت فريقها كاملاً من المواهب العربية. والآن تتلقى عروض الاستحواذ من أمازون.</p>
-        <div class="ed-meta">بقلم <b>سارة خليل</b> · 10 دقائق · أعمال</div>
-      </div>
-      <div class="ed-story">
-        <h3 class="ed-headline">الثروة الهادئة: رجال الأعمال العرب الذين يحكمون العالم من خلف الكواليس</h3>
-        <p class="ed-excerpt">لا تجدهم في الصحف، لكنهم يديرون محافظ استثمارية بمليارات الدولارات.</p>
-        <div class="ed-meta">بقلم <b>عمر الفيصل</b> · 8 دقائق · تحليل</div>
-      </div>
-      <div class="ed-story">
-        <h3 class="ed-headline">صندوق الثروة السيادي القطري يضخ 20 مليار دولار في جنوب شرق آسيا</h3>
-        <div class="ed-meta">تحليل · 6 دقائق · قطر</div>
-      </div>
-      <div class="ed-story">
-        <h3 class="ed-headline">الشباب العربي والشركات الناشئة: جيل يُغيّر قواعد اللعبة</h3>
-        <div class="ed-meta">تقرير · 9 دقائق · الشباب</div>
-      </div>
-    </div>
-    <div class="ed-col">
-      <div class="ed-col-title">الخليج</div>
-      <div class="ed-story">
-        <h3 class="ed-headline">محمد المري: امبراطورية اللوجستيك التي تُحرّك 40% من شحن الخليج</h3>
-        <p class="ed-excerpt">جلس مع مجلة العرب في أول مقابلة له منذ خمس سنوات.</p>
-        <div class="ed-meta">ملف · 8 دقائق · الإمارات</div>
-      </div>
-      <div class="ed-story">
-        <h3 class="ed-headline">أبوظبي تنافس دبي: المركز المالي الجديد يأخذ مكانه على الخريطة</h3>
-        <div class="ed-meta">تحليل · 5 دقائق · أبوظبي</div>
-      </div>
-      <div class="ed-story">
-        <h3 class="ed-headline">30 رائد أعمال دون الثلاثين يقودون الاقتصاد الإماراتي</h3>
-        <div class="ed-meta">قائمة · 12 دقيقة · الإمارات</div>
-      </div>
-    </div>
-    <div class="ed-col">
-      <div class="ed-col-title">المشرق العربي</div>
-      <div class="ed-story">
-        <h3 class="ed-headline">المغتربون اللبنانيون يُعيدون استثمار مليارات الدولارات في الوطن</h3>
-        <div class="ed-meta">لبنان · 6 دقائق</div>
-      </div>
-      <div class="ed-story">
-        <h3 class="ed-headline">الأردن: وادي السيليكون العربي القادم في صمت</h3>
-        <div class="ed-meta">الأردن · 5 دقائق</div>
-      </div>
-      <div class="ed-story">
-        <h3 class="ed-headline">مصر تُنتج خامس يونيكورن لها خلال 18 شهراً</h3>
-        <div class="ed-meta">مصر · 5 دقائق</div>
-      </div>
-      <div class="ed-story">
-        <h3 class="ed-headline">العراق الجديد: رواد الأعمال الذين يُعيدون البناء</h3>
-        <div class="ed-meta">العراق · 7 دقائق</div>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <!-- ARTISTS BAND -->
 <div id="artists" class="artists-band">
@@ -314,7 +269,10 @@
 
 <!-- DOCTORS -->
 <div id="doctors">
-  <div class="sh"><div class="sh-title">أطباء عرب</div><div class="sh-rule"></div><a href="/doctors" class="sh-more">عرض الكل →</a></div>
+  <div class="sh">
+    <div class="sh-title">أطباء عرب</div>
+    <div class="sh-rule"></div><a href="/doctors" class="sh-more">عرض الكل →</a>
+  </div>
   <div class="doctors-grid">
     <div class="doc-card">
       <div class="doc-img">
@@ -369,7 +327,10 @@
 
 <!-- FASHION -->
 <div id="fashion">
-  <div class="sh"><div class="sh-title">الموضة العربية</div><div class="sh-rule"></div><a href="{{ route('fashion.index') }}" class="sh-more">كل الموضة →</a></div>
+  <div class="sh">
+    <div class="sh-title">الموضة العربية</div>
+    <div class="sh-rule"></div><a href="{{ route('fashion.index') }}" class="sh-more">كل الموضة →</a>
+  </div>
   <div class="fashion-grid">
     <div class="fash">
       <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=900&q=85" alt="موضة">
@@ -400,12 +361,17 @@
 
 <!-- NEWS & BLOGS -->
 <div id="news">
-  <div class="sh"><div class="sh-title">الأخبار</div><div class="sh-rule"></div><a href="/news" class="sh-more">كل الأخبار →</a></div>
+  <div class="sh">
+    <div class="sh-title">الأخبار</div>
+    <div class="sh-rule"></div><a href="/news" class="sh-more">كل الأخبار →</a>
+  </div>
   <div class="news-grid" id="newsGrid"></div>
 </div>
 
 <div id="blogs">
-  <div class="sh" style="margin-top:0"><div class="sh-title">من المدونات</div><div class="sh-rule"></div><a href="/blogs" class="sh-more">كل المدونات →</a></div>
+  <div class="sh" style="margin-top:0">
+    <div class="sh-title">من المدونات</div>
+    <div class="sh-rule"></div><a href="/blogs" class="sh-more">كل المدونات →</a>
+  </div>
   <div class="news-grid" id="blogsGridHome"></div>
 </div>
-
