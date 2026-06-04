@@ -2,28 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Services\FileUploadService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class UploadController extends Controller
 {
+    public function __construct(
+        protected FileUploadService $files,
+    ) {}
+
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,jpg,png,webp,gif|max:15360', // 15MB
+            'image' => 'required|image|mimes:jpeg,jpg,png,webp,gif|max:15360',
         ]);
 
-        $file      = $request->file('image');
-        $filename  = time() . '-' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
-                     . '.' . $file->getClientOriginalExtension();
-
-        // Save directly to public/uploads so it's accessible immediately
-        $file->move(public_path('uploads'), $filename);
+        $file = $request->file('image');
+        $path = $this->files->uploadFile($file, 'images');
 
         return response()->json([
             'success' => true,
-            'url'     => '/uploads/' . $filename,
+            'url'     => $this->files->resolveUrl($path),
+            'path'    => $path,
+        ]);
+    }
+
+    public function storeVideo(Request $request): JsonResponse
+    {
+        $request->validate([
+            'video' => 'required|file|mimetypes:video/mp4,video/webm,video/quicktime,video/x-msvideo|max:512000',
+        ]);
+
+        $path = $this->files->uploadFile($request->file('video'), 'interviews/videos');
+
+        return response()->json([
+            'success' => true,
+            'url'     => $this->files->resolveUrl($path),
+            'path'    => $path,
         ]);
     }
 }

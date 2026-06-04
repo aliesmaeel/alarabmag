@@ -9,6 +9,5 @@
 @endsection
 
 @push('scripts')
-    <script>window.SITE_INTERVIEW_SLUG = @json($interviewSlug);</script>
-    <script src="{{ asset('js/site/interview-details.js') }}"></script>
+    <script src="{{ asset('js/site/interview-details.js') }}" defer></script>
 @endpush

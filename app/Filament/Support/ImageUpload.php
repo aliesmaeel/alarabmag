@@ -2,6 +2,7 @@
 
 namespace App\Filament\Support;
 
+use App\Services\FileUploadService;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Support\Str;
@@ -10,13 +11,7 @@ class ImageUpload
 {
     public static function resolveUrl(?string $value): ?string
     {
-        if (! $value) {
-            return null;
-        }
-        if (preg_match('#^(https?:)?//#i', $value) || str_starts_with($value, 'data:')) {
-            return $value;
-        }
-        return url(ltrim($value, '/'));
+        return app(FileUploadService::class)->resolveUrl($value);
     }
 
     public static function column(string $name = 'image_url', string $label = 'الصورة'): ImageColumn

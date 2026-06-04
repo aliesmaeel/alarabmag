@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\InterviewResource\Pages;
 use App\Filament\Support\ImageUpload;
 use App\Filament\Support\SeoFields;
+use App\Filament\Support\VideoUpload;
 use App\Models\Interview;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -52,11 +53,8 @@ class InterviewResource extends Resource
                     ->label('الوصف')
                     ->rows(4)
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('video_url')
-                    ->label('رابط الفيديو')
+                VideoUpload::make('video_url', 'رفع فيديو (Amazon S3)')
                     ->required()
-                    ->url()
-                    ->helperText('YouTube أو Vimeo أو رابط فيديو مباشر (.mp4)')
                     ->columnSpanFull(),
             ]),
 

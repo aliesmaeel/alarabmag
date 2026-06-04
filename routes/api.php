@@ -57,4 +57,5 @@ Route::middleware('admin.token')->group(function () {
 
     // Upload
     Route::post('/upload',          [UploadController::class, 'store']);
+    Route::post('/upload/video',    [UploadController::class, 'storeVideo']);
 });

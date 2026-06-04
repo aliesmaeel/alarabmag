@@ -65,7 +65,14 @@
   }
 })();
 
-gsap.registerPlugin(ScrollTrigger);
+function runHomeAnimations() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+    const pre = document.getElementById('preloader');
+    if (pre) pre.style.display = 'none';
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
 
 /* ── PRELOADER ── */
 gsap.timeline({onComplete(){
@@ -148,3 +155,10 @@ document.querySelectorAll('.btn-gold,.btn-subscribe').forEach(btn=>{
   });
   btn.addEventListener('mouseleave',()=>gsap.to(btn,{x:0,y:0,duration:.5,ease:'elastic.out(1,.4)'}));
 });
+}
+
+if (typeof gsap !== 'undefined') {
+  runHomeAnimations();
+} else {
+  document.addEventListener('DOMContentLoaded', runHomeAnimations);
+}

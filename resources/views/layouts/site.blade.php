@@ -16,8 +16,6 @@
         <link rel="stylesheet" href="{{ asset('css/site/chrome.css') }}">
     @endunless
     @stack('styles')
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6158011037590169"
-     crossorigin="anonymous"></script>
 </head>
 <body>
     @if($showPreloader ?? false)
@@ -44,10 +42,31 @@
 
     <x-site.footer :variant="$footerVariant ?? 'full'" />
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="{{ asset('js/site/chrome.js') }}"></script>
-    <script src="{{ asset('js/site/sidebar.js') }}"></script>
+    @unless($skipGsap ?? false)
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    @endunless
+    <script src="{{ asset('js/site/chrome.js') }}" defer></script>
+    <script src="{{ asset('js/site/sidebar.js') }}" defer></script>
     @stack('scripts')
+    <script>
+    (function () {
+      function loadAdSense() {
+        if (window.__adsenseLoaded) return;
+        window.__adsenseLoaded = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6158011037590169';
+        s.crossOrigin = 'anonymous';
+        s.onerror = function () { window.__adsenseLoaded = false; };
+        document.head.appendChild(s);
+      }
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadAdSense, { timeout: 4000 });
+      } else {
+        window.addEventListener('load', loadAdSense, { once: true });
+      }
+    })();
+    </script>
 </body>
 </html>

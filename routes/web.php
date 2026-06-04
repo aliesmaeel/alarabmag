@@ -30,6 +30,7 @@ Route::get('/fashion', [SiteController::class, 'fashion'])->name('fashion.index'
 Route::get('/fashion/{id}', [SiteController::class, 'fashionShow'])->whereNumber('id')->name('fashion.show');
 
 Route::get('/interviews', [SiteController::class, 'interviews'])->name('interviews.index');
+Route::get('/interviews/{interview:slug}/stream', [SiteController::class, 'interviewStream'])->name('interviews.stream');
 Route::get('/interviews/{interview:slug}', [SiteController::class, 'interviewShow'])->name('interviews.show');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');

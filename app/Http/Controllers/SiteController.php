@@ -6,8 +6,11 @@ use App\Models\Article;
 use App\Models\Blog;
 use App\Models\Interview;
 use App\Models\Person;
+use App\Services\FileUploadService;
 use App\Services\SeoService;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SiteController extends Controller
 {
@@ -196,15 +199,52 @@ class SiteController extends Controller
         ]);
     }
 
-    public function interviewShow(Interview $interview): View
+    public function interviewShow(Interview $interview, FileUploadService $files): View
     {
         abort_unless($interview->status === 'published', 404);
+
+        $interview->incrementViews();
+
+        $rawVideo = $interview->getAttributes()['video_url'] ?? null;
+        $rawThumb = $interview->getAttributes()['thumbnail_url'] ?? null;
+
+        $videoUrl = $files->playbackUrl($rawVideo, route('interviews.stream', $interview)) ?? $rawVideo;
+        $thumbnailUrl = $files->resolveUrl($rawThumb) ?? $rawThumb;
+
+        $latestArticles = Article::query()
+            ->where('status', 'published')
+            ->orderByDesc('created_at')
+            ->limit(8)
+            ->get()
+            ->map(function (Article $article) use ($files) {
+                $article->setAttribute(
+                    'image_url',
+                    $files->resolveUrl($article->getAttributes()['image_url'] ?? null) ?? $article->image_url
+                );
+
+                return $article;
+            });
 
         return view('site.interview-details', [
             'seo' => $this->seo->fromInterview($interview),
             'activeNav' => 'interviews',
-            'interviewSlug' => $interview->slug,
+            'interview' => $interview,
+            'videoUrl' => $videoUrl,
+            'thumbnailUrl' => $thumbnailUrl,
+            'latestArticles' => $latestArticles,
             'footerVariant' => 'compact',
+            'skipGsap' => true,
         ]);
+    }
+
+    public function interviewStream(Interview $interview, FileUploadService $files): StreamedResponse
+    {
+        abort_unless($interview->status === 'published', 404);
+
+        $key = $files->s3ObjectKey($interview->getAttributes()['video_url'] ?? null);
+
+        abort_unless($key && Storage::disk('s3')->exists($key), 404);
+
+        return Storage::disk('s3')->response($key);
     }
 }

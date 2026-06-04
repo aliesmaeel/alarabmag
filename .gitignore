@@ -2,6 +2,10 @@
 /public/hot
 /public/storage
 /storage/*.key
+/storage/app/livewire-tmp/
+/storage/app/interviews/tmp/
+/storage/logs/*
+!/storage/logs/.gitkeep
 /storage/framework/cache/data/**
 /storage/framework/cache/*.php
 /storage/framework/views/*

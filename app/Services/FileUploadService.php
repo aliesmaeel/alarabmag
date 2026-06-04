@@ -1,0 +1,193 @@
+<?php
+
+namespace App\Services;
+
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use RuntimeException;
+use Throwable;
+
+class FileUploadService
+{
+    public function storageDisk(): string
+    {
+        $type = trim((string) env('STORAGE_TYPE', 's3'), " \t\n\r\0\x0B'\"");
+
+        return in_array($type, ['public', 's3', 'uploads'], true) ? $type : 's3';
+    }
+
+    /**
+     * Upload a file to local public storage or Amazon S3.
+     *
+     * @param  UploadedFile|string  $file  Uploaded file or raw file contents
+     * @param  string  $path  Directory path, e.g. "interviews/videos"
+     * @return string Relative path stored in the database (e.g. interviews/videos/file.mp4)
+     */
+    public function uploadFile($file, string $path, bool $returnWithPath = true): string
+    {
+        $storageType = $this->storageDisk();
+        $directory = trim($path, '/');
+
+        if ($directory === '') {
+            throw new RuntimeException('Upload path cannot be empty.');
+        }
+
+        $destination = $storageType === 'public'
+            ? $directory
+            : 'storage/' . $directory;
+
+        $disk = Storage::disk($storageType);
+
+        if ($file instanceof UploadedFile) {
+            $extension = $file->getClientOriginalExtension() ?: 'mp4';
+            $slug = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+            $basename = time() . '-' . ($slug !== '' ? $slug : Str::random(8)) . '.' . $extension;
+
+            $storedPath = $disk->putFileAs($destination, $file, $basename);
+        } else {
+            $basename = time() . '-' . Str::random(8) . '.bin';
+            $storedPath = $disk->put($destination . '/' . $basename, $file);
+        }
+
+        if (! is_string($storedPath) || trim($storedPath) === '') {
+            throw new RuntimeException('Failed to upload file to ' . $storageType . ' storage.');
+        }
+
+        $storedPath = trim($storedPath, '/');
+
+        if ($returnWithPath) {
+            if ($storageType === 's3' && str_starts_with($storedPath, 'storage/')) {
+                return substr($storedPath, strlen('storage/'));
+            }
+
+            if ($storageType === 'public' && str_contains($storedPath, $directory)) {
+                return $directory . '/' . basename($storedPath);
+            }
+
+            return $storedPath;
+        }
+
+        return basename($storedPath);
+    }
+
+    public function resolveUrl(?string $value): ?string
+    {
+        if (! filled($value)) {
+            return null;
+        }
+
+        $value = trim($value);
+
+        if ($value === '') {
+            return null;
+        }
+
+        if (str_starts_with($value, 'data:')) {
+            return $value;
+        }
+
+        if (preg_match('#^https?://#i', $value)) {
+            return $this->isExternalVideoUrl($value) ? null : $value;
+        }
+
+        if (str_starts_with($value, '/uploads/') || str_starts_with($value, 'uploads/')) {
+            return url(ltrim($value, '/'));
+        }
+
+        $disk = $this->storageDisk();
+
+        if ($disk === 's3') {
+            $key = str_starts_with($value, 'storage/')
+                ? $value
+                : 'storage/' . ltrim($value, '/');
+
+            if (trim($key, '/') === '' || trim($key, '/') === 'storage') {
+                return null;
+            }
+
+            return $this->s3PlaybackUrl($key);
+        }
+
+        if ($disk === 'uploads') {
+            return url(ltrim($value, '/'));
+        }
+
+        return Storage::disk($disk)->url(ltrim($value, '/'));
+    }
+
+    public function deleteFile(?string $value): void
+    {
+        if (! filled($value) || preg_match('#^https?://#i', $value)) {
+            return;
+        }
+
+        $disk = $this->storageDisk();
+        $key = $disk === 's3'
+            ? (str_starts_with($value, 'storage/') ? $value : 'storage/' . ltrim($value, '/'))
+            : ltrim($value, '/');
+
+        if (trim($key, '/') === '' || trim($key, '/') === 'storage') {
+            return;
+        }
+
+        if (Storage::disk($disk)->exists($key)) {
+            Storage::disk($disk)->delete($key);
+        }
+    }
+
+    public function isExternalVideoUrl(?string $value): bool
+    {
+        if (! filled($value)) {
+            return false;
+        }
+
+        return (bool) preg_match('#^https?://(www\.)?(youtube\.com|youtu\.be|vimeo\.com)#i', trim($value));
+    }
+
+    public function isS3Path(?string $value): bool
+    {
+        if (! filled($value)) {
+            return false;
+        }
+
+        return ! preg_match('#^https?://#i', trim($value));
+    }
+
+    public function playbackUrl(?string $value, ?string $streamRoute = null): ?string
+    {
+        if (! filled($value) || $this->isExternalVideoUrl($value)) {
+            return null;
+        }
+
+        if ($this->isS3Path($value) && $this->storageDisk() === 's3' && $streamRoute) {
+            return $streamRoute;
+        }
+
+        return $this->resolveUrl($value);
+    }
+
+    public function s3ObjectKey(?string $value): ?string
+    {
+        if (! filled($value) || $this->isExternalVideoUrl($value) || ! $this->isS3Path($value)) {
+            return null;
+        }
+
+        $key = str_starts_with($value, 'storage/')
+            ? $value
+            : 'storage/' . ltrim($value, '/');
+
+        return trim($key, '/') !== '' && trim($key, '/') !== 'storage' ? $key : null;
+    }
+
+    protected function s3PlaybackUrl(string $key): string
+    {
+        $disk = Storage::disk('s3');
+
+        try {
+            return $disk->temporaryUrl($key, now()->addHours(12));
+        } catch (Throwable) {
+            return $disk->url($key);
+        }
+    }
+}
