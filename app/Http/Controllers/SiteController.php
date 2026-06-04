@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Blog;
+use App\Models\Interview;
 use App\Models\Person;
 use App\Services\SeoService;
 use Illuminate\View\View;
@@ -180,6 +181,29 @@ class SiteController extends Controller
             'seo' => $this->seo->fromArticle($article, 'fashion.show'),
             'activeNav' => 'fashion',
             'articleId' => $id,
+            'footerVariant' => 'compact',
+        ]);
+    }
+
+    public function interviews(): View
+    {
+        return view('site.interviews', [
+            'seo' => $this->seo->page('interviews'),
+            'showTicker' => true,
+            'activeNav' => 'interviews',
+            'newsletterHeadline' => 'مقابلات حصرية<br><em>في بريدك</em>',
+            'newsletterSub' => 'أبرز المقابلات مع شخصيات عربية مؤثرة — أسبوعياً.',
+        ]);
+    }
+
+    public function interviewShow(Interview $interview): View
+    {
+        abort_unless($interview->status === 'published', 404);
+
+        return view('site.interview-details', [
+            'seo' => $this->seo->fromInterview($interview),
+            'activeNav' => 'interviews',
+            'interviewSlug' => $interview->slug,
             'footerVariant' => 'compact',
         ]);
     }

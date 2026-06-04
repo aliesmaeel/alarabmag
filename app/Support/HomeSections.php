@@ -17,6 +17,7 @@ class HomeSections
             ['key' => 'doctors', 'label' => 'أطباء عرب', 'id' => 'doctors', 'route' => 'doctors.index'],
             ['key' => 'fashion', 'label' => 'الموضة العربية', 'id' => 'fashion', 'route' => 'fashion.index'],
             ['key' => 'news', 'label' => 'الأخبار', 'id' => 'news', 'route' => 'news.index'],
+            ['key' => 'interviews', 'label' => 'المقابلات', 'id' => 'interviews', 'route' => 'interviews.index'],
             ['key' => 'blogs', 'label' => 'المدونات', 'id' => 'blogs', 'route' => 'blogs.index'],
         ];
     }

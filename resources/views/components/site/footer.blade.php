@@ -32,6 +32,7 @@
                     <li><a href="{{ route('fashion.index') }}">الموضة العربية</a></li>
                 @endif
                 <li><a href="{{ url('/news') }}">الأخبار</a></li>
+                <li><a href="{{ route('interviews.index') }}">المقابلات</a></li>
                 <li><a href="{{ url('/blogs') }}">المدونات</a></li>
             </ul>
         </div>

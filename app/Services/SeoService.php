@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Filament\Support\ImageUpload;
 use App\Models\Article;
 use App\Models\Blog;
+use App\Models\Interview;
 use App\Models\Person;
 use App\Models\Setting;
 use App\Support\SeoMeta;
@@ -87,6 +88,25 @@ class SeoService
             ogDescription: $blog->og_description ?: $description,
             ogImage: $this->resolveImage($blog->og_image ?: $blog->image_url),
             ogType: 'article',
+        );
+    }
+
+    public function fromInterview(Interview $interview): SeoMeta
+    {
+        $siteName = $this->setting('site_name', SiteBrand::NAME_AR);
+        $title = $interview->meta_title ?: $interview->title;
+        $description = $interview->meta_description ?: $interview->description ?: Str::limit(strip_tags($interview->description ?? ''), 160);
+        $canonical = route('interviews.show', $interview);
+
+        return $this->makeMeta(
+            title: $this->suffixSiteName($title, $siteName),
+            description: $description,
+            keywords: $interview->meta_keywords ?: $this->setting('seo_keywords'),
+            canonical: $canonical,
+            ogTitle: $interview->og_title ?: $title,
+            ogDescription: $interview->og_description ?: $description,
+            ogImage: $this->resolveImage($interview->og_image ?: $interview->thumbnail_url),
+            ogType: 'video.other',
         );
     }
 
@@ -175,6 +195,7 @@ class SeoService
             'artists' => route('artists.index'),
             'business' => route('business.index'),
             'fashion' => route('fashion.index'),
+            'interviews' => route('interviews.index'),
             default => url('/'),
         };
     }

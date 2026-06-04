@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Blog;
+use App\Models\Interview;
 use App\Models\Person;
 use Illuminate\Http\Response;
 
@@ -20,6 +21,7 @@ class SitemapController extends Controller
             $this->entry(route('artists.index'), now(), 'weekly', '0.8'),
             $this->entry(route('business.index'), now(), 'weekly', '0.8'),
             $this->entry(route('fashion.index'), now(), 'weekly', '0.8'),
+            $this->entry(route('interviews.index'), now(), 'weekly', '0.9'),
         ]);
 
         Article::query()
@@ -42,6 +44,14 @@ class SitemapController extends Controller
             ->orderByDesc('updated_at')
             ->each(function (Blog $blog) use ($urls) {
                 $urls->push($this->entry(route('blogs.show', $blog), $blog->updated_at, 'weekly', '0.7'));
+            });
+
+        Interview::query()
+            ->published()
+            ->select(['slug', 'updated_at'])
+            ->orderByDesc('updated_at')
+            ->each(function (Interview $interview) use ($urls) {
+                $urls->push($this->entry(route('interviews.show', $interview), $interview->updated_at, 'weekly', '0.7'));
             });
 
         foreach (['doctor' => 'doctors.show', 'influencer' => 'influencers.show', 'artist' => 'artists.show', 'business' => 'business.show'] as $category => $routeName) {

@@ -7,6 +7,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StatsController;
+use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\UploadController;
 
 // ── Public Routes (no auth required) ───────────────────────
@@ -18,6 +19,9 @@ Route::get('/articles/{id}',    [ArticleController::class, 'show']);
 
 Route::get('/blogs',            [BlogController::class, 'index']);
 Route::get('/blogs/{id}',       [BlogController::class, 'show']);
+
+Route::get('/interviews',            [InterviewController::class, 'index']);
+Route::get('/interviews/{slug}',     [InterviewController::class, 'show']);
 
 Route::get('/people',           [PersonController::class, 'index']);
 Route::get('/people/{id}',      [PersonController::class, 'show']);
@@ -37,6 +41,11 @@ Route::middleware('admin.token')->group(function () {
     Route::post('/blogs',           [BlogController::class, 'store']);
     Route::put('/blogs/{id}',       [BlogController::class, 'update']);
     Route::delete('/blogs/{id}',    [BlogController::class, 'destroy']);
+
+    // Interviews
+    Route::post('/interviews',           [InterviewController::class, 'store']);
+    Route::put('/interviews/{id}',       [InterviewController::class, 'update']);
+    Route::delete('/interviews/{id}',    [InterviewController::class, 'destroy']);
 
     // People
     Route::post('/people',          [PersonController::class, 'store']);

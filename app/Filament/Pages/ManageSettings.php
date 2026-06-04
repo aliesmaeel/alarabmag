@@ -81,7 +81,7 @@ class ManageSettings extends Page implements HasForms
                     ]),
 
                     Tabs\Tab::make('SEO الصفحات')->schema([
-                        ...collect(['home' => 'الرئيسية', 'news' => 'الأخبار', 'blogs' => 'المدونات', 'doctors' => 'الأطباء', 'influencers' => 'المؤثرون', 'artists' => 'الفنانون', 'business' => 'الأعمال', 'fashion' => 'الموضة'])
+                        ...collect(['home' => 'الرئيسية', 'news' => 'الأخبار', 'interviews' => 'المقابلات', 'blogs' => 'المدونات', 'doctors' => 'الأطباء', 'influencers' => 'المؤثرون', 'artists' => 'الفنانون', 'business' => 'الأعمال', 'fashion' => 'الموضة'])
                             ->map(fn (string $label, string $key) => Section::make($label)
                                 ->schema([
                                     TextInput::make("seo_{$key}_title")->label('عنوان الصفحة (title)')->maxLength(255)->columnSpanFull(),

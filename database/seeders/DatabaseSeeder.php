@@ -520,6 +520,9 @@ class DatabaseSeeder extends Seeder
             'seo_business_description' => 'ملفات وقصص عن رجال الأعمال العرب ورواد الاقتصاد في الخليج والمشرق.',
             'seo_fashion_title'      => 'الموضة العربية — أناقة وإبداع',
             'seo_fashion_description' => 'تقارير الموضة العربية من باريس إلى الرياض ودبي.',
+            'seo_interviews_title'         => 'المقابلات — حوارات تُلهم',
+            'seo_interviews_description'   => 'مقابلات فيديو حصرية مع شخصيات عربية مؤثرة: رواد أعمال، فنانين، مؤثرين، وأطباء.',
+            'seo_interviews_keywords'      => 'مقابلات, حوارات, فيديو, مجلة العرب, Al Arab Magazine',
         ];
 
         Setting::setMany($settings);
