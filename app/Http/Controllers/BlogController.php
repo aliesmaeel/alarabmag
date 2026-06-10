@@ -26,6 +26,8 @@ class BlogController extends Controller
 
     public function show(string $slug): JsonResponse
     {
+        $slug = rawurldecode($slug);
+
         $blog = Blog::query()
             ->where('slug', $slug)
             ->where('status', 'published')

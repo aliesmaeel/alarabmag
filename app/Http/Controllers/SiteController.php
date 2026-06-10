@@ -63,14 +63,41 @@ class SiteController extends Controller
         ]);
     }
 
-    public function blogShow(Blog $blog): View
+    public function blogShow(Blog $blog, FileUploadService $files): View
     {
         abort_unless($blog->status === 'published', 404);
+
+        $blog->incrementViews();
+
+        $blog->setAttribute(
+            'image_url',
+            $files->resolveUrl($blog->getAttributes()['image_url'] ?? null) ?? $blog->image_url
+        );
+        $blog->setAttribute(
+            'author_img',
+            $files->resolveUrl($blog->getAttributes()['author_img'] ?? null) ?? $blog->author_img
+        );
+
+        $relatedBlogs = Blog::query()
+            ->where('status', 'published')
+            ->where('id', '!=', $blog->id)
+            ->orderByDesc('created_at')
+            ->limit(3)
+            ->get()
+            ->map(function (Blog $related) use ($files) {
+                $related->setAttribute(
+                    'image_url',
+                    $files->resolveUrl($related->getAttributes()['image_url'] ?? null) ?? $related->image_url
+                );
+
+                return $related;
+            });
 
         return view('site.blog-details', [
             'seo' => $this->seo->fromBlog($blog),
             'activeNav' => 'blogs',
-            'blogSlug' => $blog->slug,
+            'blog' => $blog,
+            'relatedBlogs' => $relatedBlogs,
             'footerVariant' => 'compact',
         ]);
     }

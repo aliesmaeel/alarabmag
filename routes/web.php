@@ -13,7 +13,7 @@ Route::get('/news/{id}', [SiteController::class, 'newsShow'])->whereNumber('id')
 
 Route::get('/blogs', [SiteController::class, 'blogs'])->name('blogs.index');
 Route::get('/blogs/{id}', [SiteController::class, 'blogRedirectFromId'])->whereNumber('id');
-Route::get('/blogs/{blog:slug}', [SiteController::class, 'blogShow'])->name('blogs.show');
+Route::get('/blogs/{blog:slug}', [SiteController::class, 'blogShow'])->where('blog', '.*')->name('blogs.show');
 
 Route::get('/doctors', [SiteController::class, 'doctors'])->name('doctors.index');
 Route::get('/doctors/{id}', [SiteController::class, 'doctorShow'])->whereNumber('id')->name('doctors.show');
