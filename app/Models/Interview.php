@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Support\Slug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Str;
 
 class Interview extends Model
 {
@@ -53,23 +53,6 @@ class Interview extends Model
 
     public static function uniqueSlug(string $title, ?int $ignoreId = null): string
     {
-        $base = Str::slug($title);
-        if ($base === '') {
-            $base = 'interview';
-        }
-
-        $slug = $base;
-        $counter = 2;
-
-        while (static::query()
-            ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
-            ->where('slug', $slug)
-            ->exists()
-        ) {
-            $slug = "{$base}-{$counter}";
-            $counter++;
-        }
-
-        return $slug;
+        return Slug::unique($title, self::class, $ignoreId, 'interview');
     }
 }

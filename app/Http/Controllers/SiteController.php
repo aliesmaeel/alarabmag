@@ -63,16 +63,23 @@ class SiteController extends Controller
         ]);
     }
 
-    public function blogShow(int $id): View
+    public function blogShow(Blog $blog): View
     {
-        $blog = Blog::query()->where('status', 'published')->findOrFail($id);
+        abort_unless($blog->status === 'published', 404);
 
         return view('site.blog-details', [
             'seo' => $this->seo->fromBlog($blog),
             'activeNav' => 'blogs',
-            'articleId' => $id,
+            'blogSlug' => $blog->slug,
             'footerVariant' => 'compact',
         ]);
+    }
+
+    public function blogRedirectFromId(int $id)
+    {
+        $blog = Blog::query()->where('status', 'published')->findOrFail($id);
+
+        return redirect()->route('blogs.show', $blog, 301);
     }
 
     public function doctors(): View

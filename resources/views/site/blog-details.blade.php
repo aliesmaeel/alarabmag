@@ -10,6 +10,6 @@
 @endsection
 
 @push('scripts')
-    <script>window.SITE_ARTICLE_ID = {{ $articleId }};</script>
+    <script>window.SITE_BLOG_SLUG = @json($blogSlug);</script>
     <script src="{{ asset('js/site/blog-details.js') }}"></script>
 @endpush

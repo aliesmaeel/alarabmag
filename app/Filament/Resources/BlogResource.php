@@ -9,6 +9,7 @@ use App\Filament\Support\SeoFields;
 use App\Models\Blog;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -35,10 +36,27 @@ class BlogResource extends Resource
                 ])
                 ->schema([
                 AiAssist::apply(
-                    Forms\Components\TextInput::make('title')->label('العنوان')->required()->maxLength(1000)->columnSpanFull(),
+                    Forms\Components\TextInput::make('title')
+                        ->label('العنوان')
+                        ->required()
+                        ->maxLength(1000)
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(function (?string $state, Set $set, ?string $operation) {
+                            if ($operation === 'create' && filled($state)) {
+                                $set('slug', Blog::uniqueSlug($state));
+                            }
+                        })
+                        ->columnSpanFull(),
                     'title',
                     'blog'
                 ),
+                Forms\Components\TextInput::make('slug')
+                    ->label('الرابط (slug)')
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true)
+                    ->helperText('يُستخدم في رابط الصفحة: /blogs/عنوان-المقال — يدعم العربية والإنجليزية')
+                    ->columnSpanFull(),
                 AiAssist::apply(
                     Forms\Components\Textarea::make('excerpt')->label('المقتطف')->rows(3)->columnSpanFull(),
                     'excerpt',
@@ -73,6 +91,7 @@ class BlogResource extends Resource
             ->columns([
                 ImageUpload::column(),
                 Tables\Columns\TextColumn::make('title')->label('العنوان')->searchable()->limit(60)->wrap(),
+                Tables\Columns\TextColumn::make('slug')->label('الرابط')->searchable()->limit(40)->toggleable(),
                 Tables\Columns\TextColumn::make('author')->label('الكاتب')->searchable(),
                 Tables\Columns\TextColumn::make('tags')->label('الوسوم')->limit(40)->toggleable(),
                 Tables\Columns\IconColumn::make('featured')->label('مميز')->boolean(),

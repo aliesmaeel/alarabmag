@@ -18,7 +18,7 @@ Route::get('/articles',         [ArticleController::class, 'index']);
 Route::get('/articles/{id}',    [ArticleController::class, 'show']);
 
 Route::get('/blogs',            [BlogController::class, 'index']);
-Route::get('/blogs/{id}',       [BlogController::class, 'show']);
+Route::get('/blogs/{slug}',      [BlogController::class, 'show']);
 
 Route::get('/interviews',            [InterviewController::class, 'index']);
 Route::get('/interviews/{slug}',     [InterviewController::class, 'show']);

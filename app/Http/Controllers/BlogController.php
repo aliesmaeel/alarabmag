@@ -24,10 +24,15 @@ class BlogController extends Controller
         return response()->json(['success' => true, 'data' => $blogs]);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(string $slug): JsonResponse
     {
-        $blog = Blog::findOrFail($id);
+        $blog = Blog::query()
+            ->where('slug', $slug)
+            ->where('status', 'published')
+            ->firstOrFail();
+
         $blog->incrementViews();
+
         return response()->json(['success' => true, 'data' => $blog]);
     }
 
@@ -35,6 +40,7 @@ class BlogController extends Controller
     {
         $validated = $request->validate([
             'title'      => 'required|string|max:1000',
+            'slug'       => 'nullable|string|max:255|unique:blogs,slug',
             'excerpt'    => 'nullable|string',
             'body'       => 'nullable|string',
             'author'     => 'nullable|string|max:200',
@@ -51,7 +57,7 @@ class BlogController extends Controller
 
         $blog = Blog::create($validated);
 
-        return response()->json(['success' => true, 'data' => ['id' => $blog->id]], 201);
+        return response()->json(['success' => true, 'data' => ['id' => $blog->id, 'slug' => $blog->slug]], 201);
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -60,6 +66,7 @@ class BlogController extends Controller
 
         $validated = $request->validate([
             'title'      => 'required|string|max:1000',
+            'slug'       => 'nullable|string|max:255|unique:blogs,slug,' . $id,
             'excerpt'    => 'nullable|string',
             'body'       => 'nullable|string',
             'author'     => 'nullable|string|max:200',

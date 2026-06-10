@@ -28,7 +28,7 @@
     </a>`;
 
   const blogCard = b => `
-    <a href="/blogs/${encodeURIComponent(b.id)}" class="news-card" style="text-decoration:none;color:inherit;display:block;">
+    <a href="/blogs/${encodeURIComponent(b.slug || b.id)}" class="news-card" style="text-decoration:none;color:inherit;display:block;">
       <div class="news-img"><img src="${esc(b.image_url || fallback)}" alt="${esc(b.title)}" onerror="this.src='${fallback}'"></div>
       <div class="news-body">
         <div class="news-kicker">مدونة · ${esc(b.author || 'فريق التحرير')}</div>

@@ -22,10 +22,14 @@ const resultsCountEl = document.getElementById('resultsCount');
 const loadMoreWrap = document.getElementById('loadMoreWrap');
 const loadMoreBtn = document.getElementById('loadMoreBtn');
 
+function blogHref(b){
+  return `/blogs/${encodeURIComponent(b.slug || b.id)}`;
+}
+
 function blogCardHTML(b){
   const tags = tagsOf(b).slice(0,3);
   return `
-    <a href="/blogs/${encodeURIComponent(b.id)}" class="list-card">
+    <a href="${blogHref(b)}" class="list-card">
       <div class="list-img">
         <img src="${esc(b.image_url || fallbackImg)}" alt="${esc(b.title)}" onerror="this.src='${fallbackImg}'">
         ${b.featured ? '<span class="list-img-badge">مختار التحرير</span>' : ''}
@@ -54,7 +58,7 @@ function featuredHTML(b){
     </div>
     <div class="feat-blog-body">
       <div class="feat-blog-eyebrow">Featured Blog</div>
-      <h2 class="feat-blog-title"><a href="/blogs/${encodeURIComponent(b.id)}">${esc(b.title)}</a></h2>
+      <h2 class="feat-blog-title"><a href="${blogHref(b)}">${esc(b.title)}</a></h2>
       <p class="feat-blog-excerpt">${esc(b.excerpt || '')}</p>
       <div class="feat-author">
         <div class="feat-author-img"><img src="${esc(b.author_img || fallbackAvatar)}" alt="${esc(b.author)}" onerror="this.src='${fallbackAvatar}'"></div>
@@ -63,7 +67,7 @@ function featuredHTML(b){
           <div class="feat-author-bio">${esc(b.author_bio || 'كاتب في مجلة العرب')}</div>
         </div>
       </div>
-      <a href="/blogs/${encodeURIComponent(b.id)}" class="feat-blog-cta">اقرأ المقال →</a>
+      <a href="${blogHref(b)}" class="feat-blog-cta">اقرأ المقال →</a>
     </div>`;
 }
 

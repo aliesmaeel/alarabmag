@@ -47,7 +47,7 @@ class InterviewResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
-                    ->helperText('يُستخدم في رابط الصفحة: /interviews/your-slug')
+                    ->helperText('يُستخدم في رابط الصفحة: /interviews/عنوان-المقابلة — يدعم العربية والإنجليزية')
                     ->columnSpanFull(),
                 Forms\Components\Textarea::make('description')
                     ->label('الوصف')

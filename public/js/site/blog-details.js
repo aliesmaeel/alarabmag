@@ -7,11 +7,15 @@ const fmtDate = iso => {
   return d.toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' });
 };
 
-function getId(){
-  if (window.SITE_ARTICLE_ID != null) return String(window.SITE_ARTICLE_ID);
-  const m = location.pathname.match(/\/blogs\/(\d+)/);
-  if (m) return m[1];
-  return new URLSearchParams(location.search).get('id');
+function getSlug(){
+  if (window.SITE_BLOG_SLUG) return String(window.SITE_BLOG_SLUG);
+  const m = location.pathname.match(/\/blogs\/([^/]+)/);
+  if (m) return decodeURIComponent(m[1]);
+  return null;
+}
+
+function blogHref(b){
+  return `/blogs/${encodeURIComponent(b.slug || b.id)}`;
 }
 
 function bodyHTML(raw){
@@ -23,7 +27,7 @@ function bodyHTML(raw){
 
 function relatedCardHTML(b){
   return `
-    <a href="/blogs/${encodeURIComponent(b.id)}" class="list-card">
+    <a href="${blogHref(b)}" class="list-card">
       <div class="list-img">
         <img src="${esc(b.image_url || fallbackImg)}" alt="${esc(b.title)}" onerror="this.src='${fallbackImg}'">
       </div>
@@ -39,11 +43,11 @@ function relatedCardHTML(b){
     </a>`;
 }
 
-async function loadRelated(currentId){
+async function loadRelated(currentSlug){
   try{
     const res = await fetch('/api/blogs?status=published&limit=10');
     const j = await res.json();
-    const items = (j.data || []).filter(b => b.id !== currentId).slice(0,3);
+    const items = (j.data || []).filter(b => b.slug !== currentSlug).slice(0,3);
     if (!items.length) return '';
     return `
       <section class="related-section">
@@ -54,14 +58,14 @@ async function loadRelated(currentId){
 }
 
 async function init(){
-  const id = getId();
+  const slug = getSlug();
   const main = document.getElementById('main');
-  if (!id){
+  if (!slug){
     main.innerHTML = `<div class="notfound"><h1>المقال غير موجود</h1><p>لم نتمكن من العثور على المقال المطلوب.</p><a href="/blogs">العودة إلى المدونات</a></div>`;
     return;
   }
   try{
-    const res = await fetch(`/api/blogs/${encodeURIComponent(id)}`);
+    const res = await fetch(`/api/blogs/${encodeURIComponent(slug)}`);
     if (!res.ok) throw new Error('not found');
     const j = await res.json();
     const b = j.data;
@@ -69,7 +73,7 @@ async function init(){
 
     document.title = `${b.title} — مجلة العرب`;
     const tags = b.tags ? String(b.tags).split(',').map(s=>s.trim()).filter(Boolean) : [];
-    const related = await loadRelated(b.id);
+    const related = await loadRelated(b.slug);
 
     main.innerHTML = `
       <section class="blog-hero">
