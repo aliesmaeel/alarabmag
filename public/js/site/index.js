@@ -17,7 +17,7 @@
   const fallback = 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=800&q=80';
 
   const articleCard = a => `
-    <a href="/news/${encodeURIComponent(a.id)}" class="news-card" style="text-decoration:none;color:inherit;display:block;">
+    <a href="/news/${encodeURIComponent(a.slug || a.id)}" class="news-card" style="text-decoration:none;color:inherit;display:block;">
       <div class="news-img"><img src="${esc(a.image_url || fallback)}" alt="${esc(a.title)}" onerror="this.src='${fallback}'"></div>
       <div class="news-body">
         <div class="news-kicker">${esc(a.category || 'عام')}${a.region ? ' · ' + esc(a.region) : ''}</div>

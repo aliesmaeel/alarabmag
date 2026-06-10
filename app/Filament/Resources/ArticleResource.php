@@ -9,6 +9,7 @@ use App\Filament\Support\SeoFields;
 use App\Models\Article;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -42,10 +43,23 @@ class ArticleResource extends Resource
                         ->label('العنوان')
                         ->required()
                         ->maxLength(1000)
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(function (?string $state, Set $set, ?string $operation) {
+                            if ($operation === 'create' && filled($state)) {
+                                $set('slug', Article::uniqueSlug($state));
+                            }
+                        })
                         ->columnSpanFull(),
                     'title',
                     'article'
                 ),
+                Forms\Components\TextInput::make('slug')
+                    ->label('الرابط (slug)')
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true)
+                    ->helperText('يُستخدم في رابط الصفحة: /news/عنوان-الخبر — يدعم العربية والإنجليزية')
+                    ->columnSpanFull(),
                 AiAssist::apply(
                     Forms\Components\TextInput::make('subtitle')
                         ->label('العنوان الفرعي')
@@ -118,6 +132,7 @@ class ArticleResource extends Resource
             ->columns([
                 ImageUpload::column(),
                 Tables\Columns\TextColumn::make('title')->label('العنوان')->searchable()->limit(60)->wrap(),
+                Tables\Columns\TextColumn::make('slug')->label('الرابط')->searchable()->limit(40)->toggleable(),
                 Tables\Columns\TextColumn::make('category')->label('القسم')->badge()->searchable(),
                 Tables\Columns\TextColumn::make('author')->label('الكاتب')->searchable()->toggleable(),
                 Tables\Columns\TextColumn::make('region')->label('المنطقة')->toggleable(),

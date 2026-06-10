@@ -26,7 +26,7 @@ class SitemapController extends Controller
 
         Article::query()
             ->published()
-            ->select(['id', 'updated_at', 'category'])
+            ->select(['id', 'slug', 'updated_at', 'category'])
             ->orderByDesc('updated_at')
             ->each(function (Article $article) use ($urls) {
                 $routeName = $article->category === 'موضة' ? 'fashion.show' : 'news.show';
@@ -40,7 +40,7 @@ class SitemapController extends Controller
 
         Blog::query()
             ->published()
-            ->select(['id', 'updated_at'])
+            ->select(['id', 'slug', 'updated_at'])
             ->orderByDesc('updated_at')
             ->each(function (Blog $blog) use ($urls) {
                 $urls->push($this->entry(route('blogs.show', $blog), $blog->updated_at, 'weekly', '0.7'));

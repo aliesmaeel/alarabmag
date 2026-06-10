@@ -100,7 +100,7 @@
         </div>
         <div class="news-side__list">
           @forelse ($latestArticles as $article)
-            <a href="/news/{{ $article->id }}" class="news-side-item">
+            <a href="{{ route('news.show', $article) }}" class="news-side-item">
               <div class="news-side-item__img">
                 @if ($article->image_url)
                   <img src="{{ $article->image_url }}" alt="" loading="lazy" decoding="async" width="80" height="60">

@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [SiteController::class, 'home'])->name('home');
 
 Route::get('/news', [SiteController::class, 'news'])->name('news.index');
-Route::get('/news/{id}', [SiteController::class, 'newsShow'])->whereNumber('id')->name('news.show');
+Route::get('/news/{id}', [SiteController::class, 'newsRedirectFromId'])->whereNumber('id');
+Route::get('/news/{article:slug}', [SiteController::class, 'newsShow'])->where('article', '.*')->name('news.show');
 
 Route::get('/blogs', [SiteController::class, 'blogs'])->name('blogs.index');
 Route::get('/blogs/{id}', [SiteController::class, 'blogRedirectFromId'])->whereNumber('id');

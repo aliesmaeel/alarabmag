@@ -40,16 +40,47 @@ class SiteController extends Controller
         ]);
     }
 
-    public function newsShow(int $id): View
+    public function newsShow(Article $article, FileUploadService $files): View
     {
-        $article = Article::query()->where('status', 'published')->findOrFail($id);
+        abort_unless($article->status === 'published', 404);
+
+        $article->incrementViews();
+
+        $article->setAttribute(
+            'image_url',
+            $files->resolveUrl($article->getAttributes()['image_url'] ?? null) ?? $article->image_url
+        );
+
+        $relatedArticles = Article::query()
+            ->where('status', 'published')
+            ->where('id', '!=', $article->id)
+            ->when(filled($article->category), fn ($q) => $q->where('category', $article->category))
+            ->orderByDesc('created_at')
+            ->limit(3)
+            ->get()
+            ->map(function (Article $related) use ($files) {
+                $related->setAttribute(
+                    'image_url',
+                    $files->resolveUrl($related->getAttributes()['image_url'] ?? null) ?? $related->image_url
+                );
+
+                return $related;
+            });
 
         return view('site.news-details', [
             'seo' => $this->seo->fromArticle($article),
             'activeNav' => 'news',
-            'articleId' => $id,
+            'article' => $article,
+            'relatedArticles' => $relatedArticles,
             'footerVariant' => 'compact',
         ]);
+    }
+
+    public function newsRedirectFromId(int $id)
+    {
+        $article = Article::query()->where('status', 'published')->findOrFail($id);
+
+        return redirect()->route('news.show', $article, 301);
     }
 
     public function blogs(): View

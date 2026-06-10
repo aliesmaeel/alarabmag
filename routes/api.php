@@ -15,7 +15,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Public read endpoints (website fetches these)
 Route::get('/articles',         [ArticleController::class, 'index']);
-Route::get('/articles/{id}',    [ArticleController::class, 'show']);
+Route::get('/articles/{slug}',   [ArticleController::class, 'show'])->where('slug', '.*');
 
 Route::get('/blogs',            [BlogController::class, 'index']);
 Route::get('/blogs/{slug}',      [BlogController::class, 'show'])->where('slug', '.*');

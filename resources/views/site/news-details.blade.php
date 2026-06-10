@@ -10,6 +10,5 @@
 @endsection
 
 @push('scripts')
-    <script>window.SITE_ARTICLE_ID = {{ $articleId }};</script>
-    <script src="{{ asset('js/site/news-details.js') }}"></script>
+    <script src="{{ asset('js/site/news-details.js') }}" defer></script>
 @endpush

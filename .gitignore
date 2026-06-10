@@ -1,6 +1,8 @@
 /node_modules
 /public/hot
 /public/storage
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
 /storage/*.key
 /storage/app/livewire-tmp/
 /storage/app/interviews/tmp/

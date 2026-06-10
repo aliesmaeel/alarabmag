@@ -26,7 +26,7 @@ class Ticker extends Component
             ->orderBy('ticker_order')
             ->orderByDesc('created_at')
             ->limit(20)
-            ->get(['id', 'title', 'category'])
+            ->get(['id', 'slug', 'title', 'category'])
             ->map(fn (Article $article) => [
                 'url' => route('news.show', $article),
                 'kicker' => $article->category ?: 'أخبار',

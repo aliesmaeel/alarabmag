@@ -52,7 +52,7 @@ function featuredLeaderHTML(d){
 
 function storyCardHTML(it){
   return `
-    <a href="/news/${encodeURIComponent(it.id)}" class="list-card">
+    <a href="/news/${encodeURIComponent(it.slug || it.id)}" class="list-card">
       <div class="list-img">
         <img src="${esc(it.image_url || storyFallback)}" alt="${esc(it.title)}" onerror="this.src='${storyFallback}'">
         ${it.featured ? '<span class="list-img-badge">مميّز</span>' : ''}

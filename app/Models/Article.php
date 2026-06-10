@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Slug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -12,6 +13,10 @@ class Article extends Model
     protected static function booted(): void
     {
         static::saving(function (Article $article) {
+            if (blank($article->slug) && filled($article->title)) {
+                $article->slug = static::uniqueSlug($article->title, $article->id);
+            }
+
             if ($article->in_ticker) {
                 if ((int) $article->ticker_order === 0) {
                     $query = static::query()->where('in_ticker', true);
@@ -27,7 +32,7 @@ class Article extends Model
     }
 
     protected $fillable = [
-        'title', 'subtitle', 'excerpt', 'body',
+        'title', 'slug', 'subtitle', 'excerpt', 'body',
         'category', 'author', 'image_url', 'read_time',
         'featured', 'in_ticker', 'ticker_order', 'status', 'region', 'views',
         'meta_title', 'meta_description', 'meta_keywords',
@@ -41,7 +46,11 @@ class Article extends Model
         'views'      => 'integer',
     ];
 
-    // Scopes
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     public function scopePublished($query)
     {
         return $query->where('status', 'published');
@@ -62,9 +71,13 @@ class Article extends Model
         return $query->where('category', $category);
     }
 
-    // Increment views
     public function incrementViews(): void
     {
         $this->increment('views');
+    }
+
+    public static function uniqueSlug(string $title, ?int $ignoreId = null): string
+    {
+        return Slug::unique($title, self::class, $ignoreId, 'news');
     }
 }

@@ -23,10 +23,14 @@ const resultsCountEl = document.getElementById('resultsCount');
 const loadMoreWrap = document.getElementById('loadMoreWrap');
 const loadMoreBtn = document.getElementById('loadMoreBtn');
 
+function newsHref(it){
+  return `/news/${encodeURIComponent(it.slug || it.id)}`;
+}
+
 function cardHTML(it){
   const region = it.region ? ` · ${esc(it.region)}` : '';
   return `
-    <a href="/news/${encodeURIComponent(it.id)}" class="list-card">
+    <a href="${newsHref(it)}" class="list-card">
       <div class="list-img">
         <img src="${esc(it.image_url || fallbackImg)}" alt="${esc(it.title)}" onerror="this.src='${fallbackImg}'">
         ${it.featured ? '<span class="list-img-badge">مميّز</span>' : ''}
@@ -50,11 +54,11 @@ function featuredHTML(it){
     </div>
     <div class="feat-hero-body">
       <div class="feat-hero-kicker">✦ قصة الغلاف · ${esc(it.category || 'عام')}</div>
-      <h2 class="feat-hero-title"><a href="/news/${encodeURIComponent(it.id)}">${esc(it.title)}</a></h2>
+      <h2 class="feat-hero-title"><a href="${newsHref(it)}">${esc(it.title)}</a></h2>
       ${it.subtitle ? `<p class="feat-hero-deck" style="font-style:italic;">${esc(it.subtitle)}</p>` : ''}
       <p class="feat-hero-deck">${esc(it.excerpt || '')}</p>
       <div class="feat-hero-meta">بقلم <b>${esc(it.author || 'فريق التحرير')}</b> · ${esc(it.read_time || '5 دقائق')} للقراءة · ${fmtAgo(it.created_at)}</div>
-      <a href="/news/${encodeURIComponent(it.id)}" class="feat-hero-cta">اقرأ القصة كاملة →</a>
+      <a href="${newsHref(it)}" class="feat-hero-cta">اقرأ القصة كاملة →</a>
     </div>`;
 }
 

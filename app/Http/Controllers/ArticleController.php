@@ -38,10 +38,17 @@ class ArticleController extends Controller
         return response()->json(['success' => true, 'data' => $articles]);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(string $slug): JsonResponse
     {
-        $article = Article::findOrFail($id);
+        $slug = rawurldecode($slug);
+
+        $article = Article::query()
+            ->where('slug', $slug)
+            ->where('status', 'published')
+            ->firstOrFail();
+
         $article->incrementViews();
+
         return response()->json(['success' => true, 'data' => $article]);
     }
 
@@ -49,6 +56,7 @@ class ArticleController extends Controller
     {
         $validated = $request->validate([
             'title'     => 'required|string|max:1000',
+            'slug'      => 'nullable|string|max:255|unique:articles,slug',
             'subtitle'  => 'nullable|string|max:500',
             'excerpt'   => 'nullable|string',
             'body'      => 'nullable|string',
@@ -70,7 +78,7 @@ class ArticleController extends Controller
 
         $article = Article::create($validated);
 
-        return response()->json(['success' => true, 'data' => ['id' => $article->id]], 201);
+        return response()->json(['success' => true, 'data' => ['id' => $article->id, 'slug' => $article->slug]], 201);
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -79,6 +87,7 @@ class ArticleController extends Controller
 
         $validated = $request->validate([
             'title'     => 'required|string|max:1000',
+            'slug'      => 'nullable|string|max:255|unique:articles,slug,' . $id,
             'subtitle'  => 'nullable|string|max:500',
             'excerpt'   => 'nullable|string',
             'body'      => 'nullable|string',
