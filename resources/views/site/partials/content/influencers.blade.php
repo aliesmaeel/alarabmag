@@ -18,7 +18,11 @@
 
 <section class="list-section">
   <div class="inf-list-grid" id="infGrid">
-    <div class="loading" style="grid-column:1/-1;">جاري تحميل المؤثرين…</div>
+    @if (($initialPeople ?? collect())->isNotEmpty())
+      <x-site.person-list-cards :people="$initialPeople" category="influencer" />
+    @else
+      <div class="loading" style="grid-column:1/-1;">جاري تحميل المؤثرين…</div>
+    @endif
   </div>
   <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
     <button class="load-more" id="loadMoreBtn">عرض المزيد ↓</button>

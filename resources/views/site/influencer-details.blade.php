@@ -6,10 +6,5 @@
 @endpush
 
 @section('content')
-    @include('site.partials.content.influencer-details')
+    @include('site.partials.content.person-details')
 @endsection
-
-@push('scripts')
-    <script>window.SITE_PERSON_ID = {{ $personId }};</script>
-    <script src="{{ asset('js/site/influencer-details.js') }}"></script>
-@endpush

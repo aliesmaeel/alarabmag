@@ -25,7 +25,11 @@
 <!-- LIST -->
 <section class="list-section">
   <div class="list-grid" id="newsGrid">
-    <div class="loading">جاري تحميل الأخبار…</div>
+    @if (($initialArticles ?? collect())->isNotEmpty())
+      <x-site.article-list-cards :articles="$initialArticles" />
+    @else
+      <div class="loading">جاري تحميل الأخبار…</div>
+    @endif
   </div>
   <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
     <button class="load-more" id="loadMoreBtn">عرض المزيد ↓</button>

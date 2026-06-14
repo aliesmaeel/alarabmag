@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @isset($seo)
-        <x-site.seo-meta :seo="$seo" />
+        <x-site.seo-meta :seo="$seo" :entity="$jsonLdEntity ?? null" />
     @else
         <title>@yield('title', 'مجلة العرب | Al Arab Magazine')</title>
         <meta name="description" content="مجلة العرب (Al Arab Magazine) — المجلة العربية الأولى للإنسان العربي المتميّز.">
@@ -35,7 +35,7 @@
     @yield('content')
 
     <x-site.newsletter
-        :eyebrow="$newsletterEyebrow ?? 'انضم لأكثر من 240,000 مشترك'"
+        :eyebrow="$newsletterEyebrow ?? 'اشترك في النشرة'"
         :headline="$newsletterHeadline ?? null"
         :sub="$newsletterSub ?? null"
     />

@@ -1,5 +1,5 @@
 @props([
-    'eyebrow' => 'انضم لأكثر من 240,000 مشترك',
+    'eyebrow' => 'اشترك في النشرة',
     'headline' => null,
     'sub' => null,
 ])

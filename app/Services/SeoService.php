@@ -27,6 +27,22 @@ class SeoService
         Cache::forget('site_settings');
     }
 
+    public function staticPage(string $pageKey, string $title, string $description): SeoMeta
+    {
+        $siteName = $this->setting('site_name', SiteBrand::NAME_AR);
+
+        return $this->makeMeta(
+            title: $this->suffixSiteName($title, $siteName),
+            description: $description,
+            keywords: $this->setting('seo_keywords'),
+            canonical: $this->pageUrl($pageKey),
+            ogTitle: $title,
+            ogDescription: $description,
+            ogImage: $this->defaultOgImage(),
+            ogType: 'website',
+        );
+    }
+
     public function page(string $pageKey, ?string $canonical = null): SeoMeta
     {
         $siteName = $this->setting('site_name', SiteBrand::NAME_AR);
@@ -196,12 +212,18 @@ class SeoService
             'business' => route('business.index'),
             'fashion' => route('fashion.index'),
             'interviews' => route('interviews.index'),
+            'about' => route('about'),
+            'editorial' => route('editorial'),
+            'privacy' => route('privacy'),
+            'terms' => route('terms'),
+            'contact' => route('contact'),
+            'advertise' => route('advertise'),
             default => url('/'),
         };
     }
 
     /** @return list<array<string, mixed>> */
-    public function jsonLd(?SeoMeta $seo = null): array
+    public function jsonLd(?SeoMeta $seo = null, mixed $entity = null): array
     {
         $graphs = [$this->organizationSchema()];
 
@@ -211,6 +233,14 @@ class SeoService
 
         if ($seo) {
             $graphs[] = $this->webPageSchema($seo);
+        }
+
+        if ($entity instanceof Article) {
+            $graphs[] = $this->newsArticleSchema($entity);
+        } elseif ($entity instanceof Blog) {
+            $graphs[] = $this->blogPostingSchema($entity);
+        } elseif ($entity instanceof Person) {
+            $graphs[] = $this->personSchema($entity);
         }
 
         return $graphs;
@@ -295,5 +325,62 @@ class SeoService
             'tiktok' => str_starts_with($value, 'http') ? $value : 'https://tiktok.com/@' . ltrim($value, '@'),
             default => null,
         };
+    }
+
+    /** @return array<string, mixed> */
+    protected function newsArticleSchema(Article $article): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'NewsArticle',
+            'headline' => $article->title,
+            'description' => $article->excerpt ?: Str::limit(strip_tags($article->body ?? ''), 160),
+            'image' => $this->resolveImage($article->image_url),
+            'datePublished' => $article->created_at?->toIso8601String(),
+            'dateModified' => $article->updated_at?->toIso8601String(),
+            'author' => [
+                '@type' => 'Person',
+                'name' => $article->author ?: 'فريق التحرير',
+            ],
+            'publisher' => ['@id' => url('/') . '#organization'],
+            'mainEntityOfPage' => route('news.show', $article),
+            'inLanguage' => 'ar',
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    protected function blogPostingSchema(Blog $blog): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'BlogPosting',
+            'headline' => $blog->title,
+            'description' => $blog->excerpt ?: Str::limit(strip_tags($blog->body ?? ''), 160),
+            'image' => $this->resolveImage($blog->image_url),
+            'datePublished' => $blog->created_at?->toIso8601String(),
+            'dateModified' => $blog->updated_at?->toIso8601String(),
+            'author' => [
+                '@type' => 'Person',
+                'name' => $blog->author ?: 'فريق التحرير',
+            ],
+            'publisher' => ['@id' => url('/') . '#organization'],
+            'mainEntityOfPage' => route('blogs.show', $blog),
+            'inLanguage' => 'ar',
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    protected function personSchema(Person $person): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'Person',
+            'name' => $person->name,
+            'alternateName' => $person->name_en,
+            'description' => $person->excerpt ?: Str::limit(strip_tags($person->bio ?? ''), 160),
+            'image' => $this->resolveImage($person->image_url),
+            'jobTitle' => $person->role,
+            'nationality' => $person->country,
+        ];
     }
 }

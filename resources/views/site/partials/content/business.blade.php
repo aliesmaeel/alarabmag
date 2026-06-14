@@ -13,14 +13,22 @@
 <div class="sh"><div class="sh-title">رجال الأعمال</div><div class="sh-rule"></div><span class="sh-more" id="leadersCount">—</span></div>
 <section class="list-section">
   <div class="doc-list-grid" id="leadersGrid">
-    <div class="loading" style="grid-column:1/-1;">جاري تحميل الملفات…</div>
+    @if (($initialPeople ?? collect())->isNotEmpty())
+      <x-site.person-list-cards :people="$initialPeople" category="business" />
+    @else
+      <div class="loading" style="grid-column:1/-1;">جاري تحميل الملفات…</div>
+    @endif
   </div>
 </section>
 
 <div class="sh"><div class="sh-title">قصص الأعمال</div><div class="sh-rule"></div><span class="sh-more" id="storiesCount">—</span></div>
 <section class="list-section">
   <div class="list-grid" id="storiesGrid">
-    <div class="loading" style="grid-column:1/-1;">جاري تحميل القصص…</div>
+    @if (($initialArticles ?? collect())->isNotEmpty())
+      <x-site.article-list-cards :articles="$initialArticles" />
+    @else
+      <div class="loading" style="grid-column:1/-1;">جاري تحميل القصص…</div>
+    @endif
   </div>
   <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
     <button class="load-more" id="loadMoreBtn">عرض المزيد ↓</button>

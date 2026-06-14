@@ -8,6 +8,9 @@ use App\Models\Interview;
 use App\Models\Person;
 use App\Services\FileUploadService;
 use App\Services\SeoService;
+use App\Services\SiteContentService;
+use App\Support\HomeSections;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -16,12 +19,14 @@ class SiteController extends Controller
 {
     public function __construct(
         protected SeoService $seo,
+        protected SiteContentService $content,
     ) {}
 
     public function home(): View
     {
         return view('site.home', [
             'seo' => $this->seo->page('home'),
+            'home' => $this->content->homeData(),
             'showPreloader' => true,
             'showTicker' => true,
             'activeNav' => 'home',
@@ -33,6 +38,7 @@ class SiteController extends Controller
     {
         return view('site.news', [
             'seo' => $this->seo->page('news'),
+            'initialArticles' => $this->content->initialArticles(null, 12),
             'showTicker' => true,
             'activeNav' => 'news',
             'newsletterHeadline' => 'احصل على نشرة<br><em>الأخبار اليومية</em>',
@@ -45,30 +51,20 @@ class SiteController extends Controller
         abort_unless($article->status === 'published', 404);
 
         $article->incrementViews();
-
-        $article->setAttribute(
-            'image_url',
-            $files->resolveUrl($article->getAttributes()['image_url'] ?? null) ?? $article->image_url
-        );
+        $article->setAttribute('image_url', $this->content->resolveArticleImage($article));
 
         $relatedArticles = Article::query()
-            ->where('status', 'published')
+            ->published()
             ->where('id', '!=', $article->id)
             ->when(filled($article->category), fn ($q) => $q->where('category', $article->category))
             ->orderByDesc('created_at')
             ->limit(3)
             ->get()
-            ->map(function (Article $related) use ($files) {
-                $related->setAttribute(
-                    'image_url',
-                    $files->resolveUrl($related->getAttributes()['image_url'] ?? null) ?? $related->image_url
-                );
-
-                return $related;
-            });
+            ->each(fn (Article $related) => $related->setAttribute('image_url', $this->content->resolveArticleImage($related)));
 
         return view('site.news-details', [
             'seo' => $this->seo->fromArticle($article),
+            'jsonLdEntity' => $article,
             'activeNav' => 'news',
             'article' => $article,
             'relatedArticles' => $relatedArticles,
@@ -76,9 +72,9 @@ class SiteController extends Controller
         ]);
     }
 
-    public function newsRedirectFromId(int $id)
+    public function newsRedirectFromId(int $id): RedirectResponse
     {
-        $article = Article::query()->where('status', 'published')->findOrFail($id);
+        $article = Article::query()->published()->findOrFail($id);
 
         return redirect()->route('news.show', $article, 301);
     }
@@ -87,6 +83,7 @@ class SiteController extends Controller
     {
         return view('site.blogs', [
             'seo' => $this->seo->page('blogs'),
+            'initialBlogs' => $this->content->initialBlogs(12),
             'showTicker' => true,
             'activeNav' => 'blogs',
             'newsletterHeadline' => 'مقالات جديدة<br><em>كل أسبوع</em>',
@@ -99,33 +96,23 @@ class SiteController extends Controller
         abort_unless($blog->status === 'published', 404);
 
         $blog->incrementViews();
-
-        $blog->setAttribute(
-            'image_url',
-            $files->resolveUrl($blog->getAttributes()['image_url'] ?? null) ?? $blog->image_url
-        );
+        $blog->setAttribute('image_url', $this->content->resolveBlogImage($blog));
         $blog->setAttribute(
             'author_img',
             $files->resolveUrl($blog->getAttributes()['author_img'] ?? null) ?? $blog->author_img
         );
 
         $relatedBlogs = Blog::query()
-            ->where('status', 'published')
+            ->published()
             ->where('id', '!=', $blog->id)
             ->orderByDesc('created_at')
             ->limit(3)
             ->get()
-            ->map(function (Blog $related) use ($files) {
-                $related->setAttribute(
-                    'image_url',
-                    $files->resolveUrl($related->getAttributes()['image_url'] ?? null) ?? $related->image_url
-                );
-
-                return $related;
-            });
+            ->each(fn (Blog $related) => $related->setAttribute('image_url', $this->content->resolveBlogImage($related)));
 
         return view('site.blog-details', [
             'seo' => $this->seo->fromBlog($blog),
+            'jsonLdEntity' => $blog,
             'activeNav' => 'blogs',
             'blog' => $blog,
             'relatedBlogs' => $relatedBlogs,
@@ -133,9 +120,9 @@ class SiteController extends Controller
         ]);
     }
 
-    public function blogRedirectFromId(int $id)
+    public function blogRedirectFromId(int $id): RedirectResponse
     {
-        $blog = Blog::query()->where('status', 'published')->findOrFail($id);
+        $blog = Blog::query()->published()->findOrFail($id);
 
         return redirect()->route('blogs.show', $blog, 301);
     }
@@ -144,6 +131,7 @@ class SiteController extends Controller
     {
         return view('site.doctors', [
             'seo' => $this->seo->page('doctors'),
+            'initialPeople' => $this->content->initialPeople('doctor', 12),
             'activeNav' => 'doctors',
             'newsletterHeadline' => 'قصص الأطباء<br><em>في بريدك</em>',
             'newsletterSub' => 'ملفات حصرية عن الأطباء العرب الأكثر تأثيراً — أسبوعياً.',
@@ -152,20 +140,14 @@ class SiteController extends Controller
 
     public function doctorShow(int $id): View
     {
-        $person = Person::query()->where('category', 'doctor')->findOrFail($id);
-
-        return view('site.doctor-details', [
-            'seo' => $this->seo->fromPerson($person, 'doctors.show'),
-            'activeNav' => 'doctors',
-            'personId' => $id,
-            'footerVariant' => 'compact',
-        ]);
+        return $this->personShow($id, 'doctor', 'doctors', 'site.doctor-details');
     }
 
     public function influencers(): View
     {
         return view('site.influencers', [
             'seo' => $this->seo->page('influencers'),
+            'initialPeople' => $this->content->initialPeople('influencer', 12),
             'activeNav' => 'influencers',
             'newsletterHeadline' => 'المؤثرون الجدد<br><em>قبل الجميع</em>',
             'newsletterSub' => 'اكتشف نجوم السوشيال ميديا العرب الصاعدين أسبوعياً في بريدك.',
@@ -174,20 +156,14 @@ class SiteController extends Controller
 
     public function influencerShow(int $id): View
     {
-        $person = Person::query()->where('category', 'influencer')->findOrFail($id);
-
-        return view('site.influencer-details', [
-            'seo' => $this->seo->fromPerson($person, 'influencers.show'),
-            'activeNav' => 'influencers',
-            'personId' => $id,
-            'footerVariant' => 'compact',
-        ]);
+        return $this->personShow($id, 'influencer', 'influencers', 'site.influencer-details');
     }
 
     public function artists(): View
     {
         return view('site.artists', [
             'seo' => $this->seo->page('artists'),
+            'initialPeople' => $this->content->initialPeople('artist', 12),
             'activeNav' => 'artists',
             'newsletterHeadline' => 'فنانون جدد<br><em>في بريدك</em>',
             'newsletterSub' => 'ملفات حصرية عن الفنانين العرب — أسبوعياً.',
@@ -196,20 +172,15 @@ class SiteController extends Controller
 
     public function artistShow(int $id): View
     {
-        $person = Person::query()->where('category', 'artist')->findOrFail($id);
-
-        return view('site.artist-details', [
-            'seo' => $this->seo->fromPerson($person, 'artists.show'),
-            'activeNav' => 'artists',
-            'personId' => $id,
-            'footerVariant' => 'compact',
-        ]);
+        return $this->personShow($id, 'artist', 'artists', 'site.artist-details');
     }
 
     public function business(): View
     {
         return view('site.business', [
             'seo' => $this->seo->page('business'),
+            'initialPeople' => $this->content->initialPeople('business', 12),
+            'initialArticles' => $this->content->initialArticles('أعمال', 6),
             'activeNav' => 'business',
             'newsletterHeadline' => 'قصص الأعمال<br><em>في بريدك</em>',
             'newsletterSub' => 'ملفات حصرية عن رواد الأعمال العرب — أسبوعياً.',
@@ -218,43 +189,34 @@ class SiteController extends Controller
 
     public function businessShow(int $id): View
     {
-        $person = Person::query()->where('category', 'business')->findOrFail($id);
-
-        return view('site.business-details', [
-            'seo' => $this->seo->fromPerson($person, 'business.show'),
-            'activeNav' => 'business',
-            'personId' => $id,
-            'footerVariant' => 'compact',
-        ]);
+        return $this->personShow($id, 'business', 'business', 'site.business-details');
     }
 
     public function fashion(): View
     {
         return view('site.fashion', [
             'seo' => $this->seo->page('fashion'),
+            'initialArticles' => $this->content->initialArticles('موضة', 12),
             'activeNav' => 'fashion',
             'newsletterHeadline' => 'الموضة العربية<br><em>كل أسبوع</em>',
             'newsletterSub' => 'أحدث تقارير الموضة والتصميم من فريق التحرير.',
         ]);
     }
 
-    public function fashionShow(int $id): View
+    public function fashionShow(int $id): RedirectResponse
     {
         $article = Article::query()
             ->where('category', 'موضة')
-            ->where('status', 'published')
+            ->published()
             ->findOrFail($id);
 
-        return view('site.fashion-details', [
-            'seo' => $this->seo->fromArticle($article, 'fashion.show'),
-            'activeNav' => 'fashion',
-            'articleId' => $id,
-            'footerVariant' => 'compact',
-        ]);
+        return redirect()->route('news.show', $article, 301);
     }
 
     public function interviews(): View
     {
+        abort_unless(HomeSections::hasInterviews(), 404);
+
         return view('site.interviews', [
             'seo' => $this->seo->page('interviews'),
             'showTicker' => true,
@@ -277,18 +239,11 @@ class SiteController extends Controller
         $thumbnailUrl = $files->resolveUrl($rawThumb) ?? $rawThumb;
 
         $latestArticles = Article::query()
-            ->where('status', 'published')
+            ->published()
             ->orderByDesc('created_at')
             ->limit(8)
             ->get()
-            ->map(function (Article $article) use ($files) {
-                $article->setAttribute(
-                    'image_url',
-                    $files->resolveUrl($article->getAttributes()['image_url'] ?? null) ?? $article->image_url
-                );
-
-                return $article;
-            });
+            ->each(fn (Article $article) => $article->setAttribute('image_url', $this->content->resolveArticleImage($article)));
 
         return view('site.interview-details', [
             'seo' => $this->seo->fromInterview($interview),
@@ -311,5 +266,27 @@ class SiteController extends Controller
         abort_unless($key && Storage::disk('s3')->exists($key), 404);
 
         return Storage::disk('s3')->response($key);
+    }
+
+    protected function personShow(int $id, string $category, string $navKey, string $view): View
+    {
+        $person = Person::query()->where('category', $category)->findOrFail($id);
+        $person = $this->content->preparePerson($person);
+        $routeName = match ($category) {
+            'doctor' => 'doctors.show',
+            'influencer' => 'influencers.show',
+            'artist' => 'artists.show',
+            'business' => 'business.show',
+            default => 'home',
+        };
+
+        return view($view, [
+            'seo' => $this->seo->fromPerson($person, $routeName),
+            'jsonLdEntity' => $person,
+            'activeNav' => $navKey,
+            'person' => $person,
+            'relatedPeople' => $this->content->relatedPeople($person),
+            'footerVariant' => 'compact',
+        ]);
     }
 }

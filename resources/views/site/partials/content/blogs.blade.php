@@ -25,7 +25,11 @@
 <!-- LIST -->
 <section class="list-section">
   <div class="list-grid" id="blogsGrid">
-    <div class="loading">جاري تحميل المدونات…</div>
+    @if (($initialBlogs ?? collect())->isNotEmpty())
+      <x-site.blog-list-cards :blogs="$initialBlogs" />
+    @else
+      <div class="loading">جاري تحميل المدونات…</div>
+    @endif
   </div>
   <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
     <button class="load-more" id="loadMoreBtn">عرض المزيد ↓</button>

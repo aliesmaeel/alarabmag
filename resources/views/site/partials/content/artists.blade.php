@@ -18,7 +18,11 @@
 
 <section class="artists-page-section">
   <div class="art-list-grid" id="artGrid">
-    <div class="loading" style="grid-column:1/-1;background:transparent;color:rgba(248,244,238,.5);">جاري تحميل الفنانين…</div>
+    @if (($initialPeople ?? collect())->isNotEmpty())
+      <x-site.person-list-cards :people="$initialPeople" category="artist" />
+    @else
+      <div class="loading" style="grid-column:1/-1;background:transparent;color:rgba(248,244,238,.5);">جاري تحميل الفنانين…</div>
+    @endif
   </div>
   <div class="load-more-wrap" id="loadMoreWrap" style="display:none;background:var(--ink);">
     <button class="load-more" id="loadMoreBtn">عرض المزيد ↓</button>

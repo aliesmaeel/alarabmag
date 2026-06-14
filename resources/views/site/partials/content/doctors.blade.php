@@ -21,7 +21,11 @@
 <!-- LIST -->
 <section class="list-section">
   <div class="doc-list-grid" id="docsGrid">
-    <div class="loading" style="grid-column:1/-1;">جاري تحميل الأطباء…</div>
+    @if (($initialPeople ?? collect())->isNotEmpty())
+      <x-site.person-list-cards :people="$initialPeople" category="doctor" />
+    @else
+      <div class="loading" style="grid-column:1/-1;">جاري تحميل الأطباء…</div>
+    @endif
   </div>
   <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
     <button class="load-more" id="loadMoreBtn">عرض المزيد ↓</button>

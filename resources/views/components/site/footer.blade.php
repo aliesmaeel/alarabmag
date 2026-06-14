@@ -1,5 +1,11 @@
 @props(['variant' => 'full'])
 
+@php
+    use App\Support\SiteSettings;
+
+    $socialLinks = SiteSettings::socialLinks();
+@endphp
+
 <footer>
     <div class="footer-top">
         <div style="text-align:right;">
@@ -13,13 +19,13 @@
                     المجلة العربية الأولى التي تحتفي بالإنسان العربي المتميّز في كل مكان.
                 @endif
             </p>
-            <div class="footer-socials">
-                <a href="#" class="fsoc">𝕏</a>
-                <a href="#" class="fsoc">in</a>
-                <a href="#" class="fsoc">📷</a>
-                <a href="#" class="fsoc">▶</a>
-                <a href="#" class="fsoc">📘</a>
-            </div>
+            @if ($socialLinks !== [])
+                <div class="footer-socials">
+                    @foreach ($socialLinks as $link)
+                        <a href="{{ $link['url'] }}" class="fsoc" target="_blank" rel="noopener noreferrer" aria-label="{{ $link['platform'] }}">{{ $link['label'] }}</a>
+                    @endforeach
+                </div>
+            @endif
         </div>
         <div class="fcol">
             <div class="fcol-title">الأقسام</div>
@@ -32,71 +38,42 @@
                     <li><a href="{{ route('fashion.index') }}">الموضة العربية</a></li>
                 @endif
                 <li><a href="{{ url('/news') }}">الأخبار</a></li>
-                <li><a href="{{ route('interviews.index') }}">المقابلات</a></li>
+                @if(\App\Support\HomeSections::hasInterviews())
+                    <li><a href="{{ route('interviews.index') }}">المقابلات</a></li>
+                @endif
                 <li><a href="{{ url('/blogs') }}">المدونات</a></li>
+            </ul>
+        </div>
+        <div class="fcol">
+            <div class="fcol-title">المجلة</div>
+            <ul>
+                <li><a href="{{ route('about') }}">عن العرب</a></li>
+                <li><a href="{{ route('editorial') }}">هيئة التحرير</a></li>
+                <li><a href="{{ route('advertise') }}">الإعلان معنا</a></li>
+                <li><a href="{{ route('contact') }}">اتصل بنا</a></li>
             </ul>
         </div>
         @if($variant === 'full')
             <div class="fcol">
-                <div class="fcol-title">المناطق</div>
-                <ul>
-                    <li><a href="#">الإمارات</a></li>
-                    <li><a href="#">السعودية</a></li>
-                    <li><a href="#">قطر</a></li>
-                    <li><a href="#">الكويت</a></li>
-                    <li><a href="#">لبنان</a></li>
-                    <li><a href="#">مصر</a></li>
-                    <li><a href="#">الأردن</a></li>
-                    <li><a href="#">العراق</a></li>
-                </ul>
-            </div>
-            <div class="fcol">
-                <div class="fcol-title">المجلة</div>
-                <ul>
-                    <li><a href="#">عن العرب</a></li>
-                    <li><a href="#">هيئة التحرير</a></li>
-                    <li><a href="#">الإعلان معنا</a></li>
-                    <li><a href="#">الترشيح للمجلة</a></li>
-                    <li><a href="#">الفعاليات</a></li>
-                    <li><a href="#">وظائف</a></li>
-                </ul>
-            </div>
-            <div class="fcol">
                 <div class="fcol-title">الاشتراك</div>
                 <ul>
-                    <li><a href="#">النشرة المجانية</a></li>
-                    <li><a href="#">الاشتراك الرقمي</a></li>
-                    <li><a href="#">الطبعة الورقية</a></li>
-                    <li><a href="#">اشتراك المؤسسات</a></li>
-                    <li><a href="#">هدية الاشتراك</a></li>
-                    <li><a href="#">الأعداد السابقة</a></li>
+                    <li><a href="{{ url('/#newsletter') }}">النشرة المجانية</a></li>
                 </ul>
             </div>
         @else
             <div class="fcol">
-                <div class="fcol-title">المجلة</div>
-                <ul>
-                    <li><a href="#">عن العرب</a></li>
-                    <li><a href="#">هيئة التحرير</a></li>
-                    <li><a href="#">الإعلان معنا</a></li>
-                </ul>
-            </div>
-            <div class="fcol">
                 <div class="fcol-title">الاشتراك</div>
                 <ul>
-                    <li><a href="#">النشرة المجانية</a></li>
-                    <li><a href="#">الطبعة الورقية</a></li>
+                    <li><a href="{{ url('/#newsletter') }}">النشرة المجانية</a></li>
                 </ul>
             </div>
         @endif
     </div>
     <div class="footer-bottom">
         <div class="flegal">
-            <a href="#">سياسة الخصوصية</a>
-            <a href="#">شروط الاستخدام</a>
-            @if($variant === 'full')
-                <a href="#">إعدادات الكوكيز</a>
-            @endif
+            <a href="{{ route('privacy') }}">سياسة الخصوصية</a>
+            <a href="{{ route('terms') }}">شروط الاستخدام</a>
+            <a href="{{ route('privacy') }}#cookies">إعدادات الكوكيز</a>
         </div>
         <div class="fcopy">© 2026 مجلة العرب. جميع الحقوق محفوظة.@if($variant === 'full') مدينة دبي للإعلام، الإمارات العربية المتحدة.@endif</div>
     </div>

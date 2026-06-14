@@ -1,8 +1,10 @@
-/* ── DYNAMIC NEWS & BLOGS FROM API ── */
+/* ── DYNAMIC NEWS & BLOGS FROM API (skip if SSR content exists) ── */
 (async function loadHomeGrids(){
   const newsGrid = document.getElementById('newsGrid');
   const blogsGrid = document.getElementById('blogsGridHome');
   if (!newsGrid && !blogsGrid) return;
+  if (newsGrid && newsGrid.querySelector('.list-card')) return;
+  if (blogsGrid && blogsGrid.querySelector('.list-card')) return;
 
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmtAgo = iso => {

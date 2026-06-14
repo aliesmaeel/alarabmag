@@ -1,3 +1,5 @@
+@props(['seo', 'entity' => null])
+
 @php
 use App\Support\SiteBrand;
 
@@ -64,7 +66,7 @@ $pageUrl = $seo->canonical ?: url()->current();
 <meta name="twitter:image" content="{{ e($seo->ogImage) }}">
 @endif
 
-@foreach(app(\App\Services\SeoService::class)->jsonLd($seo) as $graph)
+@foreach(app(\App\Services\SeoService::class)->jsonLd($seo, $entity) as $graph)
 <script type="application/ld+json">
     {
         !!json_encode($graph, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) !!

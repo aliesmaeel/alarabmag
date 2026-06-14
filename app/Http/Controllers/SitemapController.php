@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Blog;
 use App\Models\Interview;
 use App\Models\Person;
+use App\Support\HomeSections;
 use Illuminate\Http\Response;
 
 class SitemapController extends Controller
@@ -14,6 +15,12 @@ class SitemapController extends Controller
     {
         $urls = collect([
             $this->entry(route('home'), now(), 'daily', '1.0'),
+            $this->entry(route('about'), now(), 'monthly', '0.5'),
+            $this->entry(route('editorial'), now(), 'monthly', '0.5'),
+            $this->entry(route('privacy'), now(), 'monthly', '0.4'),
+            $this->entry(route('terms'), now(), 'monthly', '0.4'),
+            $this->entry(route('contact'), now(), 'monthly', '0.5'),
+            $this->entry(route('advertise'), now(), 'monthly', '0.4'),
             $this->entry(route('news.index'), now(), 'daily', '0.9'),
             $this->entry(route('blogs.index'), now(), 'daily', '0.9'),
             $this->entry(route('doctors.index'), now(), 'weekly', '0.8'),
@@ -21,17 +28,19 @@ class SitemapController extends Controller
             $this->entry(route('artists.index'), now(), 'weekly', '0.8'),
             $this->entry(route('business.index'), now(), 'weekly', '0.8'),
             $this->entry(route('fashion.index'), now(), 'weekly', '0.8'),
-            $this->entry(route('interviews.index'), now(), 'weekly', '0.9'),
         ]);
+
+        if (HomeSections::hasInterviews()) {
+            $urls->push($this->entry(route('interviews.index'), now(), 'weekly', '0.9'));
+        }
 
         Article::query()
             ->published()
-            ->select(['id', 'slug', 'updated_at', 'category'])
+            ->select(['id', 'slug', 'updated_at'])
             ->orderByDesc('updated_at')
             ->each(function (Article $article) use ($urls) {
-                $routeName = $article->category === 'موضة' ? 'fashion.show' : 'news.show';
                 $urls->push($this->entry(
-                    route($routeName, $article),
+                    route('news.show', $article),
                     $article->updated_at,
                     'weekly',
                     '0.7',
@@ -46,13 +55,15 @@ class SitemapController extends Controller
                 $urls->push($this->entry(route('blogs.show', $blog), $blog->updated_at, 'weekly', '0.7'));
             });
 
-        Interview::query()
-            ->published()
-            ->select(['slug', 'updated_at'])
-            ->orderByDesc('updated_at')
-            ->each(function (Interview $interview) use ($urls) {
-                $urls->push($this->entry(route('interviews.show', $interview), $interview->updated_at, 'weekly', '0.7'));
-            });
+        if (HomeSections::hasInterviews()) {
+            Interview::query()
+                ->published()
+                ->select(['slug', 'updated_at'])
+                ->orderByDesc('updated_at')
+                ->each(function (Interview $interview) use ($urls) {
+                    $urls->push($this->entry(route('interviews.show', $interview), $interview->updated_at, 'weekly', '0.7'));
+                });
+        }
 
         foreach (['doctor' => 'doctors.show', 'influencer' => 'influencers.show', 'artist' => 'artists.show', 'business' => 'business.show'] as $category => $routeName) {
             Person::query()

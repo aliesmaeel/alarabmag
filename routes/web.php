@@ -3,6 +3,7 @@
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\StaticPageController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public Arabic Magazine Website (Blade) ─────────────────
@@ -34,6 +35,14 @@ Route::get('/fashion/{id}', [SiteController::class, 'fashionShow'])->whereNumber
 Route::get('/interviews', [SiteController::class, 'interviews'])->name('interviews.index');
 Route::get('/interviews/{interview:slug}/stream', [SiteController::class, 'interviewStream'])->name('interviews.stream');
 Route::get('/interviews/{interview:slug}', [SiteController::class, 'interviewShow'])->name('interviews.show');
+
+Route::get('/about', [StaticPageController::class, 'about'])->name('about');
+Route::get('/editorial', [StaticPageController::class, 'editorial'])->name('editorial');
+Route::get('/privacy', [StaticPageController::class, 'privacy'])->name('privacy');
+Route::get('/terms', [StaticPageController::class, 'terms'])->name('terms');
+Route::get('/contact', [StaticPageController::class, 'contact'])->name('contact');
+Route::get('/advertise', [StaticPageController::class, 'advertise'])->name('advertise');
+Route::get('/ads.txt', [StaticPageController::class, 'adsTxt'])->name('ads.txt');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');

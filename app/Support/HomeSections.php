@@ -2,14 +2,21 @@
 
 namespace App\Support;
 
+use App\Models\Interview;
+
 class HomeSections
 {
+    public static function hasInterviews(): bool
+    {
+        return Interview::query()->where('status', 'published')->exists();
+    }
+
     /**
      * @return list<array{key: string, label: string, id: string, route?: string}>
      */
     public static function items(): array
     {
-        return [
+        $items = [
             ['key' => 'home', 'label' => 'الرئيسية', 'id' => 'top'],
             ['key' => 'influencers', 'label' => 'المؤثرون العرب', 'id' => 'influencers', 'route' => 'influencers.index'],
             ['key' => 'artists', 'label' => 'الفنانون العرب', 'id' => 'artists', 'route' => 'artists.index'],
@@ -17,9 +24,16 @@ class HomeSections
             ['key' => 'doctors', 'label' => 'أطباء عرب', 'id' => 'doctors', 'route' => 'doctors.index'],
             ['key' => 'fashion', 'label' => 'الموضة العربية', 'id' => 'fashion', 'route' => 'fashion.index'],
             ['key' => 'news', 'label' => 'الأخبار', 'id' => 'news', 'route' => 'news.index'],
-            ['key' => 'interviews', 'label' => 'المقابلات', 'id' => 'interviews', 'route' => 'interviews.index'],
             ['key' => 'blogs', 'label' => 'المدونات', 'id' => 'blogs', 'route' => 'blogs.index'],
         ];
+
+        if (static::hasInterviews()) {
+            array_splice($items, 7, 0, [
+                ['key' => 'interviews', 'label' => 'المقابلات', 'id' => 'interviews', 'route' => 'interviews.index'],
+            ]);
+        }
+
+        return $items;
     }
 
     /** Header nav: on homepage, scroll to in-page sections. */
