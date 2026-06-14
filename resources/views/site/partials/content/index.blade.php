@@ -232,15 +232,17 @@
   </div>
   <div class="news-grid" id="newsGrid">
     @foreach ($home['newsArticles'] ?? [] as $article)
-      <a href="{{ route('news.show', $article) }}" class="list-card">
-        @if ($article->image_url)
-          <div class="list-img"><img src="{{ $article->image_url }}" alt="{{ $article->title }}" loading="lazy" decoding="async"></div>
-        @endif
-        <div class="list-body">
-          <div class="list-kicker">{{ $article->category }}</div>
-          <h3 class="list-headline">{{ $article->title }}</h3>
-          @if ($article->excerpt)<p class="list-excerpt">{{ $article->excerpt }}</p>@endif
-          <div class="list-meta"><span>{{ $article->read_time ?: '5 دقائق' }}</span><span><b>{{ $article->author }}</b></span></div>
+      <a href="{{ route('news.show', $article) }}" class="news-card" style="text-decoration:none;color:inherit;display:block;">
+        <div class="news-img">
+          <img src="{{ $article->image_url ?: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=800&q=80' }}" alt="{{ $article->title }}" loading="lazy" decoding="async">
+        </div>
+        <div class="news-body">
+          <div class="news-kicker">{{ $article->category ?: 'عام' }}@if($article->region) · {{ $article->region }}@endif</div>
+          <h3 class="news-headline">{{ $article->title }}</h3>
+          @if ($article->excerpt)
+            <p class="news-excerpt">{{ $article->excerpt }}</p>
+          @endif
+          <div class="news-meta">قسم {{ $article->category ?: 'عام' }} · <b>{{ $article->read_time ?: '5 دقائق' }}</b></div>
         </div>
       </a>
     @endforeach
@@ -254,15 +256,17 @@
   </div>
   <div class="news-grid" id="blogsGridHome">
     @foreach ($home['blogs'] ?? [] as $blog)
-      <a href="{{ route('blogs.show', $blog) }}" class="list-card">
-        @if ($blog->image_url)
-          <div class="list-img"><img src="{{ $blog->image_url }}" alt="{{ $blog->title }}" loading="lazy" decoding="async"></div>
-        @endif
-        <div class="list-body">
-          <div class="list-kicker">مدونة</div>
-          <h3 class="list-headline">{{ $blog->title }}</h3>
-          @if ($blog->excerpt)<p class="list-excerpt">{{ $blog->excerpt }}</p>@endif
-          <div class="list-meta"><span><b>{{ $blog->author }}</b></span></div>
+      <a href="{{ route('blogs.show', $blog) }}" class="news-card" style="text-decoration:none;color:inherit;display:block;">
+        <div class="news-img">
+          <img src="{{ $blog->image_url ?: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=800&q=80' }}" alt="{{ $blog->title }}" loading="lazy" decoding="async">
+        </div>
+        <div class="news-body">
+          <div class="news-kicker">مدونة · {{ $blog->author ?: 'فريق التحرير' }}</div>
+          <h3 class="news-headline">{{ $blog->title }}</h3>
+          @if ($blog->excerpt)
+            <p class="news-excerpt">{{ $blog->excerpt }}</p>
+          @endif
+          <div class="news-meta">بقلم <b>{{ $blog->author ?: 'فريق التحرير' }}</b></div>
         </div>
       </a>
     @endforeach

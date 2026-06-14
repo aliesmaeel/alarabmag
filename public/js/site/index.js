@@ -3,8 +3,8 @@
   const newsGrid = document.getElementById('newsGrid');
   const blogsGrid = document.getElementById('blogsGridHome');
   if (!newsGrid && !blogsGrid) return;
-  if (newsGrid && newsGrid.querySelector('.list-card')) return;
-  if (blogsGrid && blogsGrid.querySelector('.list-card')) return;
+  if (newsGrid && newsGrid.querySelector('.news-card')) return;
+  if (blogsGrid && blogsGrid.querySelector('.news-card')) return;
 
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmtAgo = iso => {

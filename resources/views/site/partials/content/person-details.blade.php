@@ -100,7 +100,7 @@
     <section class="related-section">
       <h2 class="related-title">{{ $relatedLabel }} <em>آخرون</em></h2>
       <div class="related-grid">
-        @foreach ($relatedPeople as $related)
+        @foreach ($relatedPeople as $loopIndex => $related)
           @php
             $relatedRoute = match ($related->category) {
               'doctor' => 'doctors.show',
@@ -111,23 +111,67 @@
             };
           @endphp
           @if ($relatedRoute)
-          <a href="{{ route($relatedRoute, $related) }}" class="doc-list-card">
-            <div class="doc-list-img">
-              <img src="{{ $related->image_url ?: $fallbackImg }}" alt="{{ $related->name }}" loading="lazy" decoding="async">
-              @if ($related->flag)
-                <span class="doc-list-img-flag">{{ $related->flag }}</span>
-              @endif
-              <div class="doc-list-img-ov"></div>
-            </div>
-            <div class="doc-list-body">
-              <div class="doc-list-spec">{{ $related->specialty ?: $related->role ?: '' }}</div>
-              <h3 class="doc-list-name">{{ $related->name }}</h3>
-              <div class="doc-list-hospital">{{ $related->hospital ?: $related->country ?: '' }}</div>
-              @if ($related->badge)
-                <span class="doc-list-badge">{{ $related->badge }}</span>
-              @endif
-            </div>
-          </a>
+            @if ($related->category === 'influencer')
+              <a href="{{ route($relatedRoute, $related) }}" class="inf-list-card">
+                <div class="inf-list-img">
+                  <img src="{{ $related->image_url ?: $fallbackImg }}" alt="{{ $related->name }}" loading="lazy" decoding="async">
+                  @if ($related->flag)
+                    <span class="inf-list-img-flag">{{ $related->flag }}</span>
+                  @endif
+                  <div class="inf-list-img-ov"></div>
+                  @if ($related->platform)
+                    <span class="inf-list-img-platform">{{ $related->platform }}</span>
+                  @endif
+                </div>
+                <div class="inf-list-body">
+                  <div class="inf-list-cat">{{ $related->role ?: 'مؤثر' }}</div>
+                  <h3 class="inf-list-name">{{ $related->name }}</h3>
+                  @if ($related->handle)
+                    <div class="inf-list-handle">{{ $related->handle }}</div>
+                  @endif
+                  @if ($related->followers)
+                    <div class="inf-list-followers">
+                      <div class="inf-list-followers-num">{{ $related->followers }}</div>
+                      <div class="inf-list-followers-lbl">متابع</div>
+                    </div>
+                  @endif
+                </div>
+              </a>
+            @elseif ($related->category === 'artist')
+              <a href="{{ route($relatedRoute, $related) }}" class="art-list-card">
+                <div class="art-list-img">
+                  <img src="{{ $related->image_url ?: $fallbackImg }}" alt="{{ $related->name }}" loading="lazy" decoding="async">
+                  <div class="art-list-img-ov"></div>
+                  <span class="art-list-num">{{ str_pad((string) ($loopIndex + 1), 2, '0', STR_PAD_LEFT) }}</span>
+                </div>
+                <div class="art-list-body">
+                  <div class="art-list-role">{{ $related->role ?: 'فنان' }}</div>
+                  <h3 class="art-list-name">{{ $related->name }}</h3>
+                  <div class="art-list-country">{{ $related->flag }} {{ $related->country }}</div>
+                  @if ($related->excerpt)
+                    <p class="art-list-excerpt">{{ $related->excerpt }}</p>
+                  @endif
+                </div>
+              </a>
+            @else
+              <a href="{{ route($relatedRoute, $related) }}" class="doc-list-card">
+                <div class="doc-list-img">
+                  <img src="{{ $related->image_url ?: $fallbackImg }}" alt="{{ $related->name }}" loading="lazy" decoding="async">
+                  @if ($related->flag)
+                    <span class="doc-list-img-flag">{{ $related->flag }}</span>
+                  @endif
+                  <div class="doc-list-img-ov"></div>
+                </div>
+                <div class="doc-list-body">
+                  <div class="doc-list-spec">{{ $related->specialty ?: $related->role ?: '' }}</div>
+                  <h3 class="doc-list-name">{{ $related->name }}</h3>
+                  <div class="doc-list-hospital">{{ $related->hospital ?: $related->country ?: $related->company ?: '' }}</div>
+                  @if ($related->badge)
+                    <span class="doc-list-badge">{{ $related->badge }}</span>
+                  @endif
+                </div>
+              </a>
+            @endif
           @endif
         @endforeach
       </div>
