@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\EditorialPage;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 
@@ -14,7 +15,12 @@ class StaticPageController extends Controller
 
     public function editorial(): View
     {
-        return $this->render('editorial', 'هيئة التحرير', 'فريق تحريري متخصص يجمع بين الصحافة العربية والتحليل العميق.', view('site.pages.content.editorial')->render());
+        return $this->render(
+            'editorial',
+            EditorialPage::get('editorial_title'),
+            EditorialPage::get('editorial_lead'),
+            view('site.pages.content.editorial')->render(),
+        );
     }
 
     public function privacy(): View

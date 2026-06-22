@@ -1,20 +1,25 @@
-<h2>فريق التحرير</h2>
-<p>يعمل في مجلة العرب فريق تحريري متعدد التخصصات، يجمع بين صحفيين ومحللين وكتّاب عرب من مختلف أنحاء المنطقة. نلتزم بمعايير صحفية عالية ونغطي المشهد العربي بعمق وموضوعية.</p>
+@php
+    use App\Support\EditorialPage;
+@endphp
 
-<h2>المحررة الأولى</h2>
-<p><strong>ليلى منصور</strong> — محررة أولى، متخصصة في ملفات الأعمال والاقتصاد. سبق لها العمل في صحف ومجلات عربية ودولية.</p>
+<h2>{{ EditorialPage::get('editorial_team_title') }}</h2>
+<p>{{ EditorialPage::get('editorial_team_body') }}</p>
 
-<h2>فريق الأخبار</h2>
-<p><strong>عمر الفيصل</strong> — محرر أخبار وتحليلات اقتصادية وسياسية.<br>
-<strong>سارة خليل</strong> — مراسلة أعمال وريادة أعمال.<br>
-<strong>زينة الخوري</strong> — محررة فن وثقافة.<br>
-<strong>أميرة سعيد</strong> — محررة موضة وثقافة معاصرة.</p>
+<h2>{{ EditorialPage::get('editorial_lead_editor_title') }}</h2>
+<p><strong>{{ EditorialPage::get('editorial_lead_editor_name') }}</strong> — {{ EditorialPage::get('editorial_lead_editor_bio') }}</p>
 
-<h2>المدونات والآراء</h2>
-<p>نشرف على قسم المدونات لضمان تنوع الآراء والخبرات، مع الحفاظ على معايير الجودة والاحترام. آراء الكتّاب لا تعكس بالضرورة موقف المجلة الرسمي.</p>
+<h2>{{ EditorialPage::get('editorial_news_title') }}</h2>
+<p>
+    @foreach (EditorialPage::newsTeam() as $member)
+        <strong>{{ $member['name'] }}</strong> — {{ $member['role'] }}@if (! $loop->last)<br>@endif
+    @endforeach
+</p>
 
-<h2>التواصل التحريري</h2>
-<p>للاقتراحات التحريرية أو التصحيحات:<br>
-<a href="mailto:editor@alarab.com">editor@alarab.com</a></p>
+<h2>{{ EditorialPage::get('editorial_blogs_title') }}</h2>
+<p>{{ EditorialPage::get('editorial_blogs_body') }}</p>
+
+<h2>{{ EditorialPage::get('editorial_contact_title') }}</h2>
+<p>{{ EditorialPage::get('editorial_contact_intro') }}<br>
+<a href="mailto:{{ EditorialPage::get('editorial_contact_email') }}">{{ EditorialPage::get('editorial_contact_email') }}</a></p>
 
 <p><a href="{{ route('about') }}">عن المجلة ←</a> · <a href="{{ route('contact') }}">اتصل بنا ←</a></p>
