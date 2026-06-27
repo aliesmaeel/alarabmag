@@ -52,10 +52,27 @@ class BlogResource extends Resource
                 ),
                 Forms\Components\TextInput::make('slug')
                     ->label('الرابط (slug)')
-                    ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
-                    ->helperText('يُستخدم في رابط الصفحة: /blogs/عنوان-المقال — يدعم العربية والإنجليزية')
+                    ->placeholder('يُنشأ تلقائياً من العنوان')
+                    ->helperText('يُولَّد تلقائياً من العنوان. اتركه فارغاً لإنشائه تلقائياً، أو اضغط ↻ لإعادة توليده. يدعم العربية والإنجليزية.')
+                    ->suffixAction(
+                        Forms\Components\Actions\Action::make('generate_slug')
+                            ->icon('heroicon-m-arrow-path')
+                            ->tooltip('توليد الرابط من العنوان')
+                            ->action(function (Forms\Get $get, Set $set, ?Blog $record): void {
+                                $title = trim((string) $get('title'));
+
+                                if (blank($title)) {
+                                    \Filament\Notifications\Notification::make()
+                                        ->warning()->title('أدخل العنوان أولاً')->send();
+
+                                    return;
+                                }
+
+                                $set('slug', Blog::uniqueSlug($title, $record?->id));
+                            })
+                    )
                     ->columnSpanFull(),
                 AiAssist::apply(
                     Forms\Components\Textarea::make('excerpt')->label('المقتطف')->rows(3)->columnSpanFull(),
@@ -77,7 +94,9 @@ class BlogResource extends Resource
                     ->options(['published' => 'منشور', 'draft' => 'مسودة'])
                     ->required()->default('published')->native(false),
                 Forms\Components\Toggle::make('featured')->label('مميز'),
-                ImageUpload::make('image_url', 'صورة الغلاف')->columnSpanFull(),
+                ImageUpload::make('image_url', 'صورة الغلاف', '16:9')
+                    ->columnSpanFull()
+                    ->helperText('تُقصّ صورة الغلاف تلقائياً بنسبة 16:9 لتظهر بشكل مثالي على الجوال والويب. استخدم زر التحرير ✎ لتحديد الجزء المناسب قبل الحفظ.'),
             ])->columns(2),
 
             SeoFields::section('blog'),

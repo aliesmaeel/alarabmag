@@ -12,7 +12,7 @@
 
 /* COVER IMAGE */
 .blog-cover{max-width:1100px;margin:-2rem auto 0;padding:0 1.5rem;position:relative;z-index:2;}
-.blog-cover img{width:100%;height:auto;max-height:540px;object-fit:cover;display:block;}
+.blog-cover img{width:100%;height:auto;aspect-ratio:16/9;max-height:540px;object-fit:cover;object-position:center 30%;display:block;}
 
 /* BLOG BODY */
 .blog-section{background:var(--cream);padding:5rem 0;}
