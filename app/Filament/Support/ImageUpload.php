@@ -22,9 +22,13 @@ class ImageUpload
             ->getStateUsing(fn ($record) => self::resolveUrl($record->{$name} ?? null));
     }
 
-    public static function make(string $name, string $label): FileUpload
+    /**
+     * @param  string|null  $aspectRatio  When set (e.g. "16:9"), the uploaded image is cropped to
+     *                                     this ratio on upload so it displays consistently on the site.
+     */
+    public static function make(string $name, string $label, ?string $aspectRatio = null): FileUpload
     {
-        return FileUpload::make($name)
+        $field = FileUpload::make($name)
             ->label($label)
             ->image()
             ->disk('uploads')
@@ -45,5 +49,14 @@ class ImageUpload
                 'type' => null,
                 'url'  => $file,
             ]);
+
+        if ($aspectRatio !== null) {
+            $field
+                ->imageCropAspectRatio($aspectRatio)
+                ->imageEditorAspectRatios([$aspectRatio, null])
+                ->imageEditorMode(2);
+        }
+
+        return $field;
     }
 }

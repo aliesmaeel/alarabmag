@@ -55,10 +55,27 @@ class ArticleResource extends Resource
                 ),
                 Forms\Components\TextInput::make('slug')
                     ->label('الرابط (slug)')
-                    ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
-                    ->helperText('يُستخدم في رابط الصفحة: /news/عنوان-الخبر — يدعم العربية والإنجليزية')
+                    ->placeholder('يُنشأ تلقائياً من العنوان')
+                    ->helperText('يُولَّد تلقائياً من العنوان. اتركه فارغاً لإنشائه تلقائياً، أو اضغط ↻ لإعادة توليده. يدعم العربية والإنجليزية.')
+                    ->suffixAction(
+                        Forms\Components\Actions\Action::make('generate_slug')
+                            ->icon('heroicon-m-arrow-path')
+                            ->tooltip('توليد الرابط من العنوان')
+                            ->action(function (Forms\Get $get, Set $set, ?Article $record): void {
+                                $title = trim((string) $get('title'));
+
+                                if (blank($title)) {
+                                    \Filament\Notifications\Notification::make()
+                                        ->warning()->title('أدخل العنوان أولاً')->send();
+
+                                    return;
+                                }
+
+                                $set('slug', Article::uniqueSlug($title, $record?->id));
+                            })
+                    )
                     ->columnSpanFull(),
                 AiAssist::apply(
                     Forms\Components\TextInput::make('subtitle')
@@ -118,7 +135,8 @@ class ArticleResource extends Resource
             ])->columns(2),
 
             Forms\Components\Section::make('الصورة')->schema([
-                ImageUpload::make('image_url', 'صورة الخبر'),
+                ImageUpload::make('image_url', 'صورة الخبر', '16:9')
+                    ->helperText('تُقصّ الصورة تلقائيًا بنسبة 16:9 لتظهر بشكل مثالي في صفحة الخبر على الجوال والويب. استخدم زر التحرير ✎ لتحديد الجزء المناسب من الصورة قبل الحفظ.'),
             ]),
 
             SeoFields::section('article'),
