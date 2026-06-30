@@ -32,7 +32,7 @@ class InterviewController extends Controller
         $interviews = $query
             ->limit($request->integer('limit', 100))
             ->get()
-            ->map(fn (Interview $interview) => $this->presentInterview($interview));
+            ->map(fn(Interview $interview) => $this->presentInterview($interview));
 
         return response()->json(['success' => true, 'data' => $interviews]);
     }
@@ -58,7 +58,7 @@ class InterviewController extends Controller
             'title'         => 'required|string|max:1000',
             'slug'          => 'nullable|string|max:255|unique:interviews,slug',
             'description'   => 'nullable|string',
-            'video_url'     => 'required|string|max:1000',
+            'video_url'     => 'required|string|max:512000',
             'category'      => 'nullable|string|max:100',
             'thumbnail_url' => 'nullable|string|max:1000',
             'featured'      => 'nullable|boolean',
