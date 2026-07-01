@@ -39,6 +39,8 @@
 
     <x-site.header :active="$activeNav ?? null" />
 
+    <x-site.adsense-leaderboard />
+
     <x-site.page-sidebar :active-nav="$activeNav ?? null" />
 
     @yield('content')

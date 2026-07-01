@@ -1,3 +1,10 @@
+/* ── ADSENSE ── */
+.site-ad--leaderboard{
+  display:flex;justify-content:center;padding:.75rem 1rem;
+  overflow-x:auto;background:var(--cream,#f8f4ee);
+  border-bottom:1px solid rgba(26,26,26,.08);
+}
+
 /* ── SECTION SIDEBAR (all pages) ── */
 .page-sidebar{
   position:fixed;left:0;top:65%;translate:0 -50%;z-index:90;
