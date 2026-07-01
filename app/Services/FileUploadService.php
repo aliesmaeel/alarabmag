@@ -10,6 +10,15 @@ use Throwable;
 
 class FileUploadService
 {
+    public const VIDEO_MIME_TYPES = [
+        'video/mp4',
+        'video/webm',
+        'video/quicktime',
+        'video/x-msvideo',
+    ];
+
+    public const VIDEO_MAX_BYTES = 524_288_000;
+
     public function storageDisk(): string
     {
         $type = trim((string) env('STORAGE_TYPE', 's3'), " \t\n\r\0\x0B'\"");
@@ -35,23 +44,23 @@ class FileUploadService
 
         $destination = $storageType === 'public'
             ? $directory
-            : 'storage/' . $directory;
+            : 'storage/'.$directory;
 
         $disk = Storage::disk($storageType);
 
         if ($file instanceof UploadedFile) {
             $extension = $file->getClientOriginalExtension() ?: 'mp4';
             $slug = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-            $basename = time() . '-' . ($slug !== '' ? $slug : Str::random(8)) . '.' . $extension;
+            $basename = time().'-'.($slug !== '' ? $slug : Str::random(8)).'.'.$extension;
 
             $storedPath = $disk->putFileAs($destination, $file, $basename);
         } else {
-            $basename = time() . '-' . Str::random(8) . '.bin';
-            $storedPath = $disk->put($destination . '/' . $basename, $file);
+            $basename = time().'-'.Str::random(8).'.bin';
+            $storedPath = $disk->put($destination.'/'.$basename, $file);
         }
 
         if (! is_string($storedPath) || trim($storedPath) === '') {
-            throw new RuntimeException('Failed to upload file to ' . $storageType . ' storage.');
+            throw new RuntimeException('Failed to upload file to '.$storageType.' storage.');
         }
 
         $storedPath = trim($storedPath, '/');
@@ -62,13 +71,54 @@ class FileUploadService
             }
 
             if ($storageType === 'public' && str_contains($storedPath, $directory)) {
-                return $directory . '/' . basename($storedPath);
+                return $directory.'/'.basename($storedPath);
             }
 
             return $storedPath;
         }
 
         return basename($storedPath);
+    }
+
+    /**
+     * @return array{upload_url: string, path: string, headers: array<string, string>}
+     */
+    public function createPresignedVideoUpload(string $originalName, string $contentType): array
+    {
+        if ($this->storageDisk() !== 's3') {
+            throw new RuntimeException('Direct S3 upload requires STORAGE_TYPE=s3.');
+        }
+
+        if (! in_array($contentType, self::VIDEO_MIME_TYPES, true)) {
+            throw new RuntimeException('Unsupported video type.');
+        }
+
+        $relativePath = 'interviews/videos/'.$this->videoBasename($originalName);
+        $s3Key = 'storage/'.$relativePath;
+
+        $client = Storage::disk('s3')->getClient();
+        $command = $client->getCommand('PutObject', [
+            'Bucket' => config('filesystems.disks.s3.bucket'),
+            'Key' => $s3Key,
+            'ContentType' => $contentType,
+        ]);
+
+        $presignedRequest = $client->createPresignedRequest($command, '+30 minutes');
+
+        return [
+            'upload_url' => (string) $presignedRequest->getUri(),
+            'path' => $relativePath,
+            'headers' => [
+                'Content-Type' => $contentType,
+            ],
+        ];
+    }
+
+    public function confirmVideoUpload(string $path): bool
+    {
+        $key = $this->s3ObjectKey($path);
+
+        return filled($key) && Storage::disk('s3')->exists($key);
     }
 
     public function resolveUrl(?string $value): ?string
@@ -100,7 +150,7 @@ class FileUploadService
         if ($disk === 's3') {
             $key = str_starts_with($value, 'storage/')
                 ? $value
-                : 'storage/' . ltrim($value, '/');
+                : 'storage/'.ltrim($value, '/');
 
             if (trim($key, '/') === '' || trim($key, '/') === 'storage') {
                 return null;
@@ -124,7 +174,7 @@ class FileUploadService
 
         $disk = $this->storageDisk();
         $key = $disk === 's3'
-            ? (str_starts_with($value, 'storage/') ? $value : 'storage/' . ltrim($value, '/'))
+            ? (str_starts_with($value, 'storage/') ? $value : 'storage/'.ltrim($value, '/'))
             : ltrim($value, '/');
 
         if (trim($key, '/') === '' || trim($key, '/') === 'storage') {
@@ -175,9 +225,17 @@ class FileUploadService
 
         $key = str_starts_with($value, 'storage/')
             ? $value
-            : 'storage/' . ltrim($value, '/');
+            : 'storage/'.ltrim($value, '/');
 
         return trim($key, '/') !== '' && trim($key, '/') !== 'storage' ? $key : null;
+    }
+
+    protected function videoBasename(string $originalName): string
+    {
+        $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION) ?: 'mp4');
+        $slug = Str::slug(pathinfo($originalName, PATHINFO_FILENAME));
+
+        return time().'-'.($slug !== '' ? $slug : Str::random(8)).'.'.$extension;
     }
 
     protected function s3PlaybackUrl(string $key): string
