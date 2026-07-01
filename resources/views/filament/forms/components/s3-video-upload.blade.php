@@ -105,7 +105,7 @@
                                 reject(new Error('فشل رفع الملف إلى S3.'));
                             });
 
-                            xhr.addEventListener('error', () => reject(new Error('حدث خطأ أثناء الرفع إلى S3.')));
+                            xhr.addEventListener('error', () => reject(new Error('فشل الرفع إلى S3. غالباً بسبب إعداد CORS على الـ bucket. على السيرفر شغّل: php artisan s3:configure-upload-cors')));
                             xhr.addEventListener('abort', () => reject(new Error('تم إلغاء الرفع.')));
 
                             xhr.open('PUT', presign.upload_url);

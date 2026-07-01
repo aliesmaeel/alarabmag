@@ -121,6 +121,65 @@ class FileUploadService
         return filled($key) && Storage::disk('s3')->exists($key);
     }
 
+    /**
+     * @return list<string>
+     */
+    public function uploadCorsOrigins(): array
+    {
+        $origins = array_filter(array_map(
+            fn (string $origin) => rtrim(trim($origin), '/'),
+            explode(',', (string) env('S3_UPLOAD_CORS_ORIGINS', ''))
+        ));
+
+        foreach ([config('app.url'), env('APP_URL')] as $appUrl) {
+            if (! filled($appUrl)) {
+                continue;
+            }
+
+            $origin = rtrim(trim((string) $appUrl), '/');
+
+            if (preg_match('#^https?://#i', $origin)) {
+                $origins[] = $origin;
+            }
+        }
+
+        foreach ($origins as $origin) {
+            if (preg_match('#^https://(www\.)?([^/]+)$#i', $origin, $matches)) {
+                $host = $matches[2];
+                $origins[] = 'https://'.$host;
+                $origins[] = 'https://www.'.$host;
+            }
+        }
+
+        $origins[] = 'http://localhost:8000';
+        $origins[] = 'http://127.0.0.1:8000';
+
+        return array_values(array_unique(array_filter($origins)));
+    }
+
+    /**
+     * @param  array<string, mixed>  $rule
+     */
+    public function applyUploadCors(array $rule): void
+    {
+        if ($this->storageDisk() !== 's3') {
+            throw new RuntimeException('Direct S3 upload requires STORAGE_TYPE=s3.');
+        }
+
+        $bucket = (string) config('filesystems.disks.s3.bucket');
+
+        if ($bucket === '') {
+            throw new RuntimeException('AWS_BUCKET is not configured.');
+        }
+
+        Storage::disk('s3')->getClient()->putBucketCors([
+            'Bucket' => $bucket,
+            'CORSConfiguration' => [
+                'CORSRules' => [$rule],
+            ],
+        ]);
+    }
+
     public function resolveUrl(?string $value): ?string
     {
         if (! filled($value)) {
