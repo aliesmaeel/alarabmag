@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Services\FileUploadService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class UploadController extends Controller
 {
@@ -24,13 +23,15 @@ class UploadController extends Controller
 
         return response()->json([
             'success' => true,
-            'url'     => $this->files->resolveUrl($path),
-            'path'    => $path,
+            'url' => $this->files->resolveUrl($path),
+            'path' => $path,
         ]);
     }
 
     public function storeVideo(Request $request): JsonResponse
     {
+        set_time_limit(600);
+
         $request->validate([
             'video' => 'required|file|mimetypes:video/mp4,video/webm,video/quicktime,video/x-msvideo|max:512000',
         ]);
@@ -39,8 +40,8 @@ class UploadController extends Controller
 
         return response()->json([
             'success' => true,
-            'url'     => $this->files->resolveUrl($path),
-            'path'    => $path,
+            'url' => $this->files->resolveUrl($path),
+            'path' => $path,
         ]);
     }
 }

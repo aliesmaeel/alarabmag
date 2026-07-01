@@ -58,4 +58,28 @@ class S3VideoUploadController extends Controller
             'url' => $this->files->resolveUrl($validated['path']),
         ]);
     }
+
+    public function store(Request $request): JsonResponse
+    {
+        set_time_limit(600);
+
+        $validated = $request->validate([
+            'video' => 'required|file|mimetypes:video/mp4,video/webm,video/quicktime,video/x-msvideo|max:512000',
+        ]);
+
+        try {
+            $path = $this->files->uploadFile($validated['video'], 'interviews/videos');
+        } catch (RuntimeException $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'path' => $path,
+            'url' => $this->files->resolveUrl($path),
+        ]);
+    }
 }

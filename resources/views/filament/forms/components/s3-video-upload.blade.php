@@ -11,7 +11,7 @@
     @unless ($getUsesDirectS3Upload())
         <x-filament::section>
             <p class="text-sm text-danger-600 dark:text-danger-400">
-                الرفع المباشر إلى S3 يتطلب ضبط <code class="text-xs">STORAGE_TYPE=s3</code> في ملف البيئة.
+                رفع الفيديو يتطلب ضبط <code class="text-xs">STORAGE_TYPE=s3</code> في ملف البيئة.
             </p>
         </x-filament::section>
     @else
@@ -23,8 +23,7 @@
                 progress: 0,
                 error: null,
                 fileName: null,
-                presignUrl: @js($getPresignUrl()),
-                confirmUrl: @js($getConfirmUrl()),
+                uploadUrl: @js($getUploadUrl()),
                 maxSizeBytes: @js($getMaxSizeBytes()),
                 acceptedTypes: @js($getAcceptedMimeTypes()),
                 csrf: @js(csrf_token()),
@@ -54,6 +53,21 @@
 
                     return true;
                 },
+                parseErrorMessage(xhr) {
+                    try {
+                        const body = JSON.parse(xhr.responseText);
+
+                        if (body.message) {
+                            return body.message;
+                        }
+
+                        if (body.errors?.video?.[0]) {
+                            return body.errors.video[0];
+                        }
+                    } catch (error) {}
+
+                    return 'فشل رفع الفيديو. تحقق من حجم الملف وإعدادات السيرفر.';
+                },
                 async upload(event) {
                     const file = event.target.files?.[0];
 
@@ -67,27 +81,10 @@
                     this.error = null;
 
                     try {
-                        const presignResponse = await fetch(this.presignUrl, {
-                            method: 'POST',
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': this.csrf,
-                            },
-                            body: JSON.stringify({
-                                filename: file.name,
-                                content_type: file.type,
-                                size: file.size,
-                            }),
-                        });
+                        const formData = new FormData();
+                        formData.append('video', file);
 
-                        const presign = await presignResponse.json();
-
-                        if (! presignResponse.ok || ! presign.success) {
-                            throw new Error(presign.message || 'تعذّر تجهيز رابط الرفع.');
-                        }
-
-                        await new Promise((resolve, reject) => {
+                        const result = await new Promise((resolve, reject) => {
                             const xhr = new XMLHttpRequest();
 
                             xhr.upload.addEventListener('progress', (progressEvent) => {
@@ -98,38 +95,32 @@
 
                             xhr.addEventListener('load', () => {
                                 if (xhr.status >= 200 && xhr.status < 300) {
-                                    resolve();
+                                    try {
+                                        resolve(JSON.parse(xhr.responseText));
+                                    } catch (error) {
+                                        reject(new Error('استجابة غير متوقعة من السيرفر.'));
+                                    }
+
                                     return;
                                 }
 
-                                reject(new Error('فشل رفع الملف إلى S3.'));
+                                reject(new Error(this.parseErrorMessage(xhr)));
                             });
 
-                            xhr.addEventListener('error', () => reject(new Error('فشل الرفع إلى S3. غالباً بسبب إعداد CORS على الـ bucket. على السيرفر شغّل: php artisan s3:configure-upload-cors')));
+                            xhr.addEventListener('error', () => reject(new Error('حدث خطأ أثناء رفع الفيديو.')));
                             xhr.addEventListener('abort', () => reject(new Error('تم إلغاء الرفع.')));
 
-                            xhr.open('PUT', presign.upload_url);
-                            xhr.setRequestHeader('Content-Type', presign.headers['Content-Type'] || file.type);
-                            xhr.send(file);
+                            xhr.open('POST', this.uploadUrl);
+                            xhr.setRequestHeader('Accept', 'application/json');
+                            xhr.setRequestHeader('X-CSRF-TOKEN', this.csrf);
+                            xhr.send(formData);
                         });
 
-                        const confirmResponse = await fetch(this.confirmUrl, {
-                            method: 'POST',
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': this.csrf,
-                            },
-                            body: JSON.stringify({ path: presign.path }),
-                        });
-
-                        const confirmed = await confirmResponse.json();
-
-                        if (! confirmResponse.ok || ! confirmed.success) {
-                            throw new Error(confirmed.message || 'تعذّر التحقق من الملف بعد الرفع.');
+                        if (! result.success) {
+                            throw new Error(result.message || 'فشل رفع الفيديو.');
                         }
 
-                        this.path = presign.path;
+                        this.path = result.path;
                         this.progress = 100;
                     } catch (exception) {
                         this.error = exception.message || 'حدث خطأ أثناء رفع الفيديو.';
@@ -181,7 +172,7 @@
 
                 <div x-show="uploading" x-cloak class="mt-3 space-y-2">
                     <div class="flex items-center justify-between text-xs text-gray-600 dark:text-gray-300">
-                        <span>جاري الرفع مباشرة إلى S3...</span>
+                        <span>جاري الرفع إلى S3...</span>
                         <span x-text="`${progress}%`"></span>
                     </div>
                     <div class="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">

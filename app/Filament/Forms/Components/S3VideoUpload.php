@@ -33,6 +33,11 @@ class S3VideoUpload extends Field
         return $this->maxSizeKb * 1024;
     }
 
+    public function getUploadUrl(): string
+    {
+        return route('admin.video-upload.store');
+    }
+
     public function getPresignUrl(): string
     {
         return route('admin.video-upload.presign');

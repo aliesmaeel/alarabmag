@@ -49,6 +49,7 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap')
 Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');
 
 Route::middleware(['web', 'auth'])->prefix('dashboard/video-upload')->name('admin.video-upload.')->group(function () {
+    Route::post('store', [S3VideoUploadController::class, 'store'])->name('store');
     Route::post('presign', [S3VideoUploadController::class, 'presign'])->name('presign');
     Route::post('confirm', [S3VideoUploadController::class, 'confirm'])->name('confirm');
 });
