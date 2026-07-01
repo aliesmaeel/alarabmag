@@ -19,12 +19,17 @@ class S3VideoUploadController extends Controller
             'filename' => 'required|string|max:255',
             'content_type' => 'required|string|in:'.implode(',', FileUploadService::VIDEO_MIME_TYPES),
             'size' => 'required|integer|min:1|max:'.FileUploadService::VIDEO_MAX_BYTES,
+            'origin' => 'nullable|string|max:255',
         ]);
+
+        $requestOrigin = $request->header('Origin')
+            ?: ($validated['origin'] ?? null);
 
         try {
             $result = $this->files->createPresignedVideoUpload(
                 $validated['filename'],
                 $validated['content_type'],
+                $requestOrigin,
             );
         } catch (RuntimeException $exception) {
             return response()->json([

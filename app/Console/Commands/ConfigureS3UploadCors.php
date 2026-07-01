@@ -30,7 +30,7 @@ class ConfigureS3UploadCors extends Command
             return self::FAILURE;
         }
 
-        $origins = $files->uploadCorsOrigins();
+        $origins = $files->uploadCorsOrigins(null);
         $rule = [
             'AllowedHeaders' => ['*'],
             'AllowedMethods' => ['GET', 'PUT', 'POST', 'HEAD'],

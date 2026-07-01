@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -83,7 +84,7 @@ class FileUploadService
     /**
      * @return array{upload_url: string, path: string, headers: array<string, string>}
      */
-    public function createPresignedVideoUpload(string $originalName, string $contentType): array
+    public function createPresignedVideoUpload(string $originalName, string $contentType, ?string $requestOrigin = null): array
     {
         if ($this->storageDisk() !== 's3') {
             throw new RuntimeException('Direct S3 upload requires STORAGE_TYPE=s3.');
@@ -92,6 +93,8 @@ class FileUploadService
         if (! in_array($contentType, self::VIDEO_MIME_TYPES, true)) {
             throw new RuntimeException('Unsupported video type.');
         }
+
+        $this->ensureUploadCors($requestOrigin);
 
         $relativePath = 'interviews/videos/'.$this->videoBasename($originalName);
         $s3Key = 'storage/'.$relativePath;
@@ -124,14 +127,14 @@ class FileUploadService
     /**
      * @return list<string>
      */
-    public function uploadCorsOrigins(): array
+    public function uploadCorsOrigins(?string $requestOrigin = null): array
     {
         $origins = array_filter(array_map(
             fn (string $origin) => rtrim(trim($origin), '/'),
             explode(',', (string) env('S3_UPLOAD_CORS_ORIGINS', ''))
         ));
 
-        foreach ([config('app.url'), env('APP_URL')] as $appUrl) {
+        foreach ([config('app.url'), env('APP_URL'), $requestOrigin] as $appUrl) {
             if (! filled($appUrl)) {
                 continue;
             }
@@ -149,12 +152,108 @@ class FileUploadService
                 $origins[] = 'https://'.$host;
                 $origins[] = 'https://www.'.$host;
             }
+
+            if (preg_match('#^http://(www\.)?([^/]+)$#i', $origin, $matches)) {
+                $host = $matches[2];
+                $origins[] = 'http://'.$host;
+                $origins[] = 'http://www.'.$host;
+            }
         }
 
         $origins[] = 'http://localhost:8000';
         $origins[] = 'http://127.0.0.1:8000';
 
         return array_values(array_unique(array_filter($origins)));
+    }
+
+    public function ensureUploadCors(?string $requestOrigin = null): void
+    {
+        if ($this->storageDisk() !== 's3') {
+            return;
+        }
+
+        $bucket = (string) config('filesystems.disks.s3.bucket');
+
+        if ($bucket === '') {
+            return;
+        }
+
+        $requiredOrigins = $this->uploadCorsOrigins($requestOrigin);
+        $client = Storage::disk('s3')->getClient();
+
+        try {
+            $current = $client->getBucketCors(['Bucket' => $bucket]);
+            $rules = $current['CORSRules'] ?? [];
+        } catch (Throwable $exception) {
+            if (! str_contains($exception->getMessage(), 'NoSuchCORSConfiguration')) {
+                Log::warning('Unable to read S3 upload CORS configuration.', [
+                    'bucket' => $bucket,
+                    'message' => $exception->getMessage(),
+                ]);
+
+                return;
+            }
+
+            $rules = [];
+        }
+
+        $uploadRuleIndex = null;
+
+        foreach ($rules as $index => $rule) {
+            if (in_array('PUT', $rule['AllowedMethods'] ?? [], true)) {
+                $uploadRuleIndex = $index;
+                break;
+            }
+        }
+
+        if ($uploadRuleIndex !== null) {
+            $existingOrigins = $rules[$uploadRuleIndex]['AllowedOrigins'] ?? [];
+            $missingOrigins = array_values(array_diff($requiredOrigins, $existingOrigins));
+
+            if ($missingOrigins === []) {
+                return;
+            }
+
+            $rules[$uploadRuleIndex]['AllowedOrigins'] = array_values(array_unique([
+                ...$existingOrigins,
+                ...$requiredOrigins,
+            ]));
+            $rules[$uploadRuleIndex]['AllowedHeaders'] = ['*'];
+            $rules[$uploadRuleIndex]['AllowedMethods'] = array_values(array_unique([
+                ...($rules[$uploadRuleIndex]['AllowedMethods'] ?? []),
+                'GET',
+                'PUT',
+                'POST',
+                'HEAD',
+            ]));
+            $rules[$uploadRuleIndex]['ExposeHeaders'] = array_values(array_unique([
+                ...($rules[$uploadRuleIndex]['ExposeHeaders'] ?? []),
+                'ETag',
+                'x-amz-request-id',
+            ]));
+        } else {
+            $rules[] = [
+                'AllowedHeaders' => ['*'],
+                'AllowedMethods' => ['GET', 'PUT', 'POST', 'HEAD'],
+                'AllowedOrigins' => $requiredOrigins,
+                'ExposeHeaders' => ['ETag', 'x-amz-request-id'],
+                'MaxAgeSeconds' => 3600,
+            ];
+        }
+
+        try {
+            $client->putBucketCors([
+                'Bucket' => $bucket,
+                'CORSConfiguration' => [
+                    'CORSRules' => $rules,
+                ],
+            ]);
+        } catch (Throwable $exception) {
+            Log::warning('Unable to update S3 upload CORS configuration.', [
+                'bucket' => $bucket,
+                'message' => $exception->getMessage(),
+            ]);
+        }
     }
 
     /**

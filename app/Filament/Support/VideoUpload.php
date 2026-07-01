@@ -11,6 +11,6 @@ class VideoUpload
         return S3VideoUpload::make($name)
             ->label($label)
             ->maxSize(512000)
-            ->helperText('ارفع ملف فيديو (mp4, webm, mov) — يُخزَّن على Amazon S3. حد أقصى 500 ميجابايت.');
+            ->helperText('ارفع ملف فيديو (mp4, webm, mov) — يُرفع مباشرة إلى Amazon S3. حد أقصى 500 ميجابايت.');
     }
 }

@@ -23,7 +23,9 @@
                 progress: 0,
                 error: null,
                 fileName: null,
-                uploadUrl: @js($getUploadUrl()),
+                presignUrl: @js($getPresignUrl()),
+                confirmUrl: @js($getConfirmUrl()),
+                fallbackUploadUrl: @js($getUploadUrl()),
                 maxSizeBytes: @js($getMaxSizeBytes()),
                 acceptedTypes: @js($getAcceptedMimeTypes()),
                 csrf: @js(csrf_token()),
@@ -53,7 +55,7 @@
 
                     return true;
                 },
-                parseErrorMessage(xhr) {
+                parseJsonMessage(xhr, fallback) {
                     try {
                         const body = JSON.parse(xhr.responseText);
 
@@ -66,7 +68,109 @@
                         }
                     } catch (error) {}
 
-                    return 'فشل رفع الفيديو. تحقق من حجم الملف وإعدادات السيرفر.';
+                    return fallback;
+                },
+                uploadWithProgress(url, method, body, headers = {}) {
+                    return new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest();
+
+                        xhr.upload.addEventListener('progress', (progressEvent) => {
+                            if (progressEvent.lengthComputable) {
+                                this.progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                            }
+                        });
+
+                        xhr.addEventListener('load', () => {
+                            if (xhr.status >= 200 && xhr.status < 300) {
+                                resolve(xhr);
+                                return;
+                            }
+
+                            reject(new Error(this.parseJsonMessage(xhr, 'فشل رفع الفيديو.')));
+                        });
+
+                        xhr.addEventListener('error', () => reject(new Error('تعذّر الاتصال أثناء رفع الفيديو.')));
+                        xhr.addEventListener('abort', () => reject(new Error('تم إلغاء الرفع.')));
+
+                        xhr.open(method, url);
+
+                        Object.entries(headers).forEach(([key, value]) => {
+                            xhr.setRequestHeader(key, value);
+                        });
+
+                        xhr.send(body);
+                    });
+                },
+                async uploadDirect(file) {
+                    const presignResponse = await fetch(this.presignUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': this.csrf,
+                        },
+                        body: JSON.stringify({
+                            filename: file.name,
+                            content_type: file.type,
+                            size: file.size,
+                            origin: window.location.origin,
+                        }),
+                    });
+
+                    const presign = await presignResponse.json();
+
+                    if (! presignResponse.ok || ! presign.success) {
+                        throw new Error(presign.message || 'تعذّر تجهيز رابط الرفع.');
+                    }
+
+                    await this.uploadWithProgress(
+                        presign.upload_url,
+                        'PUT',
+                        file,
+                        {
+                            'Content-Type': presign.headers['Content-Type'] || file.type,
+                        },
+                    );
+
+                    const confirmResponse = await fetch(this.confirmUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': this.csrf,
+                        },
+                        body: JSON.stringify({ path: presign.path }),
+                    });
+
+                    const confirmed = await confirmResponse.json();
+
+                    if (! confirmResponse.ok || ! confirmed.success) {
+                        throw new Error(confirmed.message || 'تعذّر التحقق من الملف بعد الرفع.');
+                    }
+
+                    return presign.path;
+                },
+                async uploadViaServer(file) {
+                    const formData = new FormData();
+                    formData.append('video', file);
+
+                    const xhr = await this.uploadWithProgress(
+                        this.fallbackUploadUrl,
+                        'POST',
+                        formData,
+                        {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': this.csrf,
+                        },
+                    );
+
+                    const result = JSON.parse(xhr.responseText);
+
+                    if (! result.success) {
+                        throw new Error(result.message || 'فشل رفع الفيديو عبر السيرفر.');
+                    }
+
+                    return result.path;
                 },
                 async upload(event) {
                     const file = event.target.files?.[0];
@@ -81,46 +185,13 @@
                     this.error = null;
 
                     try {
-                        const formData = new FormData();
-                        formData.append('video', file);
-
-                        const result = await new Promise((resolve, reject) => {
-                            const xhr = new XMLHttpRequest();
-
-                            xhr.upload.addEventListener('progress', (progressEvent) => {
-                                if (progressEvent.lengthComputable) {
-                                    this.progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                                }
-                            });
-
-                            xhr.addEventListener('load', () => {
-                                if (xhr.status >= 200 && xhr.status < 300) {
-                                    try {
-                                        resolve(JSON.parse(xhr.responseText));
-                                    } catch (error) {
-                                        reject(new Error('استجابة غير متوقعة من السيرفر.'));
-                                    }
-
-                                    return;
-                                }
-
-                                reject(new Error(this.parseErrorMessage(xhr)));
-                            });
-
-                            xhr.addEventListener('error', () => reject(new Error('حدث خطأ أثناء رفع الفيديو.')));
-                            xhr.addEventListener('abort', () => reject(new Error('تم إلغاء الرفع.')));
-
-                            xhr.open('POST', this.uploadUrl);
-                            xhr.setRequestHeader('Accept', 'application/json');
-                            xhr.setRequestHeader('X-CSRF-TOKEN', this.csrf);
-                            xhr.send(formData);
-                        });
-
-                        if (! result.success) {
-                            throw new Error(result.message || 'فشل رفع الفيديو.');
+                        try {
+                            this.path = await this.uploadDirect(file);
+                        } catch (directError) {
+                            this.progress = 0;
+                            this.path = await this.uploadViaServer(file);
                         }
 
-                        this.path = result.path;
                         this.progress = 100;
                     } catch (exception) {
                         this.error = exception.message || 'حدث خطأ أثناء رفع الفيديو.';
@@ -172,7 +243,7 @@
 
                 <div x-show="uploading" x-cloak class="mt-3 space-y-2">
                     <div class="flex items-center justify-between text-xs text-gray-600 dark:text-gray-300">
-                        <span>جاري الرفع إلى S3...</span>
+                        <span>جاري الرفع مباشرة إلى Amazon S3...</span>
                         <span x-text="`${progress}%`"></span>
                     </div>
                     <div class="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
