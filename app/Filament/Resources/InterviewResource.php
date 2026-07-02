@@ -7,8 +7,10 @@ use App\Filament\Support\ImageUpload;
 use App\Filament\Support\SeoFields;
 use App\Filament\Support\VideoUpload;
 use App\Models\Interview;
+use App\Services\YouTubeService;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -21,10 +23,15 @@ class InterviewResource extends Resource
     protected static ?string $model = Interview::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-video-camera';
+
     protected static ?string $navigationLabel = 'المقابلات';
+
     protected static ?string $modelLabel = 'مقابلة';
+
     protected static ?string $pluralModelLabel = 'المقابلات';
+
     protected static ?string $navigationGroup = 'المحتوى';
+
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
@@ -53,8 +60,37 @@ class InterviewResource extends Resource
                     ->label('الوصف')
                     ->rows(4)
                     ->columnSpanFull(),
+                Forms\Components\Radio::make('video_source')
+                    ->label('مصدر الفيديو')
+                    ->options([
+                        's3' => 'رفع إلى Amazon S3',
+                        'youtube' => 'رابط يوتيوب',
+                    ])
+                    ->default('s3')
+                    ->live()
+                    ->dehydrated(false)
+                    ->afterStateUpdated(fn (Set $set) => $set('video_url', null))
+                    ->columnSpanFull(),
+                Forms\Components\TextInput::make('video_url')
+                    ->label('رابط يوتيوب')
+                    ->url()
+                    ->maxLength(1000)
+                    ->visible(fn (Get $get): bool => $get('video_source') === 'youtube')
+                    ->dehydrated(fn (Get $get): bool => $get('video_source') === 'youtube')
+                    ->required(fn (Get $get): bool => $get('video_source') === 'youtube')
+                    ->helperText('الصق رابط الفيديو من يوتيوب (يفضّل Unlisted للتضمين). يوتيوب يوفّر جودات متعددة تلقائياً.')
+                    ->rules([
+                        fn (): \Closure => function (string $attribute, mixed $value, \Closure $fail): void {
+                            if (! app(YouTubeService::class)->isYouTubeUrl(is_string($value) ? $value : null)) {
+                                $fail('يرجى إدخال رابط يوتيوب صالح (youtube.com أو youtu.be أو youtube.com/shorts).');
+                            }
+                        },
+                    ])
+                    ->columnSpanFull(),
                 VideoUpload::make('video_url', 'رفع فيديو (Amazon S3)')
-                    ->required()
+                    ->visible(fn (Get $get): bool => $get('video_source') !== 'youtube')
+                    ->dehydrated(fn (Get $get): bool => $get('video_source') !== 'youtube')
+                    ->required(fn (Get $get): bool => $get('video_source') !== 'youtube')
                     ->columnSpanFull(),
             ]),
 

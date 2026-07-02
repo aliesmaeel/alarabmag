@@ -9,6 +9,7 @@ use App\Models\Person;
 use App\Services\FileUploadService;
 use App\Services\SeoService;
 use App\Services\SiteContentService;
+use App\Services\YouTubeService;
 use App\Support\HomeSections;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -234,9 +235,20 @@ class SiteController extends Controller
 
         $rawVideo = $interview->getAttributes()['video_url'] ?? null;
         $rawThumb = $interview->getAttributes()['thumbnail_url'] ?? null;
+        $youtube = app(YouTubeService::class);
+        $videoSource = $youtube->videoSource($rawVideo);
 
-        $videoUrl = $files->playbackUrl($rawVideo, route('interviews.stream', $interview)) ?? $rawVideo;
-        $thumbnailUrl = $files->resolveUrl($rawThumb) ?? $rawThumb;
+        if ($videoSource === 'youtube') {
+            $videoUrl = $youtube->canonicalUrl($rawVideo);
+            $youtubeEmbedUrl = $youtube->embedUrl($rawVideo);
+            $youtubeWatchUrl = $videoUrl;
+            $thumbnailUrl = $youtube->thumbnailUrl($rawVideo);
+        } else {
+            $videoUrl = $files->playbackUrl($rawVideo, route('interviews.stream', $interview)) ?? $rawVideo;
+            $youtubeEmbedUrl = null;
+            $youtubeWatchUrl = null;
+            $thumbnailUrl = $files->resolveUrl($rawThumb) ?? $rawThumb;
+        }
 
         $latestArticles = Article::query()
             ->published()
@@ -250,6 +262,9 @@ class SiteController extends Controller
             'activeNav' => 'interviews',
             'interview' => $interview,
             'videoUrl' => $videoUrl,
+            'videoSource' => $videoSource,
+            'youtubeEmbedUrl' => $youtubeEmbedUrl,
+            'youtubeWatchUrl' => $youtubeWatchUrl ?? null,
             'thumbnailUrl' => $thumbnailUrl,
             'latestArticles' => $latestArticles,
             'footerVariant' => 'compact',

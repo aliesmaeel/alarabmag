@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Interview;
 use App\Services\FileUploadService;
+use App\Services\YouTubeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -11,6 +12,7 @@ class InterviewController extends Controller
 {
     public function __construct(
         protected FileUploadService $files,
+        protected YouTubeService $youtube,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -32,7 +34,7 @@ class InterviewController extends Controller
         $interviews = $query
             ->limit($request->integer('limit', 100))
             ->get()
-            ->map(fn(Interview $interview) => $this->presentInterview($interview));
+            ->map(fn (Interview $interview) => $this->presentInterview($interview));
 
         return response()->json(['success' => true, 'data' => $interviews]);
     }
@@ -55,14 +57,14 @@ class InterviewController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'title'         => 'required|string|max:1000',
-            'slug'          => 'nullable|string|max:255|unique:interviews,slug',
-            'description'   => 'nullable|string',
-            'video_url'     => 'required|string|max:512000',
-            'category'      => 'nullable|string|max:100',
+            'title' => 'required|string|max:1000',
+            'slug' => 'nullable|string|max:255|unique:interviews,slug',
+            'description' => 'nullable|string',
+            'video_url' => 'required|string|max:512000',
+            'category' => 'nullable|string|max:100',
             'thumbnail_url' => 'nullable|string|max:1000',
-            'featured'      => 'nullable|boolean',
-            'status'        => 'nullable|in:published,draft',
+            'featured' => 'nullable|boolean',
+            'status' => 'nullable|in:published,draft',
         ]);
 
         $validated['category'] = $validated['category'] ?? 'عام';
@@ -78,14 +80,14 @@ class InterviewController extends Controller
         $interview = Interview::findOrFail($id);
 
         $validated = $request->validate([
-            'title'         => 'required|string|max:1000',
-            'slug'          => 'nullable|string|max:255|unique:interviews,slug,' . $id,
-            'description'   => 'nullable|string',
-            'video_url'     => 'required|string|max:1000',
-            'category'      => 'nullable|string|max:100',
+            'title' => 'required|string|max:1000',
+            'slug' => 'nullable|string|max:255|unique:interviews,slug,'.$id,
+            'description' => 'nullable|string',
+            'video_url' => 'required|string|max:1000',
+            'category' => 'nullable|string|max:100',
             'thumbnail_url' => 'nullable|string|max:1000',
-            'featured'      => 'nullable|boolean',
-            'status'        => 'nullable|in:published,draft',
+            'featured' => 'nullable|boolean',
+            'status' => 'nullable|in:published,draft',
         ]);
 
         $interview->update($validated);
@@ -104,12 +106,21 @@ class InterviewController extends Controller
     {
         $rawVideo = $interview->getAttributes()['video_url'] ?? null;
         $rawThumb = $interview->getAttributes()['thumbnail_url'] ?? null;
+        $videoSource = $this->youtube->videoSource($rawVideo);
 
-        $interview->setAttribute(
-            'video_url',
-            $this->files->playbackUrl($rawVideo, route('interviews.stream', $interview)) ?? $rawVideo
-        );
-        $interview->setAttribute('thumbnail_url', $this->files->resolveUrl($rawThumb) ?? $rawThumb);
+        if ($videoSource === 'youtube') {
+            $interview->setAttribute('video_url', $this->youtube->embedUrl($rawVideo) ?? $rawVideo);
+            $interview->setAttribute('thumbnail_url', $this->youtube->thumbnailUrl($rawVideo));
+            $interview->setAttribute('youtube_watch_url', $this->youtube->canonicalUrl($rawVideo));
+        } else {
+            $interview->setAttribute(
+                'video_url',
+                $this->files->playbackUrl($rawVideo, route('interviews.stream', $interview)) ?? $rawVideo
+            );
+            $interview->setAttribute('thumbnail_url', $this->files->resolveUrl($rawThumb) ?? $rawThumb);
+        }
+
+        $interview->setAttribute('video_source', $videoSource);
 
         return $interview;
     }

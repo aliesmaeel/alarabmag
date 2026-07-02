@@ -1,6 +1,7 @@
 @php
-    $hasVideo = filled($videoUrl) && ! preg_match('#youtube\.com|youtu\.be|vimeo\.com#i', (string) $videoUrl);
-    $videoType = $hasVideo && preg_match('/\.webm(\?|$)/i', $videoUrl) ? 'video/webm' : ($hasVideo && preg_match('/\.ogg(\?|$)/i', $videoUrl) ? 'video/ogg' : 'video/mp4');
+    $isYouTube = ($videoSource ?? 's3') === 'youtube' && filled($youtubeEmbedUrl ?? null);
+    $hasS3Video = ! $isYouTube && filled($videoUrl);
+    $videoType = $hasS3Video && preg_match('/\.webm(\?|$)/i', $videoUrl) ? 'video/webm' : ($hasS3Video && preg_match('/\.ogg(\?|$)/i', $videoUrl) ? 'video/ogg' : 'video/mp4');
     $poster = $thumbnailUrl ?: null;
 @endphp
 
@@ -16,7 +17,24 @@
         </div>
       </header>
 
-      @if ($hasVideo)
+      @if ($isYouTube)
+        <div class="video-player video-player--youtube">
+          <div class="video-player__youtube">
+            <iframe
+              src="{{ $youtubeEmbedUrl }}"
+              title="{{ $interview->title }}"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              referrerpolicy="strict-origin-when-cross-origin"
+            ></iframe>
+          </div>
+          @if (filled($youtubeWatchUrl ?? null))
+            <p class="video-player__youtube-fallback">
+              <a href="{{ $youtubeWatchUrl }}" target="_blank" rel="noopener noreferrer">شاهد على يوتيوب ↗</a>
+            </p>
+          @endif
+        </div>
+      @elseif ($hasS3Video)
         <div class="video-player" id="videoPlayer" data-share-title="{{ $interview->title }}">
           <div class="video-player__media">
           <video id="interviewVideo" playsinline preload="none" @if($poster) poster="{{ $poster }}" @endif>
@@ -80,7 +98,7 @@
         </div>
       @else
         <div class="video-player video-player--fallback">
-          <p>{{ filled($videoUrl) ? 'يرجى رفع ملف فيديو من S3 في لوحة التحكم.' : 'لا يوجد فيديو لهذه المقابلة.' }}</p>
+          <p>لا يوجد فيديو لهذه المقابلة.</p>
         </div>
       @endif
 
