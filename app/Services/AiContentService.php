@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Filament\Support\KeywordsInput;
 use App\Support\OutboundHttp;
+use App\Support\SiteBrand;
+use App\Support\SiteSeoDefaults;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -103,6 +105,103 @@ PROMPT;
             'og_title' => Str::limit((string) ($decoded['og_title'] ?? ''), 500, ''),
             'og_description' => Str::limit((string) ($decoded['og_description'] ?? ''), 500, ''),
         ];
+    }
+
+    /**
+     * Generate SEO settings for every site page in one AI request.
+     *
+     * @return array<string, string>
+     */
+    public function generateSitePagesSeo(?string $instruction = null): array
+    {
+        $this->ensureConfigured();
+
+        $pageLines = collect(SiteSeoDefaults::pagesForAi())
+            ->map(fn (array $page): string => "- {$page['key']}: {$page['label']} — {$page['hint']}")
+            ->implode("\n");
+
+        $pageKeys = implode(', ', array_keys(SiteSeoDefaults::pageMeta()));
+
+        $prompt = "أنشئ SEO كاملاً لموقع مجلة العرب (alarabmag.com).\n\n";
+        $prompt .= "الصفحات:\n{$pageLines}\n\n";
+        $prompt .= 'العلامة: '.SiteBrand::NAME_AR.' ('.SiteBrand::NAME_EN.").\n";
+
+        if ($instruction) {
+            $prompt .= "\nتعليمات إضافية: {$instruction}\n";
+        }
+
+        $prompt .= <<<PROMPT
+
+
+أجب بـ JSON فقط (بدون markdown) بهذا الشكل:
+{
+  "general": {
+    "seo_title": "عنوان افتراضي 50–60 حرفاً",
+    "seo_description": "وصف افتراضي 140–160 حرفاً",
+    "seo_keywords": ["مجلة العرب", "Al Arab Magazine"]
+  },
+  "pages": {
+    "home": {
+      "title": "",
+      "description": "",
+      "keywords": ["", ""],
+      "og_title": "",
+      "og_description": ""
+    }
+  }
+}
+
+يجب أن تحتوي pages على كل المفاتيح: {$pageKeys}.
+title للصفحة الرئيسية يبدأ بـ «مجلة العرب». keywords مصفوفة JSON لكل صفحة.
+PROMPT;
+
+        $decoded = $this->extractJsonObject(
+            $this->chat($this->systemPrompt(['content_type' => 'إعدادات SEO للموقع']), $prompt, config('ai.article_timeout', 120))
+        );
+
+        return $this->mapSiteSeoResponse($decoded);
+    }
+
+    /**
+     * @param  array<string, mixed>  $decoded
+     * @return array<string, string>
+     */
+    protected function mapSiteSeoResponse(array $decoded): array
+    {
+        $settings = [];
+
+        $general = $decoded['general'] ?? [];
+        if (is_array($general)) {
+            $settings['seo_title'] = Str::limit((string) ($general['seo_title'] ?? SiteBrand::defaultTitle()), 255, '');
+            $settings['seo_description'] = Str::limit((string) ($general['seo_description'] ?? SiteBrand::defaultDescription()), 500, '');
+            $settings['seo_keywords'] = KeywordsInput::toString(KeywordsInput::toArray($general['seo_keywords'] ?? SiteBrand::KEYWORDS));
+        }
+
+        $pages = $decoded['pages'] ?? [];
+        if (! is_array($pages)) {
+            return $settings;
+        }
+
+        foreach (SiteSeoDefaults::pageMeta() as $key => $defaults) {
+            $page = $pages[$key] ?? [];
+            if (! is_array($page)) {
+                continue;
+            }
+
+            $title = Str::limit((string) ($page['title'] ?? $defaults['title']), 255, '');
+            $description = Str::limit((string) ($page['description'] ?? $defaults['description']), 500, '');
+            $keywords = KeywordsInput::toString(KeywordsInput::toArray($page['keywords'] ?? $defaults['keywords']));
+            $ogTitle = Str::limit((string) ($page['og_title'] ?? $title), 255, '');
+            $ogDescription = Str::limit((string) ($page['og_description'] ?? $description), 500, '');
+
+            $settings["seo_{$key}_title"] = $title;
+            $settings["seo_{$key}_description"] = $description;
+            $settings["seo_{$key}_keywords"] = $keywords;
+            $settings["og_{$key}_title"] = $ogTitle;
+            $settings["og_{$key}_description"] = $ogDescription;
+        }
+
+        return $settings;
     }
 
     protected function systemPrompt(array $context): string

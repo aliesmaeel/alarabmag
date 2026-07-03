@@ -4,6 +4,7 @@
 use App\Support\SiteBrand;
 
 $pageUrl = $seo->canonical ?: url()->current();
+$googleVerification = app(\App\Services\SeoService::class)->googleSiteVerification();
 @endphp
 
 <title>{{ e($seo->title) }}</title>
@@ -22,8 +23,8 @@ $pageUrl = $seo->canonical ?: url()->current();
 <meta name="geo.region" content="AE-DU">
 <meta name="geo.placename" content="Dubai">
 
-@if (filled(config('seo.google_site_verification')))
-<meta name="google-site-verification" content="{{ e(config('seo.google_site_verification')) }}">
+@if (filled($googleVerification))
+<meta name="google-site-verification" content="{{ e($googleVerification) }}">
 @endif
 
 @if($seo->robots)

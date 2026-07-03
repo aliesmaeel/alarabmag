@@ -30,15 +30,18 @@ class SeoService
     public function staticPage(string $pageKey, string $title, string $description): SeoMeta
     {
         $siteName = $this->setting('site_name', SiteBrand::NAME_AR);
+        $title = $this->setting("seo_{$pageKey}_title") ?: $title;
+        $description = $this->setting("seo_{$pageKey}_description") ?: $description;
+        $keywords = $this->setting("seo_{$pageKey}_keywords") ?: $this->setting('seo_keywords');
 
         return $this->makeMeta(
             title: $this->suffixSiteName($title, $siteName),
             description: $description,
-            keywords: $this->setting('seo_keywords'),
+            keywords: $keywords,
             canonical: $this->pageUrl($pageKey),
-            ogTitle: $title,
-            ogDescription: $description,
-            ogImage: $this->defaultOgImage(),
+            ogTitle: $this->setting("og_{$pageKey}_title") ?: $title,
+            ogDescription: $this->setting("og_{$pageKey}_description") ?: $description,
+            ogImage: $this->resolveImage($this->setting("og_{$pageKey}_image")),
             ogType: 'website',
         );
     }
@@ -188,6 +191,11 @@ class SeoService
         $value = $this->settings[$key] ?? null;
 
         return filled($value) ? $value : $default;
+    }
+
+    public function googleSiteVerification(): ?string
+    {
+        return $this->setting('google_site_verification') ?: config('seo.google_site_verification');
     }
 
     protected function defaultOgImage(): ?string

@@ -7,6 +7,7 @@ use App\Models\Blog;
 use App\Models\Person;
 use App\Models\Setting;
 use App\Models\User;
+use App\Support\SiteSeoDefaults;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -499,35 +500,10 @@ class DatabaseSeeder extends Seeder
             'tiktok' => '@alarab',
             'whatsapp' => '+971500000000',
             'facebook' => 'alarabmagazine',
-            'seo_title' => 'مجلة العرب | Al Arab Magazine',
-            'seo_description' => 'مجلة العرب (Al Arab Magazine) — المجلة العربية الأولى للإنسان العربي المتميّز: أخبار، حوارات، مؤثرون، فنانون، وأطباء عرب.',
-            'seo_keywords' => 'مجلة العرب, مجلة العرب الإلكترونية, Al Arab Magazine, alarabmag, alarab magazine, مجلة عربية, أخبار عربية, حوارات عربية, مؤثرون عرب, فنانون عرب, أطباء عرب',
-            'og_site_name' => 'مجلة العرب',
-            'og_default_image' => '/logo.png',
-            'twitter_card' => 'summary_large_image',
-            'seo_home_title' => 'مجلة العرب | Al Arab Magazine — المجلة العربية الأولى',
-            'seo_home_description' => 'مجلة العرب — المجلة العربية الأولى للإنسان المتميّز. أخبار، مقابلات فيديو، مؤثرون، فنانون وأطباء عرب. Al Arab Magazine من دبي للعالم العربي.',
-            'seo_news_title' => 'الأخبار — نبض العالم العربي',
-            'seo_news_description' => 'أحدث الأخبار والتحليلات من قلب المنطقة العربية.',
-            'seo_blogs_title' => 'المدونات — أقلام تحكي',
-            'seo_blogs_description' => 'آراء وتجارب وقصص من كتّاب ومبدعين عرب.',
-            'seo_doctors_title' => 'أطباء عرب — يعالجون العالم',
-            'seo_doctors_description' => 'ملفات عن أطباء عرب يقودون الطب والبحث عالمياً.',
-            'seo_influencers_title' => 'المؤثرون العرب',
-            'seo_influencers_description' => 'نجوم السوشيال ميديا العرب عبر الموضة والتقنية والثقافة.',
-            'seo_artists_title' => 'الفنانون العرب',
-            'seo_artists_description' => 'فنانون عرب يفرضون حضورهم على المسرح والسينما والفن.',
-            'seo_business_title' => 'الأعمال العربية — رواد يُغيّرون الاقتصاد',
-            'seo_business_description' => 'ملفات وقصص عن رجال الأعمال العرب ورواد الاقتصاد في الخليج والمشرق.',
-            'seo_fashion_title' => 'الموضة العربية — أناقة وإبداع',
-            'seo_fashion_description' => 'تقارير الموضة العربية من باريس إلى الرياض ودبي.',
-            'seo_interviews_title' => 'المقابلات — حوارات تُلهم',
-            'seo_interviews_description' => 'مقابلات فيديو حصرية مع شخصيات عربية مؤثرة: رواد أعمال، فنانين، مؤثرين، وأطباء.',
-            'seo_interviews_keywords' => 'مقابلات, حوارات, فيديو, مجلة العرب, Al Arab Magazine',
         ];
 
-        Setting::setMany($settings);
+        Setting::setMany(array_merge($settings, SiteSeoDefaults::all()));
 
-        $this->command->line('  → Settings seeded ('.count($settings).' keys)');
+        $this->command->line('  → Settings seeded ('.(count($settings) + count(SiteSeoDefaults::all())).' keys)');
     }
 }
