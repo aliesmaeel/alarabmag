@@ -11,8 +11,11 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        if (config('app.env') === 'production') {
-            URL::forceScheme('https');
+        $appUrl = config('app.url');
+
+        if (config('app.env') === 'production' && filled($appUrl)) {
+            URL::forceRootUrl($appUrl);
+            URL::forceScheme(parse_url($appUrl, PHP_URL_SCHEME) ?: 'https');
         }
     }
 }

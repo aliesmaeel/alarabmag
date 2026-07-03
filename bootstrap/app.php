@@ -17,6 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.token' => \App\Http\Middleware\AdminToken::class,
         ]);
 
+        $middleware->web(append: [
+            \App\Http\Middleware\ForceCanonicalUrl::class,
+        ]);
+
         // Allow all origins for API (for local dev)
         $middleware->api(append: [
             \Illuminate\Http\Middleware\HandleCors::class,
