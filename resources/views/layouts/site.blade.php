@@ -12,6 +12,9 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @if (config('ads.enabled') && filled(config('ads.client')))
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config('ads.client') }}" crossorigin="anonymous"></script>
+    @endif
     @isset($seo)
         <x-site.seo-meta :seo="$seo" :entity="$jsonLdEntity ?? null" />
     @else
@@ -60,24 +63,5 @@
     <script src="{{ asset('js/site/chrome.js') }}" defer></script>
     <script src="{{ asset('js/site/sidebar.js') }}" defer></script>
     @stack('scripts')
-    <script>
-    (function () {
-      function loadAdSense() {
-        if (window.__adsenseLoaded) return;
-        window.__adsenseLoaded = true;
-        var s = document.createElement('script');
-        s.async = true;
-        s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6158011037590169';
-        s.crossOrigin = 'anonymous';
-        s.onerror = function () { window.__adsenseLoaded = false; };
-        document.head.appendChild(s);
-      }
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(loadAdSense, { timeout: 4000 });
-      } else {
-        window.addEventListener('load', loadAdSense, { once: true });
-      }
-    })();
-    </script>
 </body>
 </html>
