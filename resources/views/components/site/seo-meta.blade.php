@@ -16,8 +16,15 @@ $pageUrl = $seo->canonical ?: url()->current();
 <meta name="keywords" content="{{ e($seo->keywords) }}">
 @endif
 
+<meta name="application-name" content="{{ e(SiteBrand::NAME_AR) }}">
 <meta name="author" content="{{ e(SiteBrand::NAME_AR) }}">
 <meta name="publisher" content="{{ e(SiteBrand::NAME_EN) }}">
+<meta name="geo.region" content="AE-DU">
+<meta name="geo.placename" content="Dubai">
+
+@if (filled(config('seo.google_site_verification')))
+<meta name="google-site-verification" content="{{ e(config('seo.google_site_verification')) }}">
+@endif
 
 @if($seo->robots)
 <meta name="robots" content="{{ e($seo->robots) }}">

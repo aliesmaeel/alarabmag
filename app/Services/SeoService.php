@@ -229,6 +229,7 @@ class SeoService
 
         if (request()->routeIs('home')) {
             $graphs[] = $this->websiteSchema();
+            $graphs[] = $this->magazineSchema();
         }
 
         if ($seo) {
@@ -251,18 +252,33 @@ class SeoService
     {
         $schema = [
             '@context' => 'https://schema.org',
-            '@type' => 'Organization',
-            '@id' => url('/') . '#organization',
+            '@type' => 'NewsMediaOrganization',
+            '@id' => url('/').'#organization',
             'name' => SiteBrand::NAME_AR,
             'alternateName' => SiteBrand::alternateNames(),
             'url' => url('/'),
-            'logo' => $this->defaultOgImage(),
+            'logo' => [
+                '@type' => 'ImageObject',
+                'url' => $this->defaultOgImage(),
+            ],
             'description' => $this->setting('site_description', SiteBrand::defaultDescription()),
+            'knowsAbout' => SiteBrand::knowsAbout(),
+            'inLanguage' => 'ar',
         ];
 
         if ($email = $this->setting('editor_email')) {
             $schema['email'] = $email;
         }
+
+        $schema['location'] = [
+            '@type' => 'Place',
+            'name' => 'مدينة دبي للإعلام',
+            'address' => [
+                '@type' => 'PostalAddress',
+                'addressLocality' => 'Dubai',
+                'addressCountry' => 'AE',
+            ],
+        ];
 
         $sameAs = array_values(array_filter([
             $this->socialUrl('instagram'),
@@ -285,12 +301,31 @@ class SeoService
         return [
             '@context' => 'https://schema.org',
             '@type' => 'WebSite',
-            '@id' => url('/') . '#website',
+            '@id' => url('/').'#website',
             'name' => SiteBrand::NAME_AR,
             'alternateName' => SiteBrand::alternateNames(),
             'url' => url('/'),
+            'description' => SiteBrand::homeDescription(),
             'inLanguage' => 'ar',
-            'publisher' => ['@id' => url('/') . '#organization'],
+            'publisher' => ['@id' => url('/').'#organization'],
+            'about' => ['@id' => url('/').'#magazine'],
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    protected function magazineSchema(): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'Magazine',
+            '@id' => url('/').'#magazine',
+            'name' => SiteBrand::NAME_AR,
+            'alternateName' => SiteBrand::alternateNames(),
+            'url' => url('/'),
+            'description' => SiteBrand::homeDescription(),
+            'inLanguage' => 'ar',
+            'publisher' => ['@id' => url('/').'#organization'],
+            'isPartOf' => ['@id' => url('/').'#website'],
         ];
     }
 
@@ -300,13 +335,14 @@ class SeoService
         return [
             '@context' => 'https://schema.org',
             '@type' => 'WebPage',
-            '@id' => ($seo->canonical ?: url('/')) . '#webpage',
+            '@id' => ($seo->canonical ?: url('/')).'#webpage',
             'url' => $seo->canonical ?: url('/'),
             'name' => $seo->title,
             'description' => $seo->description,
             'inLanguage' => 'ar',
-            'isPartOf' => ['@id' => url('/') . '#website'],
-            'about' => ['@id' => url('/') . '#organization'],
+            'isPartOf' => ['@id' => url('/').'#website'],
+            'about' => ['@id' => url('/').'#organization'],
+            'publisher' => ['@id' => url('/').'#organization'],
         ];
     }
 
@@ -318,11 +354,11 @@ class SeoService
         }
 
         return match ($platform) {
-            'instagram' => str_starts_with($value, 'http') ? $value : 'https://instagram.com/' . ltrim($value, '@'),
-            'twitter' => str_starts_with($value, 'http') ? $value : 'https://x.com/' . ltrim($value, '@'),
-            'youtube' => str_starts_with($value, 'http') ? $value : 'https://youtube.com/' . ltrim($value, '@'),
-            'facebook' => str_starts_with($value, 'http') ? $value : 'https://facebook.com/' . ltrim($value, '@'),
-            'tiktok' => str_starts_with($value, 'http') ? $value : 'https://tiktok.com/@' . ltrim($value, '@'),
+            'instagram' => str_starts_with($value, 'http') ? $value : 'https://instagram.com/'.ltrim($value, '@'),
+            'twitter' => str_starts_with($value, 'http') ? $value : 'https://x.com/'.ltrim($value, '@'),
+            'youtube' => str_starts_with($value, 'http') ? $value : 'https://youtube.com/'.ltrim($value, '@'),
+            'facebook' => str_starts_with($value, 'http') ? $value : 'https://facebook.com/'.ltrim($value, '@'),
+            'tiktok' => str_starts_with($value, 'http') ? $value : 'https://tiktok.com/@'.ltrim($value, '@'),
             default => null,
         };
     }
@@ -342,7 +378,7 @@ class SeoService
                 '@type' => 'Person',
                 'name' => $article->author ?: 'فريق التحرير',
             ],
-            'publisher' => ['@id' => url('/') . '#organization'],
+            'publisher' => ['@id' => url('/').'#organization'],
             'mainEntityOfPage' => route('news.show', $article),
             'inLanguage' => 'ar',
         ];
@@ -363,7 +399,7 @@ class SeoService
                 '@type' => 'Person',
                 'name' => $blog->author ?: 'فريق التحرير',
             ],
-            'publisher' => ['@id' => url('/') . '#organization'],
+            'publisher' => ['@id' => url('/').'#organization'],
             'mainEntityOfPage' => route('blogs.show', $blog),
             'inLanguage' => 'ar',
         ];

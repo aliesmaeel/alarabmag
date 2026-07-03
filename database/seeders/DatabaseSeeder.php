@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use App\Models\Article;
 use App\Models\Blog;
 use App\Models\Person;
 use App\Models\Setting;
 use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'admin@alarab.com'],
             [
-                'name'     => 'مدير الموقع',
+                'name' => 'مدير الموقع',
                 'password' => Hash::make('password'),
             ],
         );
@@ -43,82 +43,82 @@ class DatabaseSeeder extends Seeder
     {
         $articles = [
             [
-                'title'     => 'أحمد الراشدي: الرجل الذي يُعيد كتابة قواعد الاقتصاد العربي',
-                'subtitle'  => 'رجل الأعمال العربي لعام 2026',
-                'excerpt'   => 'ثلاث شركات يونيكورن قبل سن الأربعين. جولة استثمارية بـ400 مليون دولار. ورؤية تجعل الوطن العربي المركز المالي التالي للعالم.',
-                'body'      => '<p>في مكتب زجاجي يُطل على مركز دبي المالي الدولي، يجلس أحمد الراشدي بثقة الرجل الذي بنى ثلاث شركات يونيكورن قبل أن يبلغ الأربعين.</p><p>مشروعه الأحدث — منصة تقنية مالية تُعيد تشكيل المدفوعات عبر الحدود في منطقة الشرق الأوسط وشمال أفريقيا — أغلق جولة Series C بقيمة 400 مليون دولار في فبراير الماضي. ورفض عرض استحواذ بستة مليارات دولار بعدها بستة أشهر.</p>',
-                'category'  => 'أعمال',
-                'author'    => 'ليلى منصور',
+                'title' => 'أحمد الراشدي: الرجل الذي يُعيد كتابة قواعد الاقتصاد العربي',
+                'subtitle' => 'رجل الأعمال العربي لعام 2026',
+                'excerpt' => 'ثلاث شركات يونيكورن قبل سن الأربعين. جولة استثمارية بـ400 مليون دولار. ورؤية تجعل الوطن العربي المركز المالي التالي للعالم.',
+                'body' => '<p>في مكتب زجاجي يُطل على مركز دبي المالي الدولي، يجلس أحمد الراشدي بثقة الرجل الذي بنى ثلاث شركات يونيكورن قبل أن يبلغ الأربعين.</p><p>مشروعه الأحدث — منصة تقنية مالية تُعيد تشكيل المدفوعات عبر الحدود في منطقة الشرق الأوسط وشمال أفريقيا — أغلق جولة Series C بقيمة 400 مليون دولار في فبراير الماضي. ورفض عرض استحواذ بستة مليارات دولار بعدها بستة أشهر.</p>',
+                'category' => 'أعمال',
+                'author' => 'ليلى منصور',
                 'image_url' => 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=1200&q=85',
                 'read_time' => '12 دقيقة',
-                'featured'  => true,
-                'status'    => 'published',
-                'region'    => 'الإمارات',
+                'featured' => true,
+                'status' => 'published',
+                'region' => 'الإمارات',
             ],
             [
-                'title'     => 'خالد الزعبي يوقع عقداً تاريخياً مع الهلال بـ180 مليون درهم',
-                'subtitle'  => 'أضخم صفقة في كرة القدم الخليجية',
-                'excerpt'   => 'صفقة تُعيد رسم خريطة كرة القدم الخليجية وتضع اللاعب العربي في بؤرة الاهتمام العالمي.',
-                'body'      => '<p>في خطوة تاريخية هزّت أروقة كرة القدم الخليجية، وقّع المهاجم الإماراتي خالد الزعبي عقداً مع نادي الهلال السعودي بقيمة 180 مليون درهم.</p>',
-                'category'  => 'رياضة',
-                'author'    => 'عمر الفيصل',
+                'title' => 'خالد الزعبي يوقع عقداً تاريخياً مع الهلال بـ180 مليون درهم',
+                'subtitle' => 'أضخم صفقة في كرة القدم الخليجية',
+                'excerpt' => 'صفقة تُعيد رسم خريطة كرة القدم الخليجية وتضع اللاعب العربي في بؤرة الاهتمام العالمي.',
+                'body' => '<p>في خطوة تاريخية هزّت أروقة كرة القدم الخليجية، وقّع المهاجم الإماراتي خالد الزعبي عقداً مع نادي الهلال السعودي بقيمة 180 مليون درهم.</p>',
+                'category' => 'رياضة',
+                'author' => 'عمر الفيصل',
                 'image_url' => 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=85',
                 'read_time' => '6 دقائق',
-                'featured'  => true,
-                'status'    => 'published',
-                'region'    => 'الإمارات',
+                'featured' => true,
+                'status' => 'published',
+                'region' => 'الإمارات',
             ],
             [
-                'title'     => 'ريما الحسن تصنع التاريخ في مهرجان كان 2026',
-                'subtitle'  => 'جائزة أفضل مخرجة',
-                'excerpt'   => 'المخرجة الأردنية تترك جمهور كان في صمت دقيقة كاملة قبل تصفيق استمر تسع دقائق.',
-                'body'      => '<p>على خشبة مسرح كان، وقفت ريما الحسن تحمل جائزة أفضل مخرجة وعيناها تلمعان بالفخر والدموع معاً.</p>',
-                'category'  => 'فن',
-                'author'    => 'زينة الخوري',
+                'title' => 'ريما الحسن تصنع التاريخ في مهرجان كان 2026',
+                'subtitle' => 'جائزة أفضل مخرجة',
+                'excerpt' => 'المخرجة الأردنية تترك جمهور كان في صمت دقيقة كاملة قبل تصفيق استمر تسع دقائق.',
+                'body' => '<p>على خشبة مسرح كان، وقفت ريما الحسن تحمل جائزة أفضل مخرجة وعيناها تلمعان بالفخر والدموع معاً.</p>',
+                'category' => 'فن',
+                'author' => 'زينة الخوري',
                 'image_url' => 'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1200&q=85',
                 'read_time' => '8 دقائق',
-                'featured'  => true,
-                'status'    => 'published',
-                'region'    => 'الأردن',
+                'featured' => true,
+                'status' => 'published',
+                'region' => 'الأردن',
             ],
             [
-                'title'     => 'أول دار أزياء سعودية في أسبوع باريس للأزياء',
-                'subtitle'  => 'لحظة تاريخية للموضة العربية',
-                'excerpt'   => 'المصمم السعودي يُثبت أن الهوية العربية قادرة على قيادة المشهد العالمي.',
-                'body'      => '<p>في قلب العاصمة الفرنسية، وسط صالة تضم صفوة عالم الموضة، خطت عارضات الأزياء بأثواب تمزج الجماليات العربية الأصيلة بالأناقة العالمية.</p>',
-                'category'  => 'موضة',
-                'author'    => 'أميرة سعيد',
+                'title' => 'أول دار أزياء سعودية في أسبوع باريس للأزياء',
+                'subtitle' => 'لحظة تاريخية للموضة العربية',
+                'excerpt' => 'المصمم السعودي يُثبت أن الهوية العربية قادرة على قيادة المشهد العالمي.',
+                'body' => '<p>في قلب العاصمة الفرنسية، وسط صالة تضم صفوة عالم الموضة، خطت عارضات الأزياء بأثواب تمزج الجماليات العربية الأصيلة بالأناقة العالمية.</p>',
+                'category' => 'موضة',
+                'author' => 'أميرة سعيد',
                 'image_url' => 'https://images.unsplash.com/photo-1559181567-c3190ca9be46?auto=format&fit=crop&w=1200&q=85',
                 'read_time' => '6 دقائق',
-                'featured'  => false,
-                'status'    => 'published',
-                'region'    => 'السعودية',
+                'featured' => false,
+                'status' => 'published',
+                'region' => 'السعودية',
             ],
             [
-                'title'     => 'صفقات العقارات الفاخرة في دبي تتجاوز 68 مليار درهم',
-                'subtitle'  => 'تقرير الربع الأول 2026',
-                'excerpt'   => 'نمو 34% على أساس سنوي مع تزايد إقبال المستثمرين الدوليين.',
-                'body'      => '<p>كشف أحدث تقرير عقاري أن إجمالي الصفقات في قطاع العقارات الفاخرة بدبي تجاوز 68 مليار درهم خلال الربع الأول من 2026.</p>',
-                'category'  => 'أعمال',
-                'author'    => 'فريق التحرير',
+                'title' => 'صفقات العقارات الفاخرة في دبي تتجاوز 68 مليار درهم',
+                'subtitle' => 'تقرير الربع الأول 2026',
+                'excerpt' => 'نمو 34% على أساس سنوي مع تزايد إقبال المستثمرين الدوليين.',
+                'body' => '<p>كشف أحدث تقرير عقاري أن إجمالي الصفقات في قطاع العقارات الفاخرة بدبي تجاوز 68 مليار درهم خلال الربع الأول من 2026.</p>',
+                'category' => 'أعمال',
+                'author' => 'فريق التحرير',
                 'image_url' => 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=85',
                 'read_time' => '5 دقائق',
-                'featured'  => false,
-                'status'    => 'published',
-                'region'    => 'الإمارات',
+                'featured' => false,
+                'status' => 'published',
+                'region' => 'الإمارات',
             ],
             [
-                'title'     => 'لينا الرفاعي: بنت شركة بمليار دولار من عمّان',
-                'subtitle'  => 'مقابلة حصرية',
-                'excerpt'   => 'رفضت عروض وادي السيليكون وبنت فريقها كاملاً من المواهب العربية.',
-                'body'      => '<p>في مكتبها الواسع في عمّان، تستقبلنا لينا الرفاعي بابتسامة هادئة لا تخفي وراءها طموحاً لا حدود له.</p>',
-                'category'  => 'أعمال',
-                'author'    => 'سارة خليل',
+                'title' => 'لينا الرفاعي: بنت شركة بمليار دولار من عمّان',
+                'subtitle' => 'مقابلة حصرية',
+                'excerpt' => 'رفضت عروض وادي السيليكون وبنت فريقها كاملاً من المواهب العربية.',
+                'body' => '<p>في مكتبها الواسع في عمّان، تستقبلنا لينا الرفاعي بابتسامة هادئة لا تخفي وراءها طموحاً لا حدود له.</p>',
+                'category' => 'أعمال',
+                'author' => 'سارة خليل',
                 'image_url' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1200&q=85',
                 'read_time' => '10 دقائق',
-                'featured'  => false,
-                'status'    => 'published',
-                'region'    => 'الأردن',
+                'featured' => false,
+                'status' => 'published',
+                'region' => 'الأردن',
             ],
         ];
 
@@ -126,44 +126,44 @@ class DatabaseSeeder extends Seeder
             Article::create($data);
         }
 
-        $this->command->line('  → Articles seeded (' . count($articles) . ' records)');
+        $this->command->line('  → Articles seeded ('.count($articles).' records)');
     }
 
     private function seedBlogs(): void
     {
         $blogs = [
             [
-                'title'      => 'لماذا الموسيقى العربية تُسيطر على قوائم سبوتيفاي العالمية الآن؟',
-                'excerpt'    => 'الموجة العربية الجديدة ليست صدفة، إنها نتيجة سنوات من البناء الصامت.',
-                'body'       => '<p>منذ بداية عام 2025، بدأ المستمعون حول العالم يلاحظون ظاهرة جديدة: أغانٍ عربية تتسلل إلى قوائم التشغيل العالمية.</p>',
-                'author'     => 'أميرة سعيد',
+                'title' => 'لماذا الموسيقى العربية تُسيطر على قوائم سبوتيفاي العالمية الآن؟',
+                'excerpt' => 'الموجة العربية الجديدة ليست صدفة، إنها نتيجة سنوات من البناء الصامت.',
+                'body' => '<p>منذ بداية عام 2025، بدأ المستمعون حول العالم يلاحظون ظاهرة جديدة: أغانٍ عربية تتسلل إلى قوائم التشغيل العالمية.</p>',
+                'author' => 'أميرة سعيد',
                 'author_bio' => 'كاتبة ومحللة ثقافية متخصصة في الموسيقى العربية',
-                'image_url'  => 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=85',
-                'tags'       => 'موسيقى,ثقافة,سبوتيفاي,فن عربي',
-                'featured'   => true,
-                'status'     => 'published',
+                'image_url' => 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=85',
+                'tags' => 'موسيقى,ثقافة,سبوتيفاي,فن عربي',
+                'featured' => true,
+                'status' => 'published',
             ],
             [
-                'title'      => 'كيف تبني علامتك التجارية الشخصية في الفضاء العربي الرقمي',
-                'excerpt'    => 'دليل عملي للمؤثرين الطموحين في العالم العربي.',
-                'body'       => '<p>في عالم تتزاحم فيه الأصوات وتتشابك فيه الهويات، أصبح بناء علامة شخصية قوية ضرورة لا رفاهية.</p>',
-                'author'     => 'خالد الشمراني',
+                'title' => 'كيف تبني علامتك التجارية الشخصية في الفضاء العربي الرقمي',
+                'excerpt' => 'دليل عملي للمؤثرين الطموحين في العالم العربي.',
+                'body' => '<p>في عالم تتزاحم فيه الأصوات وتتشابك فيه الهويات، أصبح بناء علامة شخصية قوية ضرورة لا رفاهية.</p>',
+                'author' => 'خالد الشمراني',
                 'author_bio' => 'خبير تسويق رقمي ومؤثر رقمي',
-                'image_url'  => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=85',
-                'tags'       => 'مؤثرون,تسويق,رقمي,علامة شخصية',
-                'featured'   => false,
-                'status'     => 'published',
+                'image_url' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=85',
+                'tags' => 'مؤثرون,تسويق,رقمي,علامة شخصية',
+                'featured' => false,
+                'status' => 'published',
             ],
             [
-                'title'      => 'الطبيب العربي في الخارج: بين الاغتراب والإنجاز',
-                'excerpt'    => 'قصص أطباء عرب غيّروا مسار الطب الحديث من خارج الوطن.',
-                'body'       => '<p>لم يكن د. خالد العمري يتوقع يوم تخرجه من كلية الطب في الرياض أن اسمه سيُذكر يوماً ما في أروقة مايو كلينيك.</p>',
-                'author'     => 'د. رانيا مصطفى',
+                'title' => 'الطبيب العربي في الخارج: بين الاغتراب والإنجاز',
+                'excerpt' => 'قصص أطباء عرب غيّروا مسار الطب الحديث من خارج الوطن.',
+                'body' => '<p>لم يكن د. خالد العمري يتوقع يوم تخرجه من كلية الطب في الرياض أن اسمه سيُذكر يوماً ما في أروقة مايو كلينيك.</p>',
+                'author' => 'د. رانيا مصطفى',
                 'author_bio' => 'طبيبة أطفال وكاتبة، زميلة جامعة هارفارد',
-                'image_url'  => 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=85',
-                'tags'       => 'أطباء,اغتراب,طب,إنجاز عربي',
-                'featured'   => false,
-                'status'     => 'published',
+                'image_url' => 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=85',
+                'tags' => 'أطباء,اغتراب,طب,إنجاز عربي',
+                'featured' => false,
+                'status' => 'published',
             ],
         ];
 
@@ -171,7 +171,7 @@ class DatabaseSeeder extends Seeder
             Blog::create($data);
         }
 
-        $this->command->line('  → Blogs seeded (' . count($blogs) . ' records)');
+        $this->command->line('  → Blogs seeded ('.count($blogs).' records)');
     }
 
     private function seedPeople(): void
@@ -205,7 +205,7 @@ class DatabaseSeeder extends Seeder
             Person::create($data);
         }
 
-        $this->command->line('  → People seeded (' . count($people) . ' records)');
+        $this->command->line('  → People seeded ('.count($people).' records)');
     }
 
     private function seedBusinessAndFashionContent(): void
@@ -472,7 +472,7 @@ class DatabaseSeeder extends Seeder
 
         $order = 1;
         foreach ($titles as $title) {
-            $article = Article::where('title', 'like', $title . '%')->first();
+            $article = Article::where('title', 'like', $title.'%')->first();
             if ($article) {
                 $article->update(['in_ticker' => true, 'ticker_order' => $order++]);
             }
@@ -486,48 +486,48 @@ class DatabaseSeeder extends Seeder
     private function seedSettings(): void
     {
         $settings = [
-            'site_name'        => 'مجلة العرب',
-            'ticker_label'     => 'عاجل',
-            'site_name_en'     => 'Al Arab Magazine',
-            'site_tagline'     => 'قوة. تميّز. الإنسان العربي.',
+            'site_name' => 'مجلة العرب',
+            'ticker_label' => 'عاجل',
+            'site_name_en' => 'Al Arab Magazine',
+            'site_tagline' => 'قوة. تميّز. الإنسان العربي.',
             'site_description' => 'المجلة العربية الأولى للإنسان العربي المتميّز',
-            'current_issue'    => 'العدد الثاني عشر · ربيع 2026',
-            'editor_email'     => 'editor@alarab.com',
-            'instagram'        => '@alarab_magazine',
-            'twitter'          => '@alarabmag',
-            'youtube'          => '@alarabmagazine',
-            'tiktok'           => '@alarab',
-            'whatsapp'         => '+971500000000',
-            'facebook'         => 'alarabmagazine',
-            'seo_title'              => 'مجلة العرب | Al Arab Magazine',
-            'seo_description'        => 'مجلة العرب (Al Arab Magazine) — المجلة العربية الأولى للإنسان العربي المتميّز: أخبار، مدونات، مؤثرون، فنانون، وأطباء عرب.',
-            'seo_keywords'           => 'مجلة العرب, Al Arab Magazine, alarab magazine, مجلة عربية, أخبار عربية, مؤثرون عرب, فنانون عرب, أطباء عرب',
-            'og_site_name'           => 'مجلة العرب',
-            'og_default_image'       => '/logo.png',
-            'twitter_card'           => 'summary_large_image',
-            'seo_home_title'         => 'مجلة العرب | Al Arab Magazine — المجلة العربية للإنسان المتميّز',
-            'seo_home_description'   => 'مجلة العرب Al Arab Magazine — اكتشف قصص المؤثرين والفنانين والأطباء ورواد الأعمال العرب. المجلة العربية الأولى للإنسان المتميّز، من دبي للعالم العربي.',
-            'seo_news_title'         => 'الأخبار — نبض العالم العربي',
-            'seo_news_description'   => 'أحدث الأخبار والتحليلات من قلب المنطقة العربية.',
-            'seo_blogs_title'        => 'المدونات — أقلام تحكي',
-            'seo_blogs_description'  => 'آراء وتجارب وقصص من كتّاب ومبدعين عرب.',
-            'seo_doctors_title'      => 'أطباء عرب — يعالجون العالم',
-            'seo_doctors_description'=> 'ملفات عن أطباء عرب يقودون الطب والبحث عالمياً.',
-            'seo_influencers_title'  => 'المؤثرون العرب',
+            'current_issue' => 'العدد الثاني عشر · ربيع 2026',
+            'editor_email' => 'editor@alarab.com',
+            'instagram' => '@alarab_magazine',
+            'twitter' => '@alarabmag',
+            'youtube' => '@alarabmagazine',
+            'tiktok' => '@alarab',
+            'whatsapp' => '+971500000000',
+            'facebook' => 'alarabmagazine',
+            'seo_title' => 'مجلة العرب | Al Arab Magazine',
+            'seo_description' => 'مجلة العرب (Al Arab Magazine) — المجلة العربية الأولى للإنسان العربي المتميّز: أخبار، حوارات، مؤثرون، فنانون، وأطباء عرب.',
+            'seo_keywords' => 'مجلة العرب, مجلة العرب الإلكترونية, Al Arab Magazine, alarabmag, alarab magazine, مجلة عربية, أخبار عربية, حوارات عربية, مؤثرون عرب, فنانون عرب, أطباء عرب',
+            'og_site_name' => 'مجلة العرب',
+            'og_default_image' => '/logo.png',
+            'twitter_card' => 'summary_large_image',
+            'seo_home_title' => 'مجلة العرب | Al Arab Magazine — المجلة العربية الأولى',
+            'seo_home_description' => 'مجلة العرب — المجلة العربية الأولى للإنسان المتميّز. أخبار، مقابلات فيديو، مؤثرون، فنانون وأطباء عرب. Al Arab Magazine من دبي للعالم العربي.',
+            'seo_news_title' => 'الأخبار — نبض العالم العربي',
+            'seo_news_description' => 'أحدث الأخبار والتحليلات من قلب المنطقة العربية.',
+            'seo_blogs_title' => 'المدونات — أقلام تحكي',
+            'seo_blogs_description' => 'آراء وتجارب وقصص من كتّاب ومبدعين عرب.',
+            'seo_doctors_title' => 'أطباء عرب — يعالجون العالم',
+            'seo_doctors_description' => 'ملفات عن أطباء عرب يقودون الطب والبحث عالمياً.',
+            'seo_influencers_title' => 'المؤثرون العرب',
             'seo_influencers_description' => 'نجوم السوشيال ميديا العرب عبر الموضة والتقنية والثقافة.',
-            'seo_artists_title'      => 'الفنانون العرب',
-            'seo_artists_description'=> 'فنانون عرب يفرضون حضورهم على المسرح والسينما والفن.',
-            'seo_business_title'     => 'الأعمال العربية — رواد يُغيّرون الاقتصاد',
+            'seo_artists_title' => 'الفنانون العرب',
+            'seo_artists_description' => 'فنانون عرب يفرضون حضورهم على المسرح والسينما والفن.',
+            'seo_business_title' => 'الأعمال العربية — رواد يُغيّرون الاقتصاد',
             'seo_business_description' => 'ملفات وقصص عن رجال الأعمال العرب ورواد الاقتصاد في الخليج والمشرق.',
-            'seo_fashion_title'      => 'الموضة العربية — أناقة وإبداع',
+            'seo_fashion_title' => 'الموضة العربية — أناقة وإبداع',
             'seo_fashion_description' => 'تقارير الموضة العربية من باريس إلى الرياض ودبي.',
-            'seo_interviews_title'         => 'المقابلات — حوارات تُلهم',
-            'seo_interviews_description'   => 'مقابلات فيديو حصرية مع شخصيات عربية مؤثرة: رواد أعمال، فنانين، مؤثرين، وأطباء.',
-            'seo_interviews_keywords'      => 'مقابلات, حوارات, فيديو, مجلة العرب, Al Arab Magazine',
+            'seo_interviews_title' => 'المقابلات — حوارات تُلهم',
+            'seo_interviews_description' => 'مقابلات فيديو حصرية مع شخصيات عربية مؤثرة: رواد أعمال، فنانين، مؤثرين، وأطباء.',
+            'seo_interviews_keywords' => 'مقابلات, حوارات, فيديو, مجلة العرب, Al Arab Magazine',
         ];
 
         Setting::setMany($settings);
 
-        $this->command->line('  → Settings seeded (' . count($settings) . ' keys)');
+        $this->command->line('  → Settings seeded ('.count($settings).' keys)');
     }
 }

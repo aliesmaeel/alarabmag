@@ -18,7 +18,7 @@
     @isset($seo)
         <x-site.seo-meta :seo="$seo" :entity="$jsonLdEntity ?? null" />
     @else
-        <title>@yield('title', 'مجلة العرب | Al Arab Magazine')</title>
+        <title>@yield('title', 'مجلة العرب | Al Arab Magazine — المجلة العربية الأولى')</title>
         <meta name="description" content="مجلة العرب (Al Arab Magazine) — المجلة العربية الأولى للإنسان العربي المتميّز.">
     @endisset
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\SeoService;
 use App\Support\EditorialPage;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
@@ -10,7 +11,7 @@ class StaticPageController extends Controller
 {
     public function about(): View
     {
-        return $this->render('about', 'عن العرب', 'المجلة العربية الأولى التي تحتفي بالإنسان العربي المتميّز في كل مكان.', view('site.pages.content.about')->render());
+        return $this->render('about', 'مجلة العرب — عن المجلة', 'تعرّف على مجلة العرب (Al Arab Magazine) — المجلة العربية الأولى التي تحتفي بالإنسان العربي المتميّز، صادرة من دبي للعالم العربي.', view('site.pages.content.about')->render());
     }
 
     public function editorial(): View
@@ -54,7 +55,7 @@ class StaticPageController extends Controller
 
     protected function render(string $key, string $title, string $lead, string $content, ?string $updated = null): View
     {
-        $seo = app(\App\Services\SeoService::class)->staticPage($key, $title, $lead);
+        $seo = app(SeoService::class)->staticPage($key, $title, $lead);
 
         return view('site.pages.static', [
             'seo' => $seo,
