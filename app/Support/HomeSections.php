@@ -25,6 +25,7 @@ class HomeSections
             ['key' => 'fashion', 'label' => 'الموضة العربية', 'id' => 'fashion', 'route' => 'fashion.index'],
             ['key' => 'news', 'label' => 'الأخبار', 'id' => 'news', 'route' => 'news.index'],
             ['key' => 'blogs', 'label' => 'المدونات', 'id' => 'blogs', 'route' => 'blogs.index'],
+            ['key' => 'magazine', 'label' => 'المجلة', 'id' => 'magazine', 'route' => 'magazine.index'],
         ];
 
         if (static::hasInterviews()) {
@@ -36,11 +37,19 @@ class HomeSections
         return $items;
     }
 
-    /** Header nav: on homepage, scroll to in-page sections. */
+    /** Header nav: on homepage, scroll to in-page sections (except dedicated pages like المجلة). */
     public static function href(array $item, bool $onHome): string
     {
+        if ($item['id'] === 'top') {
+            return $onHome ? '#top' : url('/');
+        }
+
+        if (isset($item['route']) && ($item['key'] === 'magazine' || ! $onHome)) {
+            return route($item['route']);
+        }
+
         if ($onHome) {
-            return $item['id'] === 'top' ? '#top' : '#'.$item['id'];
+            return '#'.$item['id'];
         }
 
         if (isset($item['route'])) {

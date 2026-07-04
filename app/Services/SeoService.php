@@ -6,6 +6,7 @@ use App\Filament\Support\ImageUpload;
 use App\Models\Article;
 use App\Models\Blog;
 use App\Models\Interview;
+use App\Models\MagazineIssue;
 use App\Models\Person;
 use App\Models\Setting;
 use App\Support\SeoMeta;
@@ -19,7 +20,7 @@ class SeoService
 
     public function __construct()
     {
-        $this->settings = Cache::remember('site_settings', 3600, fn () => Setting::getAllAsArray());
+        $this->settings = Cache::remember('site_settings', 3600, fn() => Setting::getAllAsArray());
     }
 
     public static function forgetCache(): void
@@ -148,6 +149,25 @@ class SeoService
         );
     }
 
+    public function fromMagazineIssue(MagazineIssue $issue): SeoMeta
+    {
+        $siteName = $this->setting('site_name', SiteBrand::NAME_AR);
+        $title = $issue->name;
+        $description = "اقرأ {$issue->name} — النسخة الرقمية من مجلة العرب.";
+        $canonical = route('magazine.show', $issue);
+
+        return $this->makeMeta(
+            title: $this->suffixSiteName($title, $siteName),
+            description: $description,
+            keywords: $this->setting('seo_magazine_keywords') ?: $this->setting('seo_keywords'),
+            canonical: $canonical,
+            ogTitle: $title,
+            ogDescription: $description,
+            ogImage: $this->defaultOgImage(),
+            ogType: 'website',
+        );
+    }
+
     protected function makeMeta(
         string $title,
         ?string $description,
@@ -219,6 +239,7 @@ class SeoService
             'artists' => route('artists.index'),
             'business' => route('business.index'),
             'fashion' => route('fashion.index'),
+            'magazine' => route('magazine.index'),
             'interviews' => route('interviews.index'),
             'about' => route('about'),
             'editorial' => route('editorial'),
@@ -261,7 +282,7 @@ class SeoService
         $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'NewsMediaOrganization',
-            '@id' => url('/').'#organization',
+            '@id' => url('/') . '#organization',
             'name' => SiteBrand::NAME_AR,
             'alternateName' => SiteBrand::alternateNames(),
             'url' => url('/'),
@@ -309,14 +330,14 @@ class SeoService
         return [
             '@context' => 'https://schema.org',
             '@type' => 'WebSite',
-            '@id' => url('/').'#website',
+            '@id' => url('/') . '#website',
             'name' => SiteBrand::NAME_AR,
             'alternateName' => SiteBrand::alternateNames(),
             'url' => url('/'),
             'description' => SiteBrand::homeDescription(),
             'inLanguage' => 'ar',
-            'publisher' => ['@id' => url('/').'#organization'],
-            'about' => ['@id' => url('/').'#magazine'],
+            'publisher' => ['@id' => url('/') . '#organization'],
+            'about' => ['@id' => url('/') . 'magazine'],
         ];
     }
 
@@ -326,14 +347,14 @@ class SeoService
         return [
             '@context' => 'https://schema.org',
             '@type' => 'Magazine',
-            '@id' => url('/').'#magazine',
+            '@id' => url('/') . 'magazine',
             'name' => SiteBrand::NAME_AR,
             'alternateName' => SiteBrand::alternateNames(),
             'url' => url('/'),
             'description' => SiteBrand::homeDescription(),
             'inLanguage' => 'ar',
-            'publisher' => ['@id' => url('/').'#organization'],
-            'isPartOf' => ['@id' => url('/').'#website'],
+            'publisher' => ['@id' => url('/') . '#organization'],
+            'isPartOf' => ['@id' => url('/') . '#website'],
         ];
     }
 
@@ -343,14 +364,14 @@ class SeoService
         return [
             '@context' => 'https://schema.org',
             '@type' => 'WebPage',
-            '@id' => ($seo->canonical ?: url('/')).'#webpage',
+            '@id' => ($seo->canonical ?: url('/')) . '#webpage',
             'url' => $seo->canonical ?: url('/'),
             'name' => $seo->title,
             'description' => $seo->description,
             'inLanguage' => 'ar',
-            'isPartOf' => ['@id' => url('/').'#website'],
-            'about' => ['@id' => url('/').'#organization'],
-            'publisher' => ['@id' => url('/').'#organization'],
+            'isPartOf' => ['@id' => url('/') . '#website'],
+            'about' => ['@id' => url('/') . '#organization'],
+            'publisher' => ['@id' => url('/') . '#organization'],
         ];
     }
 
@@ -362,11 +383,11 @@ class SeoService
         }
 
         return match ($platform) {
-            'instagram' => str_starts_with($value, 'http') ? $value : 'https://instagram.com/'.ltrim($value, '@'),
-            'twitter' => str_starts_with($value, 'http') ? $value : 'https://x.com/'.ltrim($value, '@'),
-            'youtube' => str_starts_with($value, 'http') ? $value : 'https://youtube.com/'.ltrim($value, '@'),
-            'facebook' => str_starts_with($value, 'http') ? $value : 'https://facebook.com/'.ltrim($value, '@'),
-            'tiktok' => str_starts_with($value, 'http') ? $value : 'https://tiktok.com/@'.ltrim($value, '@'),
+            'instagram' => str_starts_with($value, 'http') ? $value : 'https://instagram.com/' . ltrim($value, '@'),
+            'twitter' => str_starts_with($value, 'http') ? $value : 'https://x.com/' . ltrim($value, '@'),
+            'youtube' => str_starts_with($value, 'http') ? $value : 'https://youtube.com/' . ltrim($value, '@'),
+            'facebook' => str_starts_with($value, 'http') ? $value : 'https://facebook.com/' . ltrim($value, '@'),
+            'tiktok' => str_starts_with($value, 'http') ? $value : 'https://tiktok.com/@' . ltrim($value, '@'),
             default => null,
         };
     }
@@ -386,7 +407,7 @@ class SeoService
                 '@type' => 'Person',
                 'name' => $article->author ?: 'فريق التحرير',
             ],
-            'publisher' => ['@id' => url('/').'#organization'],
+            'publisher' => ['@id' => url('/') . '#organization'],
             'mainEntityOfPage' => route('news.show', $article),
             'inLanguage' => 'ar',
         ];
@@ -407,7 +428,7 @@ class SeoService
                 '@type' => 'Person',
                 'name' => $blog->author ?: 'فريق التحرير',
             ],
-            'publisher' => ['@id' => url('/').'#organization'],
+            'publisher' => ['@id' => url('/') . '#organization'],
             'mainEntityOfPage' => route('blogs.show', $blog),
             'inLanguage' => 'ar',
         ];

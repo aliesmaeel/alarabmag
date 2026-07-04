@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MagazineController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\S3VideoUploadController;
 use App\Http\Controllers\SiteController;
@@ -36,6 +37,9 @@ Route::get('/fashion/{id}', [SiteController::class, 'fashionShow'])->whereNumber
 Route::get('/interviews', [SiteController::class, 'interviews'])->name('interviews.index');
 Route::get('/interviews/{interview:slug}/stream', [SiteController::class, 'interviewStream'])->name('interviews.stream');
 Route::get('/interviews/{interview:slug}', [SiteController::class, 'interviewShow'])->name('interviews.show');
+
+Route::get('/magazine', [MagazineController::class, 'index'])->name('magazine.index');
+Route::get('/magazine/{issue:slug}', [MagazineController::class, 'show'])->name('magazine.show');
 
 Route::get('/about', [StaticPageController::class, 'about'])->name('about');
 Route::get('/editorial', [StaticPageController::class, 'editorial'])->name('editorial');

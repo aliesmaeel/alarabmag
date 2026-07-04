@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use App\Models\Blog;
 use App\Models\Interview;
+use App\Models\MagazineIssue;
 use App\Models\Person;
 use App\Support\HomeSections;
 use Illuminate\Http\Response;
@@ -28,6 +29,7 @@ class SitemapController extends Controller
             $this->entry(route('artists.index'), now(), 'weekly', '0.8'),
             $this->entry(route('business.index'), now(), 'weekly', '0.8'),
             $this->entry(route('fashion.index'), now(), 'weekly', '0.8'),
+            $this->entry(route('magazine.index'), now(), 'weekly', '0.9'),
         ]);
 
         if (HomeSections::hasInterviews()) {
@@ -53,6 +55,15 @@ class SitemapController extends Controller
             ->orderByDesc('updated_at')
             ->each(function (Blog $blog) use ($urls) {
                 $urls->push($this->entry(route('blogs.show', $blog), $blog->updated_at, 'weekly', '0.7'));
+            });
+
+        MagazineIssue::query()
+            ->published()
+            ->select(['slug', 'updated_at'])
+            ->orderByDesc('sort_order')
+            ->orderByDesc('updated_at')
+            ->each(function (MagazineIssue $issue) use ($urls) {
+                $urls->push($this->entry(route('magazine.show', $issue), $issue->updated_at, 'monthly', '0.7'));
             });
 
         if (HomeSections::hasInterviews()) {
