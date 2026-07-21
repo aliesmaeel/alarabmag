@@ -16,9 +16,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @if (config('ads.enabled') && filled(config('ads.client')))
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config('ads.client') }}" crossorigin="anonymous"></script>
-    @endif
+
     @isset($seo)
     <x-site.seo-meta :seo="$seo" :entity="$jsonLdEntity ?? null" />
     @else
