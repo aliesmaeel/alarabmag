@@ -52,6 +52,14 @@ Route::get('/ads.txt', [StaticPageController::class, 'adsTxt'])->name('ads.txt')
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [RobotsController::class, 'index'])->name('robots');
 
+// Legacy Blogger URLs (no per-post map) → blogs index
+Route::get('/search/label/{label}', [SiteController::class, 'legacyBloggerRedirect'])
+    ->where('label', '[^/]+')
+    ->name('legacy.blogger.label');
+Route::get('/{year}/{month}/{post}.html', [SiteController::class, 'legacyBloggerRedirect'])
+    ->where(['year' => '\d{4}', 'month' => '\d{2}', 'post' => '[^/]+'])
+    ->name('legacy.blogger.post');
+
 Route::middleware(['web', 'auth'])->prefix('dashboard/video-upload')->name('admin.video-upload.')->group(function () {
     Route::post('store', [S3VideoUploadController::class, 'store'])->name('store');
     Route::post('presign', [S3VideoUploadController::class, 'presign'])->name('presign');

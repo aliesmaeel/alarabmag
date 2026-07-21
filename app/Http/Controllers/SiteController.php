@@ -128,6 +128,14 @@ class SiteController extends Controller
         return redirect()->route('blogs.show', $blog, 301);
     }
 
+    /**
+     * Old Blogger paths have no stored post map — send crawlers to the blogs index.
+     */
+    public function legacyBloggerRedirect(): RedirectResponse
+    {
+        return redirect()->route('blogs.index', status: 301);
+    }
+
     public function doctors(): View
     {
         return view('site.doctors', [
