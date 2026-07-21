@@ -9,25 +9,46 @@
         <script>
             (function () {
                 var el = document.currentScript && document.currentScript.previousElementSibling;
-                if (!el || el.tagName !== 'INS') return;
+                if (!el || el.tagName !== 'INS' || el.dataset.adInitialized === '1') return;
 
-                function pushWhenReady(attempt) {
-                    if (el.offsetWidth > 0) {
-                        (window.adsbygoogle = window.adsbygoogle || []).push({});
-                        return;
-                    }
-                    if ((attempt || 0) >= 40) return;
+                var MIN_WIDTH = 250;
+                var MAX_ATTEMPTS = 60;
+
+                function ready() {
+                    return el.getBoundingClientRect().width >= MIN_WIDTH;
+                }
+
+                function pushAd() {
+                    if (el.dataset.adInitialized === '1') return;
+                    if (!ready()) return false;
+                    el.dataset.adInitialized = '1';
+                    (window.adsbygoogle = window.adsbygoogle || []).push({});
+                    return true;
+                }
+
+                function waitAndPush(attempt) {
+                    if (pushAd()) return;
+                    if ((attempt || 0) >= MAX_ATTEMPTS) return;
                     requestAnimationFrame(function () {
-                        pushWhenReady((attempt || 0) + 1);
+                        waitAndPush((attempt || 0) + 1);
                     });
                 }
 
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', function () {
-                        pushWhenReady(0);
-                    });
+                function start() {
+                    if (pushAd()) return;
+                    if (typeof ResizeObserver === 'function') {
+                        var ro = new ResizeObserver(function () {
+                            if (pushAd()) ro.disconnect();
+                        });
+                        ro.observe(el);
+                    }
+                    waitAndPush(0);
+                }
+
+                if (document.readyState === 'complete') {
+                    start();
                 } else {
-                    pushWhenReady(0);
+                    window.addEventListener('load', start, { once: true });
                 }
             })();
         </script>
