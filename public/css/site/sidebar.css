@@ -1,8 +1,12 @@
 /* ── ADSENSE ── */
 .site-ad--leaderboard{
-  display:flex;justify-content:center;padding:.75rem 1rem;
-  overflow-x:auto;background:var(--cream,#f8f4ee);
+  display:block;width:100%;box-sizing:border-box;
+  padding:.75rem 1rem;
+  background:var(--cream,#f8f4ee);
   border-bottom:1px solid rgba(26,26,26,.08);
+}
+.site-ad--leaderboard .adsbygoogle{
+  display:block;width:100%;min-height:90px;
 }
 
 /* ── SECTION SIDEBAR (all pages) ── */
