@@ -358,5 +358,10 @@
     "ارفع ملف MP3 ليستمع الزوار على الموقع. عند الاستبدال أو الحذف يُزال الملف القديم.": "Upload an MP3 so visitors can listen on the site. Replacing or deleting the song removes the old file.",
     "رابط استماع خارجي (اختياري)": "External listen link (optional)",
     "يُستخدم إن لم يُرفع ملف MP3.": "Used if no MP3 is uploaded.",
-    "MP3": "MP3"
+    "MP3": "MP3",
+    "أصوات التصويت": "Poll votes",
+    "صوت": "Vote",
+    "تاريخ التصويت": "Voted at",
+    "تصدير CSV": "Export CSV",
+    "تصدير المحدد CSV": "Export selected CSV"
 }

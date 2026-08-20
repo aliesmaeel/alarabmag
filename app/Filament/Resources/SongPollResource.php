@@ -131,6 +131,10 @@ class SongPollResource extends Resource
                     ->counts('entries')
                     ->label(__('الأغاني'))
                     ->sortable(),
+                Tables\Columns\TextColumn::make('votes_count')
+                    ->counts('votes')
+                    ->label(__('الأصوات'))
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('starts_at')
                     ->label(__('تاريخ البداية'))
                     ->dateTime('Y-m-d H:i')
@@ -168,6 +172,7 @@ class SongPollResource extends Resource
     {
         return [
             RelationManagers\EntriesRelationManager::class,
+            RelationManagers\VotesRelationManager::class,
         ];
     }
 
