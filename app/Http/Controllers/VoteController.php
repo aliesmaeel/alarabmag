@@ -6,6 +6,7 @@ use App\Models\SongPoll;
 use App\Models\SongPollEntry;
 use App\Models\SongPollVote;
 use App\Services\SeoService;
+use App\Support\SongVoting;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,12 +18,12 @@ class VoteController extends Controller
 {
     public function index(SeoService $seo): View
     {
-        $poll = $this->activePoll();
+        $poll = SongVoting::currentPoll();
         abort_unless($poll, 404);
 
         $entries = $poll->entries()->get();
         $total = (int) $entries->sum('votes_count');
-        $votedEntryId = $this->votedEntryId($poll);
+        $votedEntryId = SongVoting::votedEntryId($poll);
 
         return view('site.vote', [
             'seo' => $seo->page('vote'),
@@ -40,7 +41,7 @@ class VoteController extends Controller
 
     public function store(Request $request): JsonResponse|Response
     {
-        $poll = $this->activePoll();
+        $poll = SongVoting::currentPoll();
         abort_unless($poll, 404);
         abort_unless($poll->isOpen(), 403, 'التصويت مغلق.');
 
@@ -58,7 +59,7 @@ class VoteController extends Controller
             ->where('song_poll_id', $poll->id)
             ->findOrFail($data['entry_id']);
 
-        $voterHash = $this->voterHash($request, $poll);
+        $voterHash = SongVoting::voterHash($request, $poll);
 
         if (SongPollVote::query()->where('song_poll_id', $poll->id)->where('voter_hash', $voterHash)->exists()) {
             return $this->alreadyVotedResponse($request, $poll);
@@ -88,7 +89,7 @@ class VoteController extends Controller
             return $this->alreadyVotedResponse($request, $poll);
         }
 
-        $request->session()->put($this->sessionKey($poll), $entry->id);
+        $request->session()->put(SongVoting::sessionKey($poll), $entry->id);
 
         $payload = $this->resultsPayload($poll->fresh(), $entry->id);
 
@@ -100,49 +101,12 @@ class VoteController extends Controller
             ]);
         }
 
-        return redirect()
-            ->route('vote.index')
-            ->with('vote_success', 'شكراً — صوتك وصل.');
-    }
-
-    protected function activePoll(): ?SongPoll
-    {
-        return SongPoll::query()->open()->latest('id')->first()
-            ?? SongPoll::query()->published()->latest('id')->first();
-    }
-
-    protected function voterHash(Request $request, SongPoll $poll): string
-    {
-        $sessionId = $request->session()->getId();
-
-        return hash_hmac('sha256', $poll->id.'|'.$sessionId, (string) config('app.key'));
-    }
-
-    protected function sessionKey(SongPoll $poll): string
-    {
-        return 'song_poll_voted_'.$poll->id;
-    }
-
-    protected function votedEntryId(SongPoll $poll): ?int
-    {
-        $fromSession = session($this->sessionKey($poll));
-
-        if ($fromSession) {
-            return (int) $fromSession;
-        }
-
-        $hash = $this->voterHash(request(), $poll);
-        $vote = SongPollVote::query()
-            ->where('song_poll_id', $poll->id)
-            ->where('voter_hash', $hash)
-            ->first();
-
-        return $vote?->song_poll_entry_id;
+        return back()->with('vote_success', 'شكراً — صوتك وصل.');
     }
 
     protected function alreadyVotedResponse(Request $request, SongPoll $poll): JsonResponse|Response
     {
-        $votedId = $this->votedEntryId($poll);
+        $votedId = SongVoting::votedEntryId($poll);
         $payload = $this->resultsPayload($poll->fresh(), $votedId);
 
         if ($request->wantsJson()) {
@@ -154,9 +118,7 @@ class VoteController extends Controller
             ], 409);
         }
 
-        return redirect()
-            ->route('vote.index')
-            ->with('vote_error', 'لقد صوّت من قبل — صوت واحد لكل قارئ.');
+        return back()->with('vote_error', 'لقد صوّت من قبل — صوت واحد لكل قارئ.');
     }
 
     protected function emailTakenResponse(Request $request, SongPoll $poll): JsonResponse|Response
@@ -172,9 +134,7 @@ class VoteController extends Controller
             ], 422);
         }
 
-        return redirect()
-            ->route('vote.index')
-            ->with('vote_error', $message);
+        return back()->with('vote_error', $message);
     }
 
     /** @return array{total_votes: int, voted_entry_id: int|null, entries: list<array<string, mixed>>} */
