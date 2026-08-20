@@ -42,8 +42,9 @@ Route::get('/interviews/{interview:slug}', [SiteController::class, 'interviewSho
 Route::get('/magazine', [MagazineController::class, 'index'])->name('magazine.index');
 Route::get('/magazine/{issue:slug}', [MagazineController::class, 'show'])->name('magazine.show');
 
-Route::get('/vote', [VoteController::class, 'index'])->name('vote.index');
-Route::post('/vote', [VoteController::class, 'store'])->middleware('throttle:10,1')->name('vote.store');
+Route::get('/songs-vote', [VoteController::class, 'index'])->name('vote.index');
+Route::post('/songs-vote', [VoteController::class, 'store'])->middleware('throttle:10,1')->name('vote.store');
+Route::get('/vote', fn () => redirect()->route('vote.index', status: 301));
 
 Route::get('/about', [StaticPageController::class, 'about'])->name('about');
 Route::get('/editorial', [StaticPageController::class, 'editorial'])->name('editorial');
