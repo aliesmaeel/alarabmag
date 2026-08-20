@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\TranslatesPageLabels;
 use App\Models\Setting;
 use App\Services\SeoService;
 use App\Support\EditorialPage;
@@ -18,6 +19,7 @@ use Filament\Pages\Page;
 class ManageEditorialPage extends Page implements HasForms
 {
     use InteractsWithForms;
+    use TranslatesPageLabels;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
@@ -42,90 +44,90 @@ class ManageEditorialPage extends Page implements HasForms
     {
         return $form
             ->schema([
-                Section::make('رأس الصفحة')->schema([
+                Section::make(__('رأس الصفحة'))->schema([
                     TextInput::make('editorial_title')
-                        ->label('عنوان الصفحة')
+                        ->label(__('عنوان الصفحة'))
                         ->required()
                         ->maxLength(255)
                         ->columnSpanFull(),
                     Textarea::make('editorial_lead')
-                        ->label('المقدمة تحت العنوان')
+                        ->label(__('المقدمة تحت العنوان'))
                         ->rows(2)
                         ->columnSpanFull(),
                 ]),
 
-                Section::make('فريق التحرير')->schema([
+                Section::make(__('فريق التحرير'))->schema([
                     TextInput::make('editorial_team_title')
-                        ->label('عنوان القسم')
+                        ->label(__('عنوان القسم'))
                         ->required()
                         ->maxLength(255),
                     Textarea::make('editorial_team_body')
-                        ->label('نص القسم')
+                        ->label(__('نص القسم'))
                         ->rows(3)
                         ->columnSpanFull(),
                 ]),
 
-                Section::make('المحررة الأولى')->schema([
+                Section::make(__('المحررة الأولى'))->schema([
                     TextInput::make('editorial_lead_editor_title')
-                        ->label('عنوان القسم')
+                        ->label(__('عنوان القسم'))
                         ->required()
                         ->maxLength(255),
                     TextInput::make('editorial_lead_editor_name')
-                        ->label('الاسم')
+                        ->label(__('الاسم'))
                         ->required()
                         ->maxLength(255),
                     Textarea::make('editorial_lead_editor_bio')
-                        ->label('الوصف')
+                        ->label(__('الوصف'))
                         ->rows(2)
                         ->columnSpanFull(),
                 ]),
 
-                Section::make('فريق الأخبار')->schema([
+                Section::make(__('فريق الأخبار'))->schema([
                     TextInput::make('editorial_news_title')
-                        ->label('عنوان القسم')
+                        ->label(__('عنوان القسم'))
                         ->required()
                         ->maxLength(255)
                         ->columnSpanFull(),
                     Repeater::make('editorial_news_team')
-                        ->label('أعضاء الفريق')
+                        ->label(__('أعضاء الفريق'))
                         ->schema([
                             TextInput::make('name')
-                                ->label('الاسم')
+                                ->label(__('الاسم'))
                                 ->required()
                                 ->maxLength(255),
                             TextInput::make('role')
-                                ->label('المنصب / الوصف')
+                                ->label(__('المنصب / الوصف'))
                                 ->required()
                                 ->maxLength(500),
                         ])
                         ->columns(2)
                         ->defaultItems(1)
-                        ->addActionLabel('إضافة عضو')
+                        ->addActionLabel(__('إضافة عضو'))
                         ->columnSpanFull(),
                 ]),
 
-                Section::make('المدونات والآراء')->schema([
+                Section::make(__('المدونات والآراء'))->schema([
                     TextInput::make('editorial_blogs_title')
-                        ->label('عنوان القسم')
+                        ->label(__('عنوان القسم'))
                         ->required()
                         ->maxLength(255),
                     Textarea::make('editorial_blogs_body')
-                        ->label('نص القسم')
+                        ->label(__('نص القسم'))
                         ->rows(3)
                         ->columnSpanFull(),
                 ]),
 
-                Section::make('التواصل التحريري')->schema([
+                Section::make(__('التواصل التحريري'))->schema([
                     TextInput::make('editorial_contact_title')
-                        ->label('عنوان القسم')
+                        ->label(__('عنوان القسم'))
                         ->required()
                         ->maxLength(255),
                     Textarea::make('editorial_contact_intro')
-                        ->label('نص التواصل')
+                        ->label(__('نص التواصل'))
                         ->rows(2)
                         ->columnSpanFull(),
                     TextInput::make('editorial_contact_email')
-                        ->label('البريد الإلكتروني')
+                        ->label(__('البريد الإلكتروني'))
                         ->email()
                         ->required()
                         ->maxLength(255),
@@ -146,7 +148,7 @@ class ManageEditorialPage extends Page implements HasForms
         SeoService::forgetCache();
 
         Notification::make()
-            ->title('تم حفظ صفحة هيئة التحرير بنجاح')
+            ->title(__('تم حفظ صفحة هيئة التحرير بنجاح'))
             ->success()
             ->send();
     }

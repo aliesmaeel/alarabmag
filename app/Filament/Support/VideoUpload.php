@@ -9,8 +9,8 @@ class VideoUpload
     public static function make(string $name = 'video_url', string $label = 'ملف الفيديو'): S3VideoUpload
     {
         return S3VideoUpload::make($name)
-            ->label($label)
+            ->label(__($label))
             ->maxSize(512000)
-            ->helperText('ارفع ملف فيديو (mp4, webm, mov) — يُرفع مباشرة إلى Amazon S3. حد أقصى 500 ميجابايت.');
+            ->helperText(__('ارفع ملف فيديو (mp4, webm, mov) — يُرفع مباشرة إلى Amazon S3. حد أقصى 500 ميجابايت.'));
     }
 }

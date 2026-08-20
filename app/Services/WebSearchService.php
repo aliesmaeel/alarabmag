@@ -16,14 +16,14 @@ class WebSearchService
     public function configurationMessage(): string
     {
         if ($this->hasTavily()) {
-            return 'البحث عبر Tavily (مفعّل)';
+            return __('البحث عبر Tavily (مفعّل)');
         }
 
         if ($this->hasBrave()) {
-            return 'البحث عبر Brave Search (مدفوع — رصيد شهري محدود)';
+            return __('البحث عبر Brave Search (مدفوع — رصيد شهري محدود)');
         }
 
-        return 'البحث عبر DuckDuckGo (بدون مفتاح — للدقة الأفضل أضف TAVILY_API_KEY مجاناً من tavily.com)';
+        return __('البحث عبر DuckDuckGo (بدون مفتاح — للدقة الأفضل أضف TAVILY_API_KEY مجاناً من tavily.com)');
     }
 
     /**
@@ -55,7 +55,7 @@ class WebSearchService
     public function formatForPrompt(array $results): string
     {
         if ($results === []) {
-            return 'لم تُعثر على نتائج بحث حية — اعتمد على معرفتك العامة مع الإشارة إلى أن المعلومات قد تحتاج تحققاً.';
+            return __('لم تُعثر على نتائج بحث حية — اعتمد على معرفتك العامة مع الإشارة إلى أن المعلومات قد تحتاج تحققاً.');
         }
 
         $blocks = [];

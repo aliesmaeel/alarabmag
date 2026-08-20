@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\ArtistResource\Pages;
 use App\Filament\Support\AiAssist;
 use App\Filament\Support\ImageUpload;
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ArtistResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Person::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-paint-brush';
@@ -37,41 +40,41 @@ class ArtistResource extends Resource
         return $form->schema([
             Forms\Components\Hidden::make('category')->default('artist'),
 
-            Forms\Components\Section::make('بيانات أساسية')->schema([
+            Forms\Components\Section::make(__('بيانات أساسية'))->schema([
                 AiAssist::apply(
-                    Forms\Components\TextInput::make('name')->label('الاسم')->required()->maxLength(200),
+                    Forms\Components\TextInput::make('name')->label(__('الاسم'))->required()->maxLength(200),
                     'name',
                     'artist'
                 ),
                 Forms\Components\TextInput::make('name_en')->label('Name (EN)')->maxLength(200),
-                Forms\Components\TextInput::make('role')->label('التخصص الفني')->maxLength(200)
-                    ->placeholder('مخرج سينمائي، فنان تشكيلي، منتج موسيقي...'),
-                Forms\Components\TextInput::make('country')->label('الدولة')->maxLength(100),
-                Forms\Components\TextInput::make('flag')->label('علم (إيموجي)')->maxLength(10)->placeholder('🇱🇧'),
-                Forms\Components\Toggle::make('featured')->label('مميز'),
+                Forms\Components\TextInput::make('role')->label(__('التخصص الفني'))->maxLength(200)
+                    ->placeholder(__('مخرج سينمائي، فنان تشكيلي، منتج موسيقي...')),
+                Forms\Components\TextInput::make('country')->label(__('الدولة'))->maxLength(100),
+                Forms\Components\TextInput::make('flag')->label(__('علم (إيموجي)'))->maxLength(10)->placeholder('🇱🇧'),
+                Forms\Components\Toggle::make('featured')->label(__('مميز')),
                 ImageUpload::make('image_url', 'الصورة')->columnSpanFull(),
             ])->columns(2),
 
-            Forms\Components\Section::make('نبذة')
+            Forms\Components\Section::make(__('نبذة'))
                 ->headerActions([
                     AiAssist::fillExcerptAction('artist'),
                 ])
                 ->schema([
                 AiAssist::apply(
-                    Forms\Components\Textarea::make('excerpt')->label('وصف مختصر')->rows(3)
+                    Forms\Components\Textarea::make('excerpt')->label(__('وصف مختصر'))->rows(3)
                         ->maxLength(1000)->columnSpanFull()
-                        ->helperText('سطر أو سطران يُلخّصان أبرز ما يميّز الفنان — يظهر تحت اسمه.'),
+                        ->helperText(__('سطر أو سطران يُلخّصان أبرز ما يميّز الفنان — يظهر تحت اسمه.')),
                     'excerpt',
                     'artist'
                 ),
-                Forms\Components\RichEditor::make('bio')->label('السيرة الكاملة')->columnSpanFull(),
+                Forms\Components\RichEditor::make('bio')->label(__('السيرة الكاملة'))->columnSpanFull(),
             ]),
 
-            Forms\Components\Section::make('إنجاز / إحصائية')->schema([
-                Forms\Components\TextInput::make('stat')->label('الإنجاز')
-                    ->placeholder('مثال: جائزة كان 2026'),
-                Forms\Components\TextInput::make('stat_label')->label('وصف الإنجاز')
-                    ->placeholder('أفضل مخرجة'),
+            Forms\Components\Section::make(__('إنجاز / إحصائية'))->schema([
+                Forms\Components\TextInput::make('stat')->label(__('الإنجاز'))
+                    ->placeholder(__('مثال: جائزة كان 2026')),
+                Forms\Components\TextInput::make('stat_label')->label(__('وصف الإنجاز'))
+                    ->placeholder(__('أفضل مخرجة')),
             ])->columns(2)->collapsed(),
 
             SeoFields::section('artist'),
@@ -84,18 +87,18 @@ class ArtistResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->columns([
                 ImageUpload::column(),
-                Tables\Columns\TextColumn::make('name')->label('الاسم')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('role')->label('التخصص الفني')->searchable()->toggleable(),
-                Tables\Columns\TextColumn::make('country')->label('الدولة')->toggleable(),
-                Tables\Columns\IconColumn::make('featured')->label('مميز')->boolean(),
-                Tables\Columns\TextColumn::make('created_at')->label('التاريخ')->dateTime('Y-m-d')->sortable()->toggleable(),
+                Tables\Columns\TextColumn::make('name')->label(__('الاسم'))->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('role')->label(__('التخصص الفني'))->searchable()->toggleable(),
+                Tables\Columns\TextColumn::make('country')->label(__('الدولة'))->toggleable(),
+                Tables\Columns\IconColumn::make('featured')->label(__('مميز'))->boolean(),
+                Tables\Columns\TextColumn::make('created_at')->label(__('التاريخ'))->dateTime('Y-m-d')->sortable()->toggleable(),
             ])
             ->filters([
-                SelectFilter::make('role')->label('التخصص')->options(fn () =>
+                SelectFilter::make('role')->label(__('التخصص'))->options(fn () =>
                     Person::query()->where('category', 'artist')
                         ->whereNotNull('role')->distinct()->pluck('role', 'role')->toArray()
                 ),
-                TernaryFilter::make('featured')->label('مميز فقط'),
+                TernaryFilter::make('featured')->label(__('مميز فقط')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

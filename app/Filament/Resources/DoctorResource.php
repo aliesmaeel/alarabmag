@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\DoctorResource\Pages;
 use App\Filament\Support\AiAssist;
 use App\Filament\Support\ImageUpload;
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class DoctorResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Person::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-heart';
@@ -36,49 +39,49 @@ class DoctorResource extends Resource
         return $form->schema([
             Forms\Components\Hidden::make('category')->default('doctor'),
 
-            Forms\Components\Section::make('بيانات أساسية')->schema([
+            Forms\Components\Section::make(__('بيانات أساسية'))->schema([
                 AiAssist::apply(
-                    Forms\Components\TextInput::make('name')->label('الاسم')->required()->maxLength(200),
+                    Forms\Components\TextInput::make('name')->label(__('الاسم'))->required()->maxLength(200),
                     'name',
                     'doctor'
                 ),
                 Forms\Components\TextInput::make('name_en')->label('Name (EN)')->maxLength(200),
-                Forms\Components\TextInput::make('role')->label('الدور / اللقب')->maxLength(200)
-                    ->placeholder('مثال: استشاري جراحة الأعصاب'),
-                Forms\Components\TextInput::make('country')->label('الدولة')->maxLength(100),
-                Forms\Components\TextInput::make('flag')->label('علم (إيموجي)')->maxLength(10)->placeholder('🇸🇦'),
-                Forms\Components\Toggle::make('featured')->label('مميز'),
+                Forms\Components\TextInput::make('role')->label(__('الدور / اللقب'))->maxLength(200)
+                    ->placeholder(__('مثال: استشاري جراحة الأعصاب')),
+                Forms\Components\TextInput::make('country')->label(__('الدولة'))->maxLength(100),
+                Forms\Components\TextInput::make('flag')->label(__('علم (إيموجي)'))->maxLength(10)->placeholder('🇸🇦'),
+                Forms\Components\Toggle::make('featured')->label(__('مميز')),
                 ImageUpload::make('image_url', 'الصورة')->columnSpanFull(),
             ])->columns(2),
 
-            Forms\Components\Section::make('البيانات الطبية')->schema([
-                Forms\Components\TextInput::make('specialty')->label('التخصص الدقيق')->maxLength(200)
-                    ->placeholder('جراحة الأعصاب، أورام...'),
-                Forms\Components\TextInput::make('hospital')->label('المستشفى / المؤسسة')->maxLength(300)
-                    ->placeholder('مايو كلينيك · أمريكا'),
-                Forms\Components\TextInput::make('badge')->label('التكريم / اللقب الفخري')->maxLength(200)
-                    ->placeholder('أفضل طبيب في العالم 2025'),
+            Forms\Components\Section::make(__('البيانات الطبية'))->schema([
+                Forms\Components\TextInput::make('specialty')->label(__('التخصص الدقيق'))->maxLength(200)
+                    ->placeholder(__('جراحة الأعصاب، أورام...')),
+                Forms\Components\TextInput::make('hospital')->label(__('المستشفى / المؤسسة'))->maxLength(300)
+                    ->placeholder(__('مايو كلينيك · أمريكا')),
+                Forms\Components\TextInput::make('badge')->label(__('التكريم / اللقب الفخري'))->maxLength(200)
+                    ->placeholder(__('أفضل طبيب في العالم 2025')),
             ])->columns(2),
 
-            Forms\Components\Section::make('نبذة')
+            Forms\Components\Section::make(__('نبذة'))
                 ->headerActions([
                     AiAssist::fillExcerptAction('doctor'),
                 ])
                 ->schema([
                 AiAssist::apply(
-                    Forms\Components\Textarea::make('excerpt')->label('وصف مختصر')->rows(3)
+                    Forms\Components\Textarea::make('excerpt')->label(__('وصف مختصر'))->rows(3)
                         ->maxLength(1000)->columnSpanFull(),
                     'excerpt',
                     'doctor'
                 ),
-                Forms\Components\RichEditor::make('bio')->label('السيرة الكاملة')->columnSpanFull(),
+                Forms\Components\RichEditor::make('bio')->label(__('السيرة الكاملة'))->columnSpanFull(),
             ]),
 
-            Forms\Components\Section::make('إحصائية بارزة')->schema([
-                Forms\Components\TextInput::make('stat')->label('الرقم / الإحصاء')
-                    ->placeholder('مثال: 500+'),
-                Forms\Components\TextInput::make('stat_label')->label('وصف الإحصاء')
-                    ->placeholder('عملية ناجحة'),
+            Forms\Components\Section::make(__('إحصائية بارزة'))->schema([
+                Forms\Components\TextInput::make('stat')->label(__('الرقم / الإحصاء'))
+                    ->placeholder(__('مثال: 500+')),
+                Forms\Components\TextInput::make('stat_label')->label(__('وصف الإحصاء'))
+                    ->placeholder(__('عملية ناجحة')),
             ])->columns(2)->collapsed(),
 
             SeoFields::section('doctor'),
@@ -91,15 +94,15 @@ class DoctorResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->columns([
                 ImageUpload::column(),
-                Tables\Columns\TextColumn::make('name')->label('الاسم')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('specialty')->label('التخصص')->searchable()->toggleable(),
-                Tables\Columns\TextColumn::make('hospital')->label('المستشفى')->limit(40)->toggleable(),
-                Tables\Columns\TextColumn::make('country')->label('الدولة')->toggleable(),
-                Tables\Columns\IconColumn::make('featured')->label('مميز')->boolean(),
-                Tables\Columns\TextColumn::make('created_at')->label('التاريخ')->dateTime('Y-m-d')->sortable()->toggleable(),
+                Tables\Columns\TextColumn::make('name')->label(__('الاسم'))->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('specialty')->label(__('التخصص'))->searchable()->toggleable(),
+                Tables\Columns\TextColumn::make('hospital')->label(__('المستشفى'))->limit(40)->toggleable(),
+                Tables\Columns\TextColumn::make('country')->label(__('الدولة'))->toggleable(),
+                Tables\Columns\IconColumn::make('featured')->label(__('مميز'))->boolean(),
+                Tables\Columns\TextColumn::make('created_at')->label(__('التاريخ'))->dateTime('Y-m-d')->sortable()->toggleable(),
             ])
             ->filters([
-                TernaryFilter::make('featured')->label('مميز فقط'),
+                TernaryFilter::make('featured')->label(__('مميز فقط')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

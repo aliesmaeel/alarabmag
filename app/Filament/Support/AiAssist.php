@@ -23,15 +23,15 @@ class AiAssist
             ->color('warning')
             ->disabled(fn (): bool => ! app(AiContentService::class)->isConfigured())
             ->tooltip(fn (): string => app(AiContentService::class)->isConfigured()
-                ? 'توليد بالذكاء الاصطناعي (مجاني)'
+                ? __('توليد بالذكاء الاصطناعي (مجاني)')
                 : app(AiContentService::class)->configurationMessage())
-            ->modalHeading('توليد بالذكاء الاصطناعي')
-            ->modalDescription('اكتب ما تريد (اختياري) ثم اضغط توليد. يستخدم نموذجاً مفتوح المصدر مجاناً.')
-            ->modalSubmitActionLabel('توليد')
+            ->modalHeading(__('توليد بالذكاء الاصطناعي'))
+            ->modalDescription(__('اكتب ما تريد (اختياري) ثم اضغط توليد. يستخدم نموذجاً مفتوح المصدر مجاناً.'))
+            ->modalSubmitActionLabel(__('توليد'))
             ->form([
                 Textarea::make('instruction')
-                    ->label('ماذا تريد؟ (اختياري)')
-                    ->placeholder('مثال: ركّز على الإمارات، أسلوب صحفي رسمي...')
+                    ->label(__('ماذا تريد؟ (اختياري)'))
+                    ->placeholder(__('مثال: ركّز على الإمارات، أسلوب صحفي رسمي...'))
                     ->rows(3),
             ])
             ->action(function (array $data, Get $get, Set $set) use ($field, $contentType): void {
@@ -42,23 +42,23 @@ class AiAssist
     public static function fillAllSeoAction(string $contentType): Action
     {
         return Action::make('ai_fill_seo')
-            ->label('توليد كل SEO')
+            ->label(__('توليد كل SEO'))
             ->icon('heroicon-o-sparkles')
             ->color('warning')
             ->disabled(fn (): bool => ! app(AiContentService::class)->isConfigured())
-            ->modalHeading('توليد كل حقول SEO')
-            ->modalDescription('يملأ meta_title و description و keywords و Open Graph دفعة واحدة.')
-            ->modalSubmitActionLabel('توليد الكل')
+            ->modalHeading(__('توليد كل حقول SEO'))
+            ->modalDescription(__('يملأ meta_title و description و keywords و Open Graph دفعة واحدة.'))
+            ->modalSubmitActionLabel(__('توليد الكل'))
             ->form([
                 Textarea::make('instruction')
-                    ->label('تعليمات إضافية (اختياري)')
+                    ->label(__('تعليمات إضافية (اختياري)'))
                     ->rows(3),
             ])
             ->action(function (array $data, Get $get, Set $set) use ($contentType): void {
                 $ai = app(AiContentService::class);
 
                 if (! $ai->isConfigured()) {
-                    Notification::make()->danger()->title('الذكاء الاصطناعي غير مفعّل')->body($ai->configurationMessage())->send();
+                    Notification::make()->danger()->title(__('الذكاء الاصطناعي غير مفعّل'))->body($ai->configurationMessage())->send();
 
                     return;
                 }
@@ -70,9 +70,9 @@ class AiAssist
                         $set($key, $value);
                     }
 
-                    Notification::make()->success()->title('تم توليد حقول SEO')->send();
+                    Notification::make()->success()->title(__('تم توليد حقول SEO'))->send();
                 } catch (\Throwable $e) {
-                    Notification::make()->danger()->title('فشل التوليد')->body($e->getMessage())->send();
+                    Notification::make()->danger()->title(__('فشل التوليد'))->body($e->getMessage())->send();
                 }
             });
     }
@@ -80,58 +80,58 @@ class AiAssist
     public static function generateFullArticleAction(string $contentType = 'article'): Action
     {
         $categories = [
-            'عام' => 'عام',
-            'سياسة' => 'سياسة',
-            'اقتصاد' => 'اقتصاد',
-            'أعمال' => 'أعمال',
-            'رياضة' => 'رياضة',
-            'ثقافة' => 'ثقافة',
-            'فن' => 'فن',
-            'موضة' => 'موضة',
-            'تكنولوجيا' => 'تكنولوجيا',
-            'صحة' => 'صحة',
+            'عام' => __('عام'),
+            'سياسة' => __('سياسة'),
+            'اقتصاد' => __('اقتصاد'),
+            'أعمال' => __('أعمال'),
+            'رياضة' => __('رياضة'),
+            'ثقافة' => __('ثقافة'),
+            'فن' => __('فن'),
+            'موضة' => __('موضة'),
+            'تكنولوجيا' => __('تكنولوجيا'),
+            'صحة' => __('صحة'),
         ];
 
         return Action::make('ai_full_article')
-            ->label('توليد خبر كامل')
+            ->label(__('توليد خبر كامل'))
             ->icon('heroicon-o-globe-alt')
             ->color('success')
             ->disabled(fn (): bool => ! app(AiContentService::class)->isConfigured())
             ->tooltip(fn (): string => app(AiContentService::class)->isConfigured()
-                ? 'بحث في الإنترنت + كتابة الخبر بالذكاء الاصطناعي'
+                ? __('بحث في الإنترنت + كتابة الخبر بالذكاء الاصطناعي')
                 : app(AiContentService::class)->configurationMessage())
-            ->modalHeading('توليد خبر كامل من الإنترنت')
-            ->modalDescription(fn (): string => 'يُبحث في الويب ثم يُملأ العنوان والنص وSEO. '.app(WebSearchService::class)->configurationMessage())
-            ->modalSubmitActionLabel('توليد الخبر')
+            ->modalHeading(__('توليد خبر كامل من الإنترنت'))
+            ->modalDescription(fn (): string => __('يُبحث في الويب ثم يُملأ العنوان والنص وSEO. ').app(WebSearchService::class)->configurationMessage())
+            ->modalSubmitActionLabel(__('توليد الخبر'))
             ->modalWidth('2xl')
             ->closeModalByClickingAway(false)
             ->form([
                 TextInput::make('subject')
-                    ->label('موضوع الخبر')
-                    ->placeholder('مثال: تأثير الذكاء الاصطناعي على الاقتصاد الخليجي')
+                    ->label(__('موضوع الخبر'))
+                    ->placeholder(__('مثال: تأثير الذكاء الاصطناعي على الاقتصاد الخليجي'))
                     ->required()
                     ->maxLength(500)
                     ->columnSpanFull(),
                 Textarea::make('details')
-                    ->label('تفاصيل وملاحظات (اختياري)')
-                    ->placeholder('من المشارك؟ زاوية الخبر؟ حقائق يجب ذكرها؟ الجمهور المستهدف؟')
+                    ->label(__('تفاصيل وملاحظات (اختياري)'))
+                    ->placeholder(__('من المشارك؟ زاوية الخبر؟ حقائق يجب ذكرها؟ الجمهور المستهدف؟'))
                     ->rows(4)
                     ->columnSpanFull(),
                 Select::make('category')
-                    ->label('القسم (اختياري)')
+                    ->label(__('القسم (اختياري)'))
                     ->options($categories)
                     ->native(false),
                 TextInput::make('author')
-                    ->label('الكاتب')
+                    ->label(__('الكاتب'))
                     ->default('فريق التحرير')
                     ->maxLength(200),
                 Toggle::make('use_web_search')
-                    ->label('البحث في الإنترنت قبل الكتابة')
+                    ->label(__('البحث في الإنترنت قبل الكتابة'))
                     ->default(true)
-                    ->helperText('يُجمع معلومات من مصادر حية ثم يُصاغ الخبر'),
+                    ->helperText(__('يُجمع معلومات من مصادر حية ثم يُصاغ الخبر')),
                 Textarea::make('instruction')
-                    ->label('تعليمات أسلوب (اختياري)')
-                    ->placeholder('مثال: أسلوب تحليلي، ركّز على السعودية، تجنب العناوين الصادمة...')
+                    ->label(__('تعليمات أسلوب (اختياري)'))
+                    ->placeholder(__('مثال: أسلوب تحليلي، ركّز على السعودية، تجنب العناوين الصادمة...'))
                     ->rows(2)
                     ->columnSpanFull(),
             ])
@@ -139,7 +139,7 @@ class AiAssist
                 $ai = app(AiContentService::class);
 
                 if (! $ai->isConfigured()) {
-                    Notification::make()->danger()->title('الذكاء الاصطناعي غير مفعّل')->body($ai->configurationMessage())->send();
+                    Notification::make()->danger()->title(__('الذكاء الاصطناعي غير مفعّل'))->body($ai->configurationMessage())->send();
 
                     return;
                 }
@@ -163,12 +163,12 @@ class AiAssist
 
                     Notification::make()
                         ->success()
-                        ->title('تم توليد الخبر')
-                        ->body($searchNote ?: 'راجع المحتوى قبل النشر.')
+                        ->title(__('تم توليد الخبر'))
+                        ->body($searchNote ?: __('راجع المحتوى قبل النشر.'))
                         ->duration(8000)
                         ->send();
                 } catch (\Throwable $e) {
-                    Notification::make()->danger()->title('فشل توليد الخبر')->body($e->getMessage())->duration(10000)->send();
+                    Notification::make()->danger()->title(__('فشل توليد الخبر'))->body($e->getMessage())->duration(10000)->send();
                 }
             });
     }
@@ -176,7 +176,7 @@ class AiAssist
     public static function fillExcerptAction(string $contentType): Action
     {
         return Action::make('ai_excerpt')
-            ->label('توليد المقتطف')
+            ->label(__('توليد المقتطف'))
             ->icon('heroicon-o-sparkles')
             ->color('warning')
             ->disabled(fn (): bool => ! app(AiContentService::class)->isConfigured())
@@ -202,7 +202,7 @@ class AiAssist
         $ai = app(AiContentService::class);
 
         if (! $ai->isConfigured()) {
-            Notification::make()->danger()->title('الذكاء الاصطناعي غير مفعّل')->body($ai->configurationMessage())->send();
+            Notification::make()->danger()->title(__('الذكاء الاصطناعي غير مفعّل'))->body($ai->configurationMessage())->send();
 
             return;
         }
@@ -211,9 +211,9 @@ class AiAssist
             $value = $ai->generateField($field, self::context($get, $contentType), $instruction);
             $set($field, $value);
 
-            Notification::make()->success()->title('تم التوليد')->send();
+            Notification::make()->success()->title(__('تم التوليد'))->send();
         } catch (\Throwable $e) {
-            Notification::make()->danger()->title('فشل التوليد')->body($e->getMessage())->send();
+            Notification::make()->danger()->title(__('فشل التوليد'))->body($e->getMessage())->send();
         }
     }
 

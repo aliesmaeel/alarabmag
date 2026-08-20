@@ -18,11 +18,11 @@ class ManageTicker extends ListRecords
     {
         return [
             Actions\Action::make('addArticle')
-                ->label('إضافة خبر للشريط')
+                ->label(__('إضافة خبر للشريط'))
                 ->icon('heroicon-o-plus')
                 ->form([
                     Select::make('article_id')
-                        ->label('اختر خبراً منشوراً')
+                        ->label(__('اختر خبراً منشوراً'))
                         ->searchable()
                         ->preload()
                         ->required()
@@ -53,12 +53,12 @@ class ManageTicker extends ListRecords
                     ]);
 
                     Notification::make()
-                        ->title('تمت إضافة الخبر إلى شريط العاجل')
+                        ->title(__('تمت إضافة الخبر إلى شريط العاجل'))
                         ->success()
                         ->send();
                 }),
             Actions\Action::make('newArticle')
-                ->label('خبر جديد')
+                ->label(__('خبر جديد'))
                 ->icon('heroicon-o-document-plus')
                 ->url(ArticleResource::getUrl('create')),
         ];

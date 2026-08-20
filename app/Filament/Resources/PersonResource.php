@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\PersonResource\Pages;
 use App\Filament\Support\ImageUpload;
 use App\Filament\Support\SeoFields;
@@ -16,6 +17,8 @@ use Filament\Tables\Filters\TernaryFilter;
 
 class PersonResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Person::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
@@ -29,55 +32,55 @@ class PersonResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('بيانات أساسية')->schema([
-                Forms\Components\TextInput::make('name')->label('الاسم')->required()->maxLength(200),
+            Forms\Components\Section::make(__('بيانات أساسية'))->schema([
+                Forms\Components\TextInput::make('name')->label(__('الاسم'))->required()->maxLength(200),
                 Forms\Components\TextInput::make('name_en')->label('Name (EN)')->maxLength(200),
-                Forms\Components\TextInput::make('role')->label('الصفة / المنصب')->maxLength(200),
-                Forms\Components\Select::make('category')->label('الفئة')->required()->native(false)
+                Forms\Components\TextInput::make('role')->label(__('الصفة / المنصب'))->maxLength(200),
+                Forms\Components\Select::make('category')->label(__('الفئة'))->required()->native(false)
                     ->options([
-                        'influencer' => 'مؤثر',
-                        'artist' => 'فنان',
-                        'doctor' => 'طبيب',
-                        'business' => 'رجل أعمال',
+                        'influencer' => __('مؤثر'),
+                        'artist' => __('فنان'),
+                        'doctor' => __('طبيب'),
+                        'business' => __('رجل أعمال'),
                     ])
                     ->live(),
-                Forms\Components\TextInput::make('country')->label('الدولة')->maxLength(100),
-                Forms\Components\TextInput::make('flag')->label('علم (إيموجي)')->maxLength(10),
+                Forms\Components\TextInput::make('country')->label(__('الدولة'))->maxLength(100),
+                Forms\Components\TextInput::make('flag')->label(__('علم (إيموجي)'))->maxLength(10),
                 ImageUpload::make('image_url', 'الصورة')->columnSpanFull(),
-                Forms\Components\Toggle::make('featured')->label('مميز'),
+                Forms\Components\Toggle::make('featured')->label(__('مميز')),
             ])->columns(2),
 
-            Forms\Components\Section::make('نبذة')->schema([
-                Forms\Components\Textarea::make('excerpt')->label('وصف مختصر')->rows(3)->columnSpanFull(),
-                Forms\Components\RichEditor::make('bio')->label('السيرة الكاملة')->columnSpanFull(),
+            Forms\Components\Section::make(__('نبذة'))->schema([
+                Forms\Components\Textarea::make('excerpt')->label(__('وصف مختصر'))->rows(3)->columnSpanFull(),
+                Forms\Components\RichEditor::make('bio')->label(__('السيرة الكاملة'))->columnSpanFull(),
             ]),
 
-            Forms\Components\Section::make('إحصائية بارزة')->schema([
-                Forms\Components\TextInput::make('stat')->label('الرقم / الإحصاء'),
-                Forms\Components\TextInput::make('stat_label')->label('وصف الإحصاء'),
+            Forms\Components\Section::make(__('إحصائية بارزة'))->schema([
+                Forms\Components\TextInput::make('stat')->label(__('الرقم / الإحصاء')),
+                Forms\Components\TextInput::make('stat_label')->label(__('وصف الإحصاء')),
             ])->columns(2),
 
-            Forms\Components\Section::make('بيانات المؤثر')
+            Forms\Components\Section::make(__('بيانات المؤثر'))
                 ->visible(fn (Forms\Get $get) => $get('category') === 'influencer')
                 ->schema([
-                    Forms\Components\TextInput::make('handle')->label('المعرّف (@)'),
-                    Forms\Components\TextInput::make('platform')->label('المنصة'),
-                    Forms\Components\TextInput::make('followers')->label('عدد المتابعين'),
+                    Forms\Components\TextInput::make('handle')->label(__('المعرّف (@)')),
+                    Forms\Components\TextInput::make('platform')->label(__('المنصة')),
+                    Forms\Components\TextInput::make('followers')->label(__('عدد المتابعين')),
                 ])->columns(3),
 
-            Forms\Components\Section::make('بيانات الطبيب')
+            Forms\Components\Section::make(__('بيانات الطبيب'))
                 ->visible(fn (Forms\Get $get) => $get('category') === 'doctor')
                 ->schema([
-                    Forms\Components\TextInput::make('hospital')->label('المستشفى'),
-                    Forms\Components\TextInput::make('specialty')->label('التخصص'),
-                    Forms\Components\TextInput::make('badge')->label('الوسام / اللقب'),
+                    Forms\Components\TextInput::make('hospital')->label(__('المستشفى')),
+                    Forms\Components\TextInput::make('specialty')->label(__('التخصص')),
+                    Forms\Components\TextInput::make('badge')->label(__('الوسام / اللقب')),
                 ])->columns(3),
 
-            Forms\Components\Section::make('بيانات رجل الأعمال')
+            Forms\Components\Section::make(__('بيانات رجل الأعمال'))
                 ->visible(fn (Forms\Get $get) => $get('category') === 'business')
                 ->schema([
-                    Forms\Components\TextInput::make('company')->label('الشركة'),
-                    Forms\Components\TextInput::make('net_worth')->label('الثروة'),
+                    Forms\Components\TextInput::make('company')->label(__('الشركة')),
+                    Forms\Components\TextInput::make('net_worth')->label(__('الثروة')),
                 ])->columns(2),
 
             SeoFields::section(),
@@ -90,14 +93,14 @@ class PersonResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->columns([
                 ImageUpload::column(),
-                Tables\Columns\TextColumn::make('name')->label('الاسم')->searchable(),
-                Tables\Columns\TextColumn::make('role')->label('الصفة')->searchable()->toggleable(),
-                Tables\Columns\TextColumn::make('category')->label('الفئة')->badge()
+                Tables\Columns\TextColumn::make('name')->label(__('الاسم'))->searchable(),
+                Tables\Columns\TextColumn::make('role')->label(__('الصفة'))->searchable()->toggleable(),
+                Tables\Columns\TextColumn::make('category')->label(__('الفئة'))->badge()
                     ->formatStateUsing(fn (string $state) => match ($state) {
-                        'influencer' => 'مؤثر',
-                        'artist' => 'فنان',
-                        'doctor' => 'طبيب',
-                        'business' => 'رجل أعمال',
+                        'influencer' => __('مؤثر'),
+                        'artist' => __('فنان'),
+                        'doctor' => __('طبيب'),
+                        'business' => __('رجل أعمال'),
                         default => $state,
                     })
                     ->color(fn (string $state): string => match ($state) {
@@ -107,19 +110,19 @@ class PersonResource extends Resource
                         'business' => 'primary',
                         default => 'gray',
                     }),
-                Tables\Columns\TextColumn::make('country')->label('الدولة')->toggleable(),
-                Tables\Columns\IconColumn::make('featured')->label('مميز')->boolean(),
-                Tables\Columns\TextColumn::make('created_at')->label('التاريخ')->dateTime('Y-m-d')->sortable()->toggleable(),
+                Tables\Columns\TextColumn::make('country')->label(__('الدولة'))->toggleable(),
+                Tables\Columns\IconColumn::make('featured')->label(__('مميز'))->boolean(),
+                Tables\Columns\TextColumn::make('created_at')->label(__('التاريخ'))->dateTime('Y-m-d')->sortable()->toggleable(),
             ])
             ->filters([
-                SelectFilter::make('category')->label('الفئة')
+                SelectFilter::make('category')->label(__('الفئة'))
                     ->options([
-                        'influencer' => 'مؤثر',
-                        'artist' => 'فنان',
-                        'doctor' => 'طبيب',
-                        'business' => 'رجل أعمال',
+                        'influencer' => __('مؤثر'),
+                        'artist' => __('فنان'),
+                        'doctor' => __('طبيب'),
+                        'business' => __('رجل أعمال'),
                     ]),
-                TernaryFilter::make('featured')->label('مميز فقط'),
+                TernaryFilter::make('featured')->label(__('مميز فقط')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

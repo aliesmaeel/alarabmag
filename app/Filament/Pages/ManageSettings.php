@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\TranslatesPageLabels;
 use App\Filament\Support\KeywordsInput;
 use App\Filament\Support\SeoPageSettings;
 use App\Models\Setting;
@@ -23,6 +24,7 @@ use Filament\Pages\Page;
 class ManageSettings extends Page implements HasForms
 {
     use InteractsWithForms;
+    use TranslatesPageLabels;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
 
@@ -47,44 +49,44 @@ class ManageSettings extends Page implements HasForms
 
         return [
             Action::make('seedSeo')
-                ->label('تعبئة SEO تلقائياً')
+                ->label(__('تعبئة SEO تلقائياً'))
                 ->icon('heroicon-o-document-duplicate')
                 ->color('gray')
                 ->requiresConfirmation()
-                ->modalHeading('تعبئة SEO الافتراضي')
-                ->modalDescription('يملأ SEO العام وكل الصفحات بقيم جاهزة لمجلة العرب. لن يمسّ بيانات الموقع الأخرى.')
-                ->modalSubmitActionLabel('تعبئة وحفظ')
+                ->modalHeading(__('تعبئة SEO الافتراضي'))
+                ->modalDescription(__('يملأ SEO العام وكل الصفحات بقيم جاهزة لمجلة العرب. لن يمسّ بيانات الموقع الأخرى.'))
+                ->modalSubmitActionLabel(__('تعبئة وحفظ'))
                 ->action(function (): void {
-                    $this->applySeoSettings(SiteSeoDefaults::all(), 'تم تعبئة SEO الافتراضي لكل الصفحات');
+                    $this->applySeoSettings(SiteSeoDefaults::all(), __('تم تعبئة SEO الافتراضي لكل الصفحات'));
                 }),
 
             Action::make('aiSeo')
-                ->label('توليد SEO بالذكاء الاصطناعي')
+                ->label(__('توليد SEO بالذكاء الاصطناعي'))
                 ->icon('heroicon-o-sparkles')
                 ->color('warning')
                 ->disabled(! $ai->isConfigured())
-                ->tooltip($ai->isConfigured() ? 'يولّد عناوين وأوصاف لكل الصفحات دفعة واحدة' : $ai->configurationMessage())
-                ->modalHeading('توليد SEO بالذكاء الاصطناعي')
-                ->modalDescription('يستخدم مزوّد AI المُعدّ في .env لتوليد SEO لكل صفحات الموقع.')
-                ->modalSubmitActionLabel('توليد وحفظ')
+                ->tooltip($ai->isConfigured() ? __('يولّد عناوين وأوصاف لكل الصفحات دفعة واحدة') : $ai->configurationMessage())
+                ->modalHeading(__('توليد SEO بالذكاء الاصطناعي'))
+                ->modalDescription(__('يستخدم مزوّد AI المُعدّ في .env لتوليد SEO لكل صفحات الموقع.'))
+                ->modalSubmitActionLabel(__('توليد وحفظ'))
                 ->form([
                     Textarea::make('instruction')
-                        ->label('تعليمات إضافية (اختياري)')
-                        ->placeholder('مثال: ركّز على دبي والخليج، أسلوب رسمي...')
+                        ->label(__('تعليمات إضافية (اختياري)'))
+                        ->placeholder(__('مثال: ركّز على دبي والخليج، أسلوب رسمي...'))
                         ->rows(3),
                 ])
                 ->action(function (array $data) use ($ai): void {
                     if (! $ai->isConfigured()) {
-                        Notification::make()->danger()->title('الذكاء الاصطناعي غير مفعّل')->body($ai->configurationMessage())->send();
+                        Notification::make()->danger()->title(__('الذكاء الاصطناعي غير مفعّل'))->body($ai->configurationMessage())->send();
 
                         return;
                     }
 
                     try {
                         $settings = $ai->generateSitePagesSeo($data['instruction'] ?? null);
-                        $this->applySeoSettings($settings, 'تم توليد SEO بالذكاء الاصطناعي');
+                        $this->applySeoSettings($settings, __('تم توليد SEO بالذكاء الاصطناعي'));
                     } catch (\Throwable $e) {
-                        Notification::make()->danger()->title('فشل التوليد')->body($e->getMessage())->send();
+                        Notification::make()->danger()->title(__('فشل التوليد'))->body($e->getMessage())->send();
                     }
                 }),
         ];
@@ -108,45 +110,45 @@ class ManageSettings extends Page implements HasForms
         return $form
             ->schema([
                 Tabs::make('settings')->tabs([
-                    Tabs\Tab::make('الموقع')->schema([
-                        Section::make('بيانات الموقع')->schema([
-                            TextInput::make('site_name')->label('اسم الموقع (عربي)')->default(SiteBrand::NAME_AR),
-                            TextInput::make('site_name_en')->label('اسم الموقع (إنجليزي)')->default(SiteBrand::NAME_EN),
-                            TextInput::make('site_tagline')->label('الشعار'),
-                            Textarea::make('site_description')->label('وصف الموقع')->rows(2)->columnSpanFull(),
-                            TextInput::make('editor_email')->label('بريد التحرير')->email(),
-                            TextInput::make('site_email')->label('البريد الإلكتروني العام')->email(),
-                            TextInput::make('site_phone')->label('الهاتف'),
+                    Tabs\Tab::make(__('الموقع'))->schema([
+                        Section::make(__('بيانات الموقع'))->schema([
+                            TextInput::make('site_name')->label(__('اسم الموقع (عربي)'))->default(SiteBrand::NAME_AR),
+                            TextInput::make('site_name_en')->label(__('اسم الموقع (إنجليزي)'))->default(SiteBrand::NAME_EN),
+                            TextInput::make('site_tagline')->label(__('الشعار')),
+                            Textarea::make('site_description')->label(__('وصف الموقع'))->rows(2)->columnSpanFull(),
+                            TextInput::make('editor_email')->label(__('بريد التحرير'))->email(),
+                            TextInput::make('site_email')->label(__('البريد الإلكتروني العام'))->email(),
+                            TextInput::make('site_phone')->label(__('الهاتف')),
                             TextInput::make('ticker_label')
-                                ->label('تسمية شريط العاجل')
+                                ->label(__('تسمية شريط العاجل'))
                                 ->default('عاجل')
                                 ->maxLength(50)
-                                ->helperText('النص الذهبي على يسار الشريط المتحرك في كل الصفحات'),
+                                ->helperText(__('النص الذهبي على يسار الشريط المتحرك في كل الصفحات')),
                         ])->columns(2),
 
-                        Section::make('روابط التواصل')->schema([
-                            TextInput::make('facebook')->label('فيسبوك'),
-                            TextInput::make('twitter')->label('تويتر / X'),
-                            TextInput::make('instagram')->label('انستغرام'),
-                            TextInput::make('youtube')->label('يوتيوب'),
-                            TextInput::make('tiktok')->label('تيك توك'),
-                            TextInput::make('whatsapp')->label('واتساب'),
+                        Section::make(__('روابط التواصل'))->schema([
+                            TextInput::make('facebook')->label(__('فيسبوك')),
+                            TextInput::make('twitter')->label(__('تويتر / X')),
+                            TextInput::make('instagram')->label(__('انستغرام')),
+                            TextInput::make('youtube')->label(__('يوتيوب')),
+                            TextInput::make('tiktok')->label(__('تيك توك')),
+                            TextInput::make('whatsapp')->label(__('واتساب')),
                         ])->columns(2),
                     ]),
 
-                    Tabs\Tab::make('SEO عام')
+                    Tabs\Tab::make(__('SEO عام'))
                         ->icon('heroicon-o-magnifying-glass')
                         ->schema([
-                            Section::make('الإعدادات الافتراضية')
-                                ->description('تُستخدم عندما لا يُحدد SEO خاص بصفحة أو مقال.')
+                            Section::make(__('الإعدادات الافتراضية'))
+                                ->description(__('تُستخدم عندما لا يُحدد SEO خاص بصفحة أو مقال.'))
                                 ->schema([
                                     TextInput::make('seo_title')
-                                        ->label('عنوان SEO الافتراضي')
+                                        ->label(__('عنوان SEO الافتراضي'))
                                         ->placeholder(SiteBrand::defaultTitle())
                                         ->maxLength(255)
                                         ->columnSpanFull(),
                                     Textarea::make('seo_description')
-                                        ->label('وصف SEO الافتراضي (meta description)')
+                                        ->label(__('وصف SEO الافتراضي (meta description)'))
                                         ->placeholder(SiteBrand::defaultDescription())
                                         ->rows(3)
                                         ->columnSpanFull(),
@@ -157,34 +159,34 @@ class ManageSettings extends Page implements HasForms
                                         ->default(SiteBrand::NAME_AR)
                                         ->maxLength(255),
                                     TextInput::make('og_default_image')
-                                        ->label('صورة OG الافتراضية (رابط)')
-                                        ->helperText('تُستخدم عند عدم وجود صورة للمقال/الصفحة. مثال: /logo.png')
+                                        ->label(__('صورة OG الافتراضية (رابط)'))
+                                        ->helperText(__('تُستخدم عند عدم وجود صورة للمقال/الصفحة. مثال: /logo.png'))
                                         ->columnSpanFull(),
                                     TextInput::make('twitter_card')
-                                        ->label('نوع بطاقة تويتر')
+                                        ->label(__('نوع بطاقة تويتر'))
                                         ->default('summary_large_image')
-                                        ->helperText('مثال: summary_large_image أو summary'),
+                                        ->helperText(__('مثال: summary_large_image أو summary')),
                                     TextInput::make('google_site_verification')
-                                        ->label('Google Search Console (تحقق الموقع)')
-                                        ->helperText('القيمة فقط من وسم meta google-site-verification (بدون علامات HTML)')
+                                        ->label(__('Google Search Console (تحقق الموقع)'))
+                                        ->helperText(__('القيمة فقط من وسم meta google-site-verification (بدون علامات HTML)'))
                                         ->columnSpanFull(),
                                 ])->columns(2),
                         ]),
 
-                    Tabs\Tab::make('SEO الصفحات')
+                    Tabs\Tab::make(__('SEO الصفحات'))
                         ->icon('heroicon-o-document-text')
                         ->schema([
-                            Section::make('تعبئة سريعة')
-                                ->description('لا حاجة لملء الحقول يدوياً — استخدم الأزرار أعلى الصفحة: «تعبئة SEO تلقائياً» للقيم الجاهزة، أو «توليد SEO بالذكاء الاصطناعي» إذا كان GROQ_API_KEY مفعّلاً. يمكنك أيضاً تشغيل: php artisan seo:seed')
+                            Section::make(__('تعبئة سريعة'))
+                                ->description(__('لا حاجة لملء الحقول يدوياً — استخدم الأزرار أعلى الصفحة: «تعبئة SEO تلقائياً» للقيم الجاهزة، أو «توليد SEO بالذكاء الاصطناعي» إذا كان GROQ_API_KEY مفعّلاً. يمكنك أيضاً تشغيل: php artisan seo:seed'))
                                 ->collapsed(),
 
-                            Section::make('الصفحات الرئيسية')
-                                ->description('عناوين وأوصاف صفحات الأقسام والرئيسية كما تظهر في Google.')
+                            Section::make(__('الصفحات الرئيسية'))
+                                ->description(__('عناوين وأوصاف صفحات الأقسام والرئيسية كما تظهر في Google.'))
                                 ->schema(SeoPageSettings::mainPages())
                                 ->collapsible(),
 
-                            Section::make('الصفحات الثابتة')
-                                ->description('عن المجلة، اتصل بنا، الخصوصية، وغيرها.')
+                            Section::make(__('الصفحات الثابتة'))
+                                ->description(__('عن المجلة، اتصل بنا، الخصوصية، وغيرها.'))
                                 ->schema(SeoPageSettings::staticPages())
                                 ->collapsed(),
                         ]),
@@ -199,7 +201,7 @@ class ManageSettings extends Page implements HasForms
         SeoService::forgetCache();
 
         Notification::make()
-            ->title('تم حفظ الإعدادات بنجاح')
+            ->title(__('تم حفظ الإعدادات بنجاح'))
             ->success()
             ->send();
     }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\InterviewResource\Pages;
 use App\Filament\Support\ImageUpload;
 use App\Filament\Support\SeoFields;
@@ -20,6 +21,8 @@ use Filament\Tables\Table;
 
 class InterviewResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Interview::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-video-camera';
@@ -37,9 +40,9 @@ class InterviewResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('المحتوى')->schema([
+            Forms\Components\Section::make(__('المحتوى'))->schema([
                 Forms\Components\TextInput::make('title')
-                    ->label('العنوان')
+                    ->label(__('العنوان'))
                     ->required()
                     ->maxLength(1000)
                     ->live(onBlur: true)
@@ -50,21 +53,21 @@ class InterviewResource extends Resource
                     })
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('slug')
-                    ->label('الرابط (slug)')
+                    ->label(__('الرابط (slug)'))
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
-                    ->helperText('يُستخدم في رابط الصفحة: /interviews/عنوان-المقابلة — يدعم العربية والإنجليزية')
+                    ->helperText(__('يُستخدم في رابط الصفحة: /interviews/عنوان-المقابلة — يدعم العربية والإنجليزية'))
                     ->columnSpanFull(),
                 Forms\Components\Textarea::make('description')
-                    ->label('الوصف')
+                    ->label(__('الوصف'))
                     ->rows(4)
                     ->columnSpanFull(),
                 Forms\Components\Radio::make('video_source')
-                    ->label('مصدر الفيديو')
+                    ->label(__('مصدر الفيديو'))
                     ->options([
-                        's3' => 'رفع إلى Amazon S3',
-                        'youtube' => 'رابط يوتيوب',
+                        's3' => __('رفع إلى Amazon S3'),
+                        'youtube' => __('رابط يوتيوب'),
                     ])
                     ->default('s3')
                     ->live()
@@ -72,17 +75,17 @@ class InterviewResource extends Resource
                     ->afterStateUpdated(fn (Set $set) => $set('video_url', null))
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('video_url')
-                    ->label('رابط يوتيوب')
+                    ->label(__('رابط يوتيوب'))
                     ->url()
                     ->maxLength(1000)
                     ->visible(fn (Get $get): bool => $get('video_source') === 'youtube')
                     ->dehydrated(fn (Get $get): bool => $get('video_source') === 'youtube')
                     ->required(fn (Get $get): bool => $get('video_source') === 'youtube')
-                    ->helperText('الصق رابط الفيديو من يوتيوب (يفضّل Unlisted للتضمين). يوتيوب يوفّر جودات متعددة تلقائياً.')
+                    ->helperText(__('الصق رابط الفيديو من يوتيوب (يفضّل Unlisted للتضمين). يوتيوب يوفّر جودات متعددة تلقائياً.'))
                     ->rules([
                         fn (): \Closure => function (string $attribute, mixed $value, \Closure $fail): void {
                             if (! app(YouTubeService::class)->isYouTubeUrl(is_string($value) ? $value : null)) {
-                                $fail('يرجى إدخال رابط يوتيوب صالح (youtube.com أو youtu.be أو youtube.com/shorts).');
+                                $fail(__('يرجى إدخال رابط يوتيوب صالح (youtube.com أو youtu.be أو youtube.com/shorts).'));
                             }
                         },
                     ])
@@ -94,22 +97,22 @@ class InterviewResource extends Resource
                     ->columnSpanFull(),
             ]),
 
-            Forms\Components\Section::make('التصنيف والإعدادات')->schema([
+            Forms\Components\Section::make(__('التصنيف والإعدادات'))->schema([
                 Forms\Components\TextInput::make('category')
-                    ->label('التصنيف')
+                    ->label(__('التصنيف'))
                     ->required()
                     ->datalist(['عام', 'أعمال', 'فنانون', 'مؤثرون', 'أطباء', 'ثقافة', 'رياضة', 'سياسة'])
                     ->default('عام'),
                 Forms\Components\Select::make('status')
-                    ->label('الحالة')
-                    ->options(['published' => 'منشور', 'draft' => 'مسودة'])
+                    ->label(__('الحالة'))
+                    ->options(['published' => __('منشور'), 'draft' => __('مسودة')])
                     ->required()
                     ->default('published')
                     ->native(false),
                 Forms\Components\Toggle::make('featured')
-                    ->label('مميز'),
+                    ->label(__('مميز')),
                 ImageUpload::make('thumbnail_url', 'صورة مصغّرة (اختياري)')
-                    ->helperText('تظهر في قائمة المقابلات. إن تُركت فارغة تُستخدم صورة افتراضية.')
+                    ->helperText(__('تظهر في قائمة المقابلات. إن تُركت فارغة تُستخدم صورة افتراضية.'))
                     ->columnSpanFull(),
             ])->columns(2),
 
@@ -124,7 +127,7 @@ class InterviewResource extends Resource
             ->columns([
                 ImageUpload::column('thumbnail_url'),
                 Tables\Columns\TextColumn::make('title')
-                    ->label('العنوان')
+                    ->label(__('العنوان'))
                     ->searchable()
                     ->limit(50)
                     ->wrap(),
@@ -134,38 +137,38 @@ class InterviewResource extends Resource
                     ->copyable()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('category')
-                    ->label('التصنيف')
+                    ->label(__('التصنيف'))
                     ->badge(),
                 Tables\Columns\IconColumn::make('featured')
-                    ->label('مميز')
+                    ->label(__('مميز'))
                     ->boolean(),
                 Tables\Columns\TextColumn::make('status')
-                    ->label('الحالة')
+                    ->label(__('الحالة'))
                     ->badge()
                     ->color(fn (string $state): string => $state === 'published' ? 'success' : 'gray')
-                    ->formatStateUsing(fn (string $state) => $state === 'published' ? 'منشور' : 'مسودة'),
+                    ->formatStateUsing(fn (string $state) => $state === 'published' ? __('منشور') : __('مسودة')),
                 Tables\Columns\TextColumn::make('views')
-                    ->label('المشاهدات')
+                    ->label(__('المشاهدات'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('التاريخ')
+                    ->label(__('التاريخ'))
                     ->dateTime('Y-m-d H:i')
                     ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('category')
-                    ->label('التصنيف')
+                    ->label(__('التصنيف'))
                     ->options(fn () => Interview::query()
                         ->distinct()
                         ->orderBy('category')
                         ->pluck('category', 'category')
                         ->all()),
                 SelectFilter::make('status')
-                    ->label('الحالة')
-                    ->options(['published' => 'منشور', 'draft' => 'مسودة']),
+                    ->label(__('الحالة'))
+                    ->options(['published' => __('منشور'), 'draft' => __('مسودة')]),
                 TernaryFilter::make('featured')
-                    ->label('مميز فقط'),
+                    ->label(__('مميز فقط')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

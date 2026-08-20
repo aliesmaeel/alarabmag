@@ -9,9 +9,9 @@ class KeywordsInput
     public static function make(string $name, string $label): TagsInput
     {
         return TagsInput::make($name)
-            ->label($label)
-            ->placeholder('اكتب كلمة ثم اضغط Enter')
-            ->helperText('أضف كلمة مفتاحية واضغط Enter، ثم كرّر للكلمات التالية.')
+            ->label(__($label))
+            ->placeholder(__('اكتب كلمة ثم اضغط Enter'))
+            ->helperText(__('أضف كلمة مفتاحية واضغط Enter، ثم كرّر للكلمات التالية.'))
             ->splitKeys(['Tab', ','])
             ->reorderable()
             ->formatStateUsing(fn ($state): array => self::toArray($state))

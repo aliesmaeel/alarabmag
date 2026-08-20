@@ -33,32 +33,32 @@ class SeoPageSettings
 
     protected static function section(string $key, string $label, bool $expanded = false): Section
     {
-        $section = Section::make($label)
+        $section = Section::make(__($label))
             ->schema([
                 TextInput::make("seo_{$key}_title")
-                    ->label('عنوان الصفحة (title)')
+                    ->label(__('عنوان الصفحة (title)'))
                     ->maxLength(255)
                     ->helperText($key === 'home'
-                        ? 'يظهر في نتائج Google. يُفضّل أن يبدأ بـ «مجلة العرب».'
+                        ? __('يظهر في نتائج Google. يُفضّل أن يبدأ بـ «مجلة العرب».')
                         : null)
                     ->columnSpanFull(),
                 Textarea::make("seo_{$key}_description")
-                    ->label('وصف الصفحة (meta description)')
+                    ->label(__('وصف الصفحة (meta description)'))
                     ->rows(2)
-                    ->helperText('140–160 حرفاً. يظهر تحت العنوان في نتائج البحث.')
+                    ->helperText(__('140–160 حرفاً. يظهر تحت العنوان في نتائج البحث.'))
                     ->columnSpanFull(),
                 KeywordsInput::make("seo_{$key}_keywords", 'كلمات مفتاحية')
                     ->columnSpanFull(),
                 TextInput::make("og_{$key}_title")
-                    ->label('og:title (اختياري)')
+                    ->label(__('og:title (اختياري)'))
                     ->maxLength(255)
                     ->columnSpanFull(),
                 Textarea::make("og_{$key}_description")
-                    ->label('og:description (اختياري)')
+                    ->label(__('og:description (اختياري)'))
                     ->rows(2)
                     ->columnSpanFull(),
                 TextInput::make("og_{$key}_image")
-                    ->label('og:image (رابط، اختياري)')
+                    ->label(__('og:image (رابط، اختياري)'))
                     ->url()
                     ->columnSpanFull(),
             ])

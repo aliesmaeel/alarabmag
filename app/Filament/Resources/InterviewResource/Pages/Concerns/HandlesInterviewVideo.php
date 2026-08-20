@@ -42,7 +42,7 @@ trait HandlesInterviewVideo
 
             if (! $canonical) {
                 throw ValidationException::withMessages([
-                    'video_url' => 'يرجى إدخال رابط يوتيوب صالح.',
+                    'video_url' => __('يرجى إدخال رابط يوتيوب صالح.'),
                 ]);
             }
 
@@ -65,7 +65,7 @@ trait HandlesInterviewVideo
 
         if (blank($data['video_url'] ?? null)) {
             throw ValidationException::withMessages([
-                'video_url' => 'يرجى رفع ملف فيديو.',
+                'video_url' => __('يرجى رفع ملف فيديو.'),
             ]);
         }
 

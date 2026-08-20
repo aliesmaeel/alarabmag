@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\SongPollEntryResource\Pages;
+use App\Filament\Support\AudioUpload;
 use App\Filament\Support\ImageUpload;
 use App\Models\SongPoll;
 use App\Models\SongPollEntry;
@@ -14,6 +16,8 @@ use Filament\Tables\Table;
 
 class SongPollEntryResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = SongPollEntry::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-musical-note';
@@ -28,26 +32,71 @@ class SongPollEntryResource extends Resource
 
     protected static ?int $navigationSort = 8;
 
+    /**
+     * @return array<int, \Filament\Forms\Components\Component>
+     */
+    public static function songSchema(bool $includePoll = true): array
+    {
+        $fields = [];
+
+        if ($includePoll) {
+            $fields[] = Forms\Components\Select::make('song_poll_id')
+                ->label(__('الاستفتاء'))
+                ->relationship('poll', 'title')
+                ->required()
+                ->default(fn () => SongPoll::query()->latest('id')->value('id'))
+                ->columnSpanFull();
+        }
+
+        $fields = [
+            ...$fields,
+            Forms\Components\TextInput::make('title')->label(__('اسم الأغنية'))->required()->maxLength(255),
+            Forms\Components\TextInput::make('artist')->label(__('الفنان'))->required()->maxLength(255),
+            Forms\Components\TextInput::make('country')->label(__('الدولة'))->maxLength(100),
+            Forms\Components\TextInput::make('flag')->label(__('علم (إيموجي)'))->maxLength(16)->placeholder('🇪🇬'),
+            AudioUpload::make('audio_path', 'ملف الأغنية (MP3)')
+                ->helperText(__('ارفع ملف MP3 ليستمع الزوار على الموقع. عند الاستبدال أو الحذف يُزال الملف القديم.'))
+                ->columnSpanFull(),
+            Forms\Components\TextInput::make('listen_url')
+                ->label(__('رابط استماع خارجي (اختياري)'))
+                ->url()
+                ->maxLength(1000)
+                ->helperText(__('يُستخدم إن لم يُرفع ملف MP3.'))
+                ->columnSpanFull(),
+            Forms\Components\Textarea::make('excerpt')->label(__('نبذة'))->rows(2)->maxLength(500)->columnSpanFull(),
+            ImageUpload::make('image_url', 'الغلاف')->columnSpanFull(),
+            Forms\Components\TextInput::make('sort_order')->label(__('الترتيب'))->numeric()->default(0),
+            Forms\Components\TextInput::make('votes_count')->label(__('عدد الأصوات'))->numeric()->default(0)->disabledOn('create'),
+        ];
+
+        return $fields;
+    }
+
+    /**
+     * @return array<int, \Filament\Tables\Columns\Column>
+     */
+    public static function songTableColumns(): array
+    {
+        return [
+            Tables\Columns\TextColumn::make('sort_order')->label('#')->sortable(),
+            ImageUpload::column('image_url', 'الغلاف'),
+            Tables\Columns\TextColumn::make('title')->label(__('الأغنية'))->searchable()->sortable(),
+            Tables\Columns\TextColumn::make('artist')->label(__('الفنان'))->searchable(),
+            Tables\Columns\IconColumn::make('audio_path')
+                ->label(__('MP3'))
+                ->boolean()
+                ->getStateUsing(fn (SongPollEntry $record): bool => filled($record->audio_path)),
+            Tables\Columns\TextColumn::make('country')->label(__('الدولة')),
+            Tables\Columns\TextColumn::make('votes_count')->label(__('الأصوات'))->sortable()->numeric(),
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('الأغنية')->schema([
-                Forms\Components\Select::make('song_poll_id')
-                    ->label('الاستفتاء')
-                    ->relationship('poll', 'title')
-                    ->required()
-                    ->default(fn () => SongPoll::query()->latest('id')->value('id'))
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('title')->label('اسم الأغنية')->required()->maxLength(255),
-                Forms\Components\TextInput::make('artist')->label('الفنان')->required()->maxLength(255),
-                Forms\Components\TextInput::make('country')->label('الدولة')->maxLength(100),
-                Forms\Components\TextInput::make('flag')->label('علم (إيموجي)')->maxLength(16)->placeholder('🇪🇬'),
-                Forms\Components\TextInput::make('listen_url')->label('رابط الاستماع')->url()->maxLength(1000)->columnSpanFull(),
-                Forms\Components\Textarea::make('excerpt')->label('نبذة')->rows(2)->maxLength(500)->columnSpanFull(),
-                ImageUpload::make('image_url', 'الغلاف')->columnSpanFull(),
-                Forms\Components\TextInput::make('sort_order')->label('الترتيب')->numeric()->default(0),
-                Forms\Components\TextInput::make('votes_count')->label('عدد الأصوات')->numeric()->default(0)->disabledOn('create'),
-            ])->columns(2),
+            Forms\Components\Section::make(__('الأغنية'))
+                ->schema(static::songSchema())
+                ->columns(2),
         ]);
     }
 
@@ -56,17 +105,12 @@ class SongPollEntryResource extends Resource
         return $table
             ->defaultSort('votes_count', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('sort_order')->label('#')->sortable(),
-                ImageUpload::column('image_url', 'الغلاف'),
-                Tables\Columns\TextColumn::make('title')->label('الأغنية')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('artist')->label('الفنان')->searchable(),
-                Tables\Columns\TextColumn::make('country')->label('الدولة'),
-                Tables\Columns\TextColumn::make('votes_count')->label('الأصوات')->sortable()->numeric(),
-                Tables\Columns\TextColumn::make('poll.title')->label('الاستفتاء')->toggleable(),
+                ...static::songTableColumns(),
+                Tables\Columns\TextColumn::make('poll.title')->label(__('الاستفتاء'))->toggleable(),
             ])
             ->actions([
                 Tables\Actions\Action::make('preview')
-                    ->label('معاينة الصفحة')
+                    ->label(__('معاينة الصفحة'))
                     ->icon('heroicon-o-eye')
                     ->url(fn (): string => route('vote.index'))
                     ->openUrlInNewTab(),

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Slug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -18,9 +19,22 @@ class SongPoll extends Model
         'ends_at' => 'datetime',
     ];
 
+    protected static function booted(): void
+    {
+        static::saving(function (SongPoll $poll) {
+            if (blank($poll->slug) && filled($poll->title)) {
+                $poll->slug = static::uniqueSlug($poll->title, $poll->id);
+            }
+        });
+
+        static::deleting(function (SongPoll $poll) {
+            $poll->entries()->each(fn (SongPollEntry $entry) => $entry->delete());
+        });
+    }
+
     public function entries(): HasMany
     {
-        return $this->hasMany(SongPollEntry::class)->orderByDesc('votes_count')->orderBy('sort_order');
+        return $this->hasMany(SongPollEntry::class);
     }
 
     public function votes(): HasMany
@@ -60,5 +74,10 @@ class SongPoll extends Model
     public function totalVotes(): int
     {
         return (int) $this->entries()->sum('votes_count');
+    }
+
+    public static function uniqueSlug(string $title, ?int $ignoreId = null): string
+    {
+        return Slug::unique($title, static::class, $ignoreId, 'poll');
     }
 }

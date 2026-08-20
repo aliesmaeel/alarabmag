@@ -17,7 +17,7 @@ class ImageUpload
     public static function column(string $name = 'image_url', string $label = 'الصورة'): ImageColumn
     {
         return ImageColumn::make($name)
-            ->label($label)
+            ->label(__($label))
             ->circular()
             ->getStateUsing(fn ($record) => self::resolveUrl($record->{$name} ?? null));
     }
@@ -29,7 +29,7 @@ class ImageUpload
     public static function make(string $name, string $label, ?string $aspectRatio = null): FileUpload
     {
         $field = FileUpload::make($name)
-            ->label($label)
+            ->label(__($label))
             ->image()
             ->disk('uploads')
             ->visibility('public')

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardLocaleController;
 use App\Http\Controllers\MagazineController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\S3VideoUploadController;
@@ -10,6 +11,10 @@ use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public Arabic Magazine Website (Blade) ─────────────────
+Route::get('/dashboard/locale/{locale}', DashboardLocaleController::class)
+    ->whereIn('locale', ['ar', 'en'])
+    ->name('dashboard.locale');
+
 Route::get('/', [SiteController::class, 'home'])->name('home');
 
 Route::get('/news', [SiteController::class, 'news'])->name('news.index');
@@ -42,9 +47,19 @@ Route::get('/interviews/{interview:slug}', [SiteController::class, 'interviewSho
 Route::get('/magazine', [MagazineController::class, 'index'])->name('magazine.index');
 Route::get('/magazine/{issue:slug}', [MagazineController::class, 'show'])->name('magazine.show');
 
-Route::get('/songs-vote', [VoteController::class, 'index'])->name('vote.index');
-Route::post('/songs-vote', [VoteController::class, 'store'])->middleware('throttle:10,1')->name('vote.store');
-Route::get('/vote', fn () => redirect()->route('vote.index', status: 301));
+Route::get('/vote', [VoteController::class, 'index'])->name('vote.index');
+Route::post('/vote', [VoteController::class, 'store'])->middleware('throttle:10,1')->name('vote.store');
+Route::get('/vote/audio/{entry}', [VoteController::class, 'audio'])
+    ->whereNumber('entry')
+    ->withoutMiddleware([
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+        \Illuminate\Cookie\Middleware\EncryptCookies::class,
+        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+    ])
+    ->name('vote.audio');
+Route::get('/songs-vote', fn () => redirect()->route('vote.index', status: 301));
 
 Route::get('/about', [StaticPageController::class, 'about'])->name('about');
 Route::get('/editorial', [StaticPageController::class, 'editorial'])->name('editorial');

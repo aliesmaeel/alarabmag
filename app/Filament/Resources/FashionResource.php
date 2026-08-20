@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\FashionResource\Pages;
 use App\Filament\Support\AiAssist;
 use App\Filament\Support\ImageUpload;
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class FashionResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Article::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
@@ -36,14 +39,14 @@ class FashionResource extends Resource
         return $form->schema([
             Forms\Components\Hidden::make('category')->default('موضة'),
 
-            Forms\Components\Section::make('المحتوى')
+            Forms\Components\Section::make(__('المحتوى'))
                 ->headerActions([
                     AiAssist::fillExcerptAction('article'),
                 ])
                 ->schema([
                 AiAssist::apply(
                     Forms\Components\TextInput::make('title')
-                        ->label('العنوان')
+                        ->label(__('العنوان'))
                         ->required()
                         ->maxLength(1000)
                         ->columnSpanFull(),
@@ -52,7 +55,7 @@ class FashionResource extends Resource
                 ),
                 AiAssist::apply(
                     Forms\Components\TextInput::make('subtitle')
-                        ->label('العنوان الفرعي / الكيكر')
+                        ->label(__('العنوان الفرعي / الكيكر'))
                         ->maxLength(500)
                         ->columnSpanFull(),
                     'subtitle',
@@ -60,35 +63,35 @@ class FashionResource extends Resource
                 ),
                 AiAssist::apply(
                     Forms\Components\Textarea::make('excerpt')
-                        ->label('المقتطف')
+                        ->label(__('المقتطف'))
                         ->rows(3)
                         ->columnSpanFull(),
                     'excerpt',
                     'article'
                 ),
                 Forms\Components\RichEditor::make('body')
-                    ->label('النص الكامل')
+                    ->label(__('النص الكامل'))
                     ->columnSpanFull(),
             ])->columns(2),
 
-            Forms\Components\Section::make('التفاصيل')->schema([
+            Forms\Components\Section::make(__('التفاصيل'))->schema([
                 Forms\Components\TextInput::make('author')
-                    ->label('الكاتب')
+                    ->label(__('الكاتب'))
                     ->required()
                     ->default('فريق التحرير'),
                 Forms\Components\TextInput::make('region')
-                    ->label('المنطقة')
+                    ->label(__('المنطقة'))
                     ->maxLength(100)
-                    ->placeholder('السعودية، الإمارات...'),
+                    ->placeholder(__('السعودية، الإمارات...')),
                 Forms\Components\TextInput::make('read_time')
-                    ->label('وقت القراءة')
+                    ->label(__('وقت القراءة'))
                     ->default('6 دقائق'),
                 Forms\Components\Select::make('status')
-                    ->label('الحالة')
-                    ->options(['published' => 'منشور', 'draft' => 'مسودة'])
+                    ->label(__('الحالة'))
+                    ->options(['published' => __('منشور'), 'draft' => __('مسودة')])
                     ->default('published')
                     ->required(),
-                Forms\Components\Toggle::make('featured')->label('مميز'),
+                Forms\Components\Toggle::make('featured')->label(__('مميز')),
                 ImageUpload::make('image_url', 'صورة الغلاف')->columnSpanFull(),
             ])->columns(2),
 
@@ -102,14 +105,14 @@ class FashionResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->columns([
                 ImageUpload::column(),
-                Tables\Columns\TextColumn::make('title')->label('العنوان')->searchable()->limit(50),
-                Tables\Columns\TextColumn::make('subtitle')->label('الكيكر')->limit(30)->toggleable(),
-                Tables\Columns\TextColumn::make('region')->label('المنطقة')->toggleable(),
-                Tables\Columns\IconColumn::make('featured')->label('مميز')->boolean(),
-                Tables\Columns\TextColumn::make('created_at')->label('التاريخ')->dateTime('Y-m-d')->sortable(),
+                Tables\Columns\TextColumn::make('title')->label(__('العنوان'))->searchable()->limit(50),
+                Tables\Columns\TextColumn::make('subtitle')->label(__('الكيكر'))->limit(30)->toggleable(),
+                Tables\Columns\TextColumn::make('region')->label(__('المنطقة'))->toggleable(),
+                Tables\Columns\IconColumn::make('featured')->label(__('مميز'))->boolean(),
+                Tables\Columns\TextColumn::make('created_at')->label(__('التاريخ'))->dateTime('Y-m-d')->sortable(),
             ])
             ->filters([
-                TernaryFilter::make('featured')->label('مميز فقط'),
+                TernaryFilter::make('featured')->label(__('مميز فقط')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

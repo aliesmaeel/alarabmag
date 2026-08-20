@@ -19,7 +19,7 @@
 
     <section class="page-hero vote-hero">
         <div class="page-hero-eyebrow">{{ $poll->eyebrow ?: 'Vote · أغنية العام' }}</div>
-        <h1 class="page-hero-title">صوّت لأغنية <em>العام</em></h1>
+        <h1 class="page-hero-title">{{ $poll->title }}</h1>
         <p class="page-hero-sub">{{ $poll->subtitle }}</p>
         <div class="crumb">
             <a href="{{ url('/') }}">الرئيسية</a>
@@ -35,7 +35,7 @@
         </div>
         <div class="vote-stat-rule" aria-hidden="true"></div>
         <div class="vote-stat">
-            <span class="vote-stat-value">10</span>
+            <span class="vote-stat-value">{{ $entries->count() }}</span>
             <span class="vote-stat-label">أغانٍ مرشّحة</span>
         </div>
         <div class="vote-stat-rule" aria-hidden="true"></div>
@@ -75,12 +75,15 @@
                     <span>صوت ·</span>
                     <span data-share="{{ $leader->id }}">{{ $leader->shareOf($totalVotes) }}%</span>
                 </div>
+                <div class="vote-leader-listen">
+                    @include('site.partials.vote-listen', ['entry' => $leader, 'cover' => $leader->image_url ?: $fallbackCover])
+                </div>
             </div>
         </section>
     @endif
 
     <div class="sh dark-sh">
-        <div class="sh-title">صنّف الأغاني العشر</div>
+        <div class="sh-title">صنّف الأغاني المرشّحة</div>
         <div class="sh-rule"></div>
         <span class="sh-more" data-vote-status>
             @if ($votedEntryId)
@@ -149,16 +152,7 @@
                             <span>{{ $isVoted ? 'صوتك' : 'صوّت' }}</span>
                         </button>
                     </form>
-                    @if ($entry->listen_url)
-                        <a class="vote-listen" href="{{ $entry->listen_url }}" target="_blank" rel="noopener noreferrer">
-                            اسمع
-                            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 18V5l12-2v13"/>
-                                <circle cx="6" cy="18" r="3"/>
-                                <circle cx="18" cy="16" r="3"/>
-                            </svg>
-                        </a>
-                    @endif
+                    @include('site.partials.vote-listen', ['entry' => $entry, 'cover' => $cover])
                 </div>
             </li>
         @endforeach
@@ -172,6 +166,10 @@
             <li>النتيجة تُحدَّث مباشرة بعد كل صوت.</li>
         </ul>
     </aside>
+
+    <audio data-vote-audio preload="auto"></audio>
+
+    @include('site.partials.vote-player')
 
     <div class="vote-toast" data-vote-toast role="status" aria-live="polite" hidden></div>
 

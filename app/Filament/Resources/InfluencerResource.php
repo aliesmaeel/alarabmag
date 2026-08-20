@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\InfluencerResource\Pages;
 use App\Filament\Support\AiAssist;
 use App\Filament\Support\ImageUpload;
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class InfluencerResource extends Resource
 {
+    use TranslatesResourceLabels;
+
     protected static ?string $model = Person::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-megaphone';
@@ -37,49 +40,49 @@ class InfluencerResource extends Resource
         return $form->schema([
             Forms\Components\Hidden::make('category')->default('influencer'),
 
-            Forms\Components\Section::make('بيانات أساسية')->schema([
+            Forms\Components\Section::make(__('بيانات أساسية'))->schema([
                 AiAssist::apply(
-                    Forms\Components\TextInput::make('name')->label('الاسم')->required()->maxLength(200),
+                    Forms\Components\TextInput::make('name')->label(__('الاسم'))->required()->maxLength(200),
                     'name',
                     'influencer'
                 ),
                 Forms\Components\TextInput::make('name_en')->label('Name (EN)')->maxLength(200),
-                Forms\Components\TextInput::make('role')->label('المجال / التخصص')->maxLength(200)
-                    ->placeholder('موضة ونمط حياة، تقنية، طبخ...'),
-                Forms\Components\TextInput::make('country')->label('الدولة')->maxLength(100),
-                Forms\Components\TextInput::make('flag')->label('علم (إيموجي)')->maxLength(10)->placeholder('🇦🇪'),
-                Forms\Components\Toggle::make('featured')->label('مميز'),
+                Forms\Components\TextInput::make('role')->label(__('المجال / التخصص'))->maxLength(200)
+                    ->placeholder(__('موضة ونمط حياة، تقنية، طبخ...')),
+                Forms\Components\TextInput::make('country')->label(__('الدولة'))->maxLength(100),
+                Forms\Components\TextInput::make('flag')->label(__('علم (إيموجي)'))->maxLength(10)->placeholder('🇦🇪'),
+                Forms\Components\Toggle::make('featured')->label(__('مميز')),
                 ImageUpload::make('image_url', 'الصورة')->columnSpanFull(),
             ])->columns(2),
 
-            Forms\Components\Section::make('بيانات السوشيال ميديا')->schema([
-                Forms\Components\TextInput::make('handle')->label('المعرّف (@)')->maxLength(100)
+            Forms\Components\Section::make(__('بيانات السوشيال ميديا'))->schema([
+                Forms\Components\TextInput::make('handle')->label(__('المعرّف (@)'))->maxLength(100)
                     ->placeholder('@username'),
-                Forms\Components\TextInput::make('platform')->label('المنصة الرئيسية')->maxLength(100)
-                    ->placeholder('Instagram، TikTok، YouTube...'),
-                Forms\Components\TextInput::make('followers')->label('عدد المتابعين')->maxLength(50)
+                Forms\Components\TextInput::make('platform')->label(__('المنصة الرئيسية'))->maxLength(100)
+                    ->placeholder(__('Instagram، TikTok، YouTube...')),
+                Forms\Components\TextInput::make('followers')->label(__('عدد المتابعين'))->maxLength(50)
                     ->placeholder('12.4M'),
             ])->columns(3),
 
-            Forms\Components\Section::make('نبذة')
+            Forms\Components\Section::make(__('نبذة'))
                 ->headerActions([
                     AiAssist::fillExcerptAction('influencer'),
                 ])
                 ->schema([
                 AiAssist::apply(
-                    Forms\Components\Textarea::make('excerpt')->label('وصف مختصر')->rows(3)
+                    Forms\Components\Textarea::make('excerpt')->label(__('وصف مختصر'))->rows(3)
                         ->maxLength(1000)->columnSpanFull(),
                     'excerpt',
                     'influencer'
                 ),
-                Forms\Components\RichEditor::make('bio')->label('السيرة الكاملة')->columnSpanFull(),
+                Forms\Components\RichEditor::make('bio')->label(__('السيرة الكاملة'))->columnSpanFull(),
             ]),
 
-            Forms\Components\Section::make('إحصائية إضافية')->schema([
-                Forms\Components\TextInput::make('stat')->label('الرقم / الإحصاء')
-                    ->placeholder('مثال: 50M+'),
-                Forms\Components\TextInput::make('stat_label')->label('وصف الإحصاء')
-                    ->placeholder('مشاهدة شهرياً'),
+            Forms\Components\Section::make(__('إحصائية إضافية'))->schema([
+                Forms\Components\TextInput::make('stat')->label(__('الرقم / الإحصاء'))
+                    ->placeholder(__('مثال: 50M+')),
+                Forms\Components\TextInput::make('stat_label')->label(__('وصف الإحصاء'))
+                    ->placeholder(__('مشاهدة شهرياً')),
             ])->columns(2)->collapsed(),
 
             SeoFields::section('influencer'),
@@ -92,20 +95,20 @@ class InfluencerResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->columns([
                 ImageUpload::column(),
-                Tables\Columns\TextColumn::make('name')->label('الاسم')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('handle')->label('المعرّف')->searchable()->toggleable(),
-                Tables\Columns\TextColumn::make('platform')->label('المنصة')->badge()->toggleable(),
-                Tables\Columns\TextColumn::make('followers')->label('المتابعون')->toggleable(),
-                Tables\Columns\TextColumn::make('country')->label('الدولة')->toggleable(),
-                Tables\Columns\IconColumn::make('featured')->label('مميز')->boolean(),
-                Tables\Columns\TextColumn::make('created_at')->label('التاريخ')->dateTime('Y-m-d')->sortable()->toggleable(),
+                Tables\Columns\TextColumn::make('name')->label(__('الاسم'))->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('handle')->label(__('المعرّف'))->searchable()->toggleable(),
+                Tables\Columns\TextColumn::make('platform')->label(__('المنصة'))->badge()->toggleable(),
+                Tables\Columns\TextColumn::make('followers')->label(__('المتابعون'))->toggleable(),
+                Tables\Columns\TextColumn::make('country')->label(__('الدولة'))->toggleable(),
+                Tables\Columns\IconColumn::make('featured')->label(__('مميز'))->boolean(),
+                Tables\Columns\TextColumn::make('created_at')->label(__('التاريخ'))->dateTime('Y-m-d')->sortable()->toggleable(),
             ])
             ->filters([
-                SelectFilter::make('platform')->label('المنصة')->options(fn () =>
+                SelectFilter::make('platform')->label(__('المنصة'))->options(fn () =>
                     Person::query()->where('category', 'influencer')
                         ->whereNotNull('platform')->distinct()->pluck('platform', 'platform')->toArray()
                 ),
-                TernaryFilter::make('featured')->label('مميز فقط'),
+                TernaryFilter::make('featured')->label(__('مميز فقط')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -10,7 +10,7 @@ class HtmlUpload
     public static function make(string $name, string $label): FileUpload
     {
         return FileUpload::make($name)
-            ->label($label)
+            ->label(__($label))
             ->acceptedFileTypes(['text/html', 'application/xhtml+xml', '.html', '.htm'])
             ->maxSize(10240)
             ->required()
@@ -32,7 +32,7 @@ class HtmlUpload
                     'url' => $url ?? $file,
                 ];
             })
-            ->helperText('ملف HTML واحد فقط. يجب أن تكون الصور والتنسيقات مرتبطة داخل الملف (روابط خارجية أو inline).')
+            ->helperText(__('ملف HTML واحد فقط. يجب أن تكون الصور والتنسيقات مرتبطة داخل الملف (روابط خارجية أو inline).'))
             ->columnSpanFull();
     }
 }

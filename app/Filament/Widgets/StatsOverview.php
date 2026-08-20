@@ -17,28 +17,33 @@ class StatsOverview extends BaseWidget
         $totalViews = (int) (Article::sum('views') + Blog::sum('views'));
 
         return [
-            Stat::make('الأخبار', Article::count())
-                ->description(Article::where('status', 'published')->count() . ' منشور · ' . Article::where('status', 'draft')->count() . ' مسودة')
+            Stat::make(__('dashboard.news'), Article::count())
+                ->description(__('dashboard.news_desc', [
+                    'published' => Article::where('status', 'published')->count(),
+                    'drafts' => Article::where('status', 'draft')->count(),
+                ]))
                 ->descriptionIcon('heroicon-m-newspaper')
                 ->color('primary'),
 
-            Stat::make('التدوينات', Blog::count())
-                ->description(Blog::where('featured', true)->count() . ' مميزة')
+            Stat::make(__('dashboard.posts'), Blog::count())
+                ->description(__('dashboard.posts_desc', [
+                    'count' => Blog::where('featured', true)->count(),
+                ]))
                 ->descriptionIcon('heroicon-m-pencil-square')
                 ->color('info'),
 
-            Stat::make('الشخصيات', Person::count())
-                ->description(
-                    Person::where('category', 'influencer')->count() . ' مؤثر · ' .
-                    Person::where('category', 'artist')->count() . ' فنان · ' .
-                    Person::where('category', 'doctor')->count() . ' طبيب · ' .
-                    Person::where('category', 'business')->count() . ' أعمال'
-                )
+            Stat::make(__('dashboard.people'), Person::count())
+                ->description(__('dashboard.people_desc', [
+                    'influencers' => Person::where('category', 'influencer')->count(),
+                    'artists' => Person::where('category', 'artist')->count(),
+                    'doctors' => Person::where('category', 'doctor')->count(),
+                    'business' => Person::where('category', 'business')->count(),
+                ]))
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('success'),
 
-            Stat::make('إجمالي المشاهدات', number_format($totalViews))
-                ->description('عبر الأخبار والتدوينات')
+            Stat::make(__('dashboard.views'), number_format($totalViews))
+                ->description(__('dashboard.views_desc'))
                 ->descriptionIcon('heroicon-m-eye')
                 ->color('warning'),
         ];

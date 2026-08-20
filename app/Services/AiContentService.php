@@ -24,10 +24,10 @@ class AiContentService
     public function configurationMessage(): string
     {
         return match (config('ai.provider')) {
-            'groq' => 'أضف GROQ_API_KEY في ملف .env — مفتاح مجاني من console.groq.com',
-            'gemini' => 'أضف GEMINI_API_KEY في ملف .env — مفتاح مجاني من aistudio.google.com',
-            'ollama' => 'شغّل Ollama محلياً: ollama run llama3.2',
-            default => 'عيّن AI_PROVIDER في ملف .env',
+            'groq' => __('أضف GROQ_API_KEY في ملف .env — مفتاح مجاني من console.groq.com'),
+            'gemini' => __('أضف GEMINI_API_KEY في ملف .env — مفتاح مجاني من aistudio.google.com'),
+            'ollama' => __('شغّل Ollama محلياً: ollama run llama3.2'),
+            default => __('عيّن AI_PROVIDER في ملف .env'),
         };
     }
 
@@ -258,7 +258,7 @@ SYS;
 
         $subject = trim($subject);
         if ($subject === '') {
-            throw new RuntimeException('أدخل موضوع المقال أولاً.');
+            throw new RuntimeException(__('أدخل موضوع المقال أولاً.'));
         }
 
         $useWebSearch = $options['use_web_search'] ?? true;
@@ -366,7 +366,7 @@ SYS;
             'groq' => $this->groqChat($system, $user, $timeout),
             'gemini' => $this->geminiChat($system, $user, $timeout),
             'ollama' => $this->ollamaChat($system, $user, $timeout),
-            default => throw new RuntimeException('مزوّد AI غير معروف'),
+            default => throw new RuntimeException(__('مزوّد AI غير معروف')),
         };
     }
 
@@ -425,7 +425,7 @@ SYS;
             ]);
 
         if (! $response->successful()) {
-            throw new RuntimeException('Ollama: تأكد أن Ollama يعمل محلياً — '.$response->body());
+            throw new RuntimeException(__('Ollama: تأكد أن Ollama يعمل محلياً — ').$response->body());
         }
 
         return (string) $response->json('message.content', '');
@@ -437,7 +437,7 @@ SYS;
         $decoded = json_decode($json, true);
 
         if (! is_array($decoded)) {
-            throw new RuntimeException('لم يفهم النموذج الاستجابة. حاول مرة أخرى.');
+            throw new RuntimeException(__('لم يفهم النموذج الاستجابة. حاول مرة أخرى.'));
         }
 
         return $decoded;

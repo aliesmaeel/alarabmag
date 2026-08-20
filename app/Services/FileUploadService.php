@@ -324,6 +324,31 @@ class FileUploadService
         return Storage::disk($disk)->url(ltrim($value, '/'));
     }
 
+    /**
+     * Delete a file stored on the public uploads disk (/uploads/...).
+     * External URLs are left untouched.
+     */
+    public function deleteLocalUpload(?string $value): void
+    {
+        if (! filled($value) || preg_match('#^https?://#i', $value) || str_starts_with(trim($value), 'data:')) {
+            return;
+        }
+
+        $relative = ltrim(trim($value), '/');
+
+        if (! str_starts_with($relative, 'uploads/')) {
+            return;
+        }
+
+        $onDisk = substr($relative, strlen('uploads/'));
+
+        if ($onDisk === '' || str_contains($onDisk, '..')) {
+            return;
+        }
+
+        Storage::disk('uploads')->delete($onDisk);
+    }
+
     public function deleteFile(?string $value): void
     {
         if (! filled($value) || preg_match('#^https?://#i', $value)) {

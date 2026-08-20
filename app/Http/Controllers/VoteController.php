@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class VoteController extends Controller
@@ -21,7 +22,7 @@ class VoteController extends Controller
         $poll = SongVoting::currentPoll();
         abort_unless($poll, 404);
 
-        $entries = $poll->entries()->get();
+        $entries = $poll->entries()->orderByDesc('votes_count')->orderBy('sort_order')->get();
         $total = (int) $entries->sum('votes_count');
         $votedEntryId = SongVoting::votedEntryId($poll);
 
@@ -137,10 +138,31 @@ class VoteController extends Controller
         return back()->with('vote_error', $message);
     }
 
+    public function audio(SongPollEntry $entry): BinaryFileResponse
+    {
+        abort_unless(filled($entry->audio_path), 404);
+
+        $relative = ltrim((string) $entry->audio_path, '/');
+        abort_unless(str_starts_with($relative, 'uploads/songs/'), 404);
+        abort_unless(! str_contains($relative, '..'), 404);
+
+        $path = public_path($relative);
+        $real = realpath($path);
+        $root = realpath(public_path('uploads/songs'));
+
+        abort_unless($real && $root && is_file($real) && str_starts_with($real, $root.DIRECTORY_SEPARATOR), 404);
+
+        return response()->file($real, [
+            'Content-Type' => 'audio/mpeg',
+            'Accept-Ranges' => 'bytes',
+            'Cache-Control' => 'public, max-age=86400',
+        ]);
+    }
+
     /** @return array{total_votes: int, voted_entry_id: int|null, entries: list<array<string, mixed>>} */
     protected function resultsPayload(SongPoll $poll, ?int $votedEntryId): array
     {
-        $entries = $poll->entries()->get();
+        $entries = $poll->entries()->orderByDesc('votes_count')->orderBy('sort_order')->get();
         $total = (int) $entries->sum('votes_count');
 
         return [
