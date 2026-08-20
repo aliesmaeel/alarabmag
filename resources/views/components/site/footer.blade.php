@@ -42,6 +42,7 @@
                     <li><a href="{{ route('interviews.index') }}">المقابلات</a></li>
                 @endif
                 <li><a href="{{ url('/blogs') }}">المدونات</a></li>
+                <li><a href="{{ route('vote.index') }}">أغنية العام</a></li>
             </ul>
         </div>
         <div class="fcol">

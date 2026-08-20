@@ -26,6 +26,7 @@ class HomeSections
             ['key' => 'news', 'label' => 'الأخبار', 'id' => 'news', 'route' => 'news.index'],
             ['key' => 'blogs', 'label' => 'المدونات', 'id' => 'blogs', 'route' => 'blogs.index'],
             ['key' => 'magazine', 'label' => 'المجلة', 'id' => 'magazine', 'route' => 'magazine.index'],
+            ['key' => 'vote', 'label' => 'أغنية العام', 'id' => 'vote', 'route' => 'vote.index'],
         ];
 
         if (static::hasInterviews()) {
@@ -44,7 +45,7 @@ class HomeSections
             return $onHome ? '#top' : url('/');
         }
 
-        if (isset($item['route']) && ($item['key'] === 'magazine' || ! $onHome)) {
+        if (isset($item['route']) && (in_array($item['key'], ['magazine', 'vote'], true) || ! $onHome)) {
             return route($item['route']);
         }
 

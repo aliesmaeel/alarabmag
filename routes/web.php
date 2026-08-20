@@ -6,6 +6,7 @@ use App\Http\Controllers\S3VideoUploadController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StaticPageController;
+use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public Arabic Magazine Website (Blade) ─────────────────
@@ -40,6 +41,9 @@ Route::get('/interviews/{interview:slug}', [SiteController::class, 'interviewSho
 
 Route::get('/magazine', [MagazineController::class, 'index'])->name('magazine.index');
 Route::get('/magazine/{issue:slug}', [MagazineController::class, 'show'])->name('magazine.show');
+
+Route::get('/vote', [VoteController::class, 'index'])->name('vote.index');
+Route::post('/vote', [VoteController::class, 'store'])->middleware('throttle:10,1')->name('vote.store');
 
 Route::get('/about', [StaticPageController::class, 'about'])->name('about');
 Route::get('/editorial', [StaticPageController::class, 'editorial'])->name('editorial');

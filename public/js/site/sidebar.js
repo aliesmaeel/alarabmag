@@ -80,10 +80,9 @@
         }
     });
 
-    const anchorLinks = document.querySelectorAll('.page-sidebar-link[data-section]');
-    if (!anchorLinks.length) return;
-
     const sectionIds = ['top', 'influencers', 'artists', 'business', 'doctors', 'fashion', 'news', 'blogs'];
+    const hasHomeSections = sectionIds.some((id) => id !== 'top' && document.getElementById(id));
+    if (!hasHomeSections) return;
 
     const setActive = (id) => {
         document.querySelectorAll('.page-sidebar-link').forEach((a) => {

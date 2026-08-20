@@ -241,6 +241,7 @@ class SeoService
             'fashion' => route('fashion.index'),
             'magazine' => route('magazine.index'),
             'interviews' => route('interviews.index'),
+            'vote' => route('vote.index'),
             'about' => route('about'),
             'editorial' => route('editorial'),
             'privacy' => route('privacy'),

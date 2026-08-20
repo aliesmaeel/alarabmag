@@ -30,6 +30,7 @@ class SitemapController extends Controller
             $this->entry(route('business.index'), now(), 'weekly', '0.8'),
             $this->entry(route('fashion.index'), now(), 'weekly', '0.8'),
             $this->entry(route('magazine.index'), now(), 'weekly', '0.9'),
+            $this->entry(route('vote.index'), now(), 'daily', '0.8'),
         ]);
 
         if (HomeSections::hasInterviews()) {

@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->seedTickerArticles();
         $this->seedSettings();
         $this->call(ContentExpansionSeeder::class);
+        $this->call(SongPollSeeder::class);
 
         $this->command->info('✅ مجلة العرب — Database seeded successfully!');
     }
