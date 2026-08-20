@@ -3,31 +3,30 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Concerns\TranslatesResourceLabels;
-use App\Filament\Resources\SongPollVoteResource\Pages;
-use App\Models\SongPoll;
-use App\Models\SongPollVote;
-use App\Support\SongPollVoteCsv;
+use App\Filament\Resources\SubscriberResource\Pages;
+use App\Models\Subscriber;
+use App\Support\SubscriberCsv;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 
-class SongPollVoteResource extends Resource
+class SubscriberResource extends Resource
 {
     use TranslatesResourceLabels;
 
-    protected static ?string $model = SongPollVote::class;
+    protected static ?string $model = Subscriber::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-envelope';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationLabel = 'أصوات التصويت';
+    protected static ?string $navigationLabel = 'المشتركون';
 
-    protected static ?string $modelLabel = 'صوت';
+    protected static ?string $modelLabel = 'مشترك';
 
-    protected static ?string $pluralModelLabel = 'أصوات التصويت';
+    protected static ?string $pluralModelLabel = 'المشتركون';
 
     protected static ?string $navigationGroup = 'الجمهور';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
 
     public static function canCreate(): bool
     {
@@ -43,24 +42,14 @@ class SongPollVoteResource extends Resource
                     ->label(__('البريد الإلكتروني'))
                     ->searchable()
                     ->copyable(),
-                Tables\Columns\TextColumn::make('poll.title')
-                    ->label(__('الاستفتاء'))
-                    ->searchable()
-                    ->wrap(),
-                Tables\Columns\TextColumn::make('entry.title')
-                    ->label(__('الأغنية'))
-                    ->searchable()
-                    ->description(fn (SongPollVote $record): ?string => $record->entry?->artist),
+                Tables\Columns\TextColumn::make('source')
+                    ->label(__('المصدر'))
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): string => $state === 'newsletter' ? __('النشرة البريدية') : ($state ?: '—')),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('تاريخ التصويت'))
+                    ->label(__('تاريخ الاشتراك'))
                     ->dateTime('Y-m-d H:i')
                     ->sortable(),
-            ])
-            ->filters([
-                Tables\Filters\SelectFilter::make('song_poll_id')
-                    ->label(__('الاستفتاء'))
-                    ->options(fn () => SongPoll::query()->orderByDesc('id')->pluck('title', 'id')->all())
-                    ->searchable(),
             ])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
@@ -74,9 +63,9 @@ class SongPollVoteResource extends Resource
                         ->action(function ($records) {
                             $ids = $records->pluck('id');
 
-                            return SongPollVoteCsv::download(
-                                SongPollVote::query()->whereIn('id', $ids),
-                                'vote-emails-selected-'.now()->format('Y-m-d-His'),
+                            return SubscriberCsv::download(
+                                Subscriber::query()->whereIn('id', $ids),
+                                'subscribers-selected-'.now()->format('Y-m-d-His'),
                             );
                         }),
                 ]),
@@ -86,9 +75,9 @@ class SongPollVoteResource extends Resource
                     ->label(__('تصدير CSV'))
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($livewire) {
-                        return SongPollVoteCsv::download(
+                        return SubscriberCsv::download(
                             $livewire->getFilteredTableQuery(),
-                            'vote-emails-'.now()->format('Y-m-d-His'),
+                            'subscribers-'.now()->format('Y-m-d-His'),
                         );
                     }),
             ]);
@@ -97,7 +86,7 @@ class SongPollVoteResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListSongPollVotes::route('/'),
+            'index' => Pages\ListSubscribers::route('/'),
         ];
     }
 }

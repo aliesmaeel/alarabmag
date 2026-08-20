@@ -363,5 +363,11 @@
     "صوت": "Vote",
     "تاريخ التصويت": "Voted at",
     "تصدير CSV": "Export CSV",
-    "تصدير المحدد CSV": "Export selected CSV"
+    "تصدير المحدد CSV": "Export selected CSV",
+    "الجمهور": "Audience",
+    "المشتركون": "Subscribers",
+    "مشترك": "Subscriber",
+    "تاريخ الاشتراك": "Subscribed at",
+    "المصدر": "Source",
+    "النشرة البريدية": "Newsletter"
 }

@@ -1,5 +1,5 @@
 /**
- * Shared site chrome: custom cursor (always), ticker + newsletter (when GSAP is available).
+ * Shared site chrome: custom cursor (always), newsletter signup, ticker (when GSAP is available).
  */
 (function () {
     const INTERACTIVE_SELECTOR = [
@@ -73,6 +73,67 @@
         });
     }
 
+    const nlForm = document.getElementById('nlForm');
+    const nlBtn = document.getElementById('nlBtn');
+    const nlEmail = document.getElementById('nlEmail');
+    const nlStatus = document.getElementById('nlStatus');
+
+    function setNewsletterStatus(message, isError) {
+        if (!nlStatus) return;
+        nlStatus.textContent = message || '';
+        nlStatus.classList.toggle('is-error', !!isError);
+        if (message) {
+            nlStatus.hidden = false;
+            nlStatus.classList.remove('is-hidden');
+        } else {
+            nlStatus.hidden = true;
+            nlStatus.classList.add('is-hidden');
+        }
+    }
+
+    if (nlForm && nlBtn && nlEmail) {
+        nlForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const email = (nlEmail.value || '').trim();
+            if (!email || !email.includes('@')) {
+                setNewsletterStatus('أدخل بريداً إلكترونياً صالحاً.', true);
+                return;
+            }
+
+            nlBtn.disabled = true;
+            setNewsletterStatus('', false);
+
+            try {
+                const res = await fetch(nlForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'X-CSRF-TOKEN': nlForm.dataset.csrf || '',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ email }),
+                });
+
+                const data = await res.json().catch(() => ({}));
+
+                if (res.ok && data.ok) {
+                    setNewsletterStatus(data.message || 'أهلاً بك في مجلة العرب — تم تسجيل اشتراكك.', false);
+                    return;
+                }
+
+                const fieldError = data.errors?.email?.[0] || data.message || 'أدخل بريداً إلكترونياً صالحاً.';
+                setNewsletterStatus(fieldError, true);
+            } catch {
+                setNewsletterStatus('تعذّر الاتصال. حاول مرة أخرى.', true);
+            } finally {
+                nlBtn.disabled = false;
+            }
+        });
+    }
+
     if (typeof gsap === 'undefined') return;
 
     gsap.registerPlugin(ScrollTrigger);
@@ -80,23 +141,5 @@
     const tr = document.getElementById('tickerTrack');
     if (tr) {
         gsap.to(tr, { x: -tr.scrollWidth / 2, duration: 38, repeat: -1, ease: 'none' });
-    }
-
-    const nlBtn = document.getElementById('nlBtn');
-    const nlEmail = document.getElementById('nlEmail');
-    if (nlBtn && nlEmail) {
-        nlBtn.addEventListener('click', () => {
-            if (nlEmail.value && nlEmail.value.includes('@')) {
-                gsap.to(nlEmail, {
-                    opacity: 0,
-                    duration: 0.2,
-                    onComplete() {
-                        nlEmail.value = '✓ أهلاً بك في مجلة العرب — تفقّد بريدك الإلكتروني';
-                        nlEmail.style.color = '#d4ae5a';
-                        gsap.to(nlEmail, { opacity: 1, duration: 0.4 });
-                    },
-                });
-            }
-        });
     }
 })();

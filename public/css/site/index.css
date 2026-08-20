@@ -366,7 +366,7 @@ a.ticker-item:hover{color:var(--cream);}
 }
 .nl-headline em{color:#d4ae5a;font-style:normal;}
 .nl-sub{font-size:.9rem;color:rgba(248,244,238,.45);line-height:1.9;text-align:right;font-family:'Cairo',sans-serif;}
-.nl-form{display:flex;flex-direction:row-reverse;border:1px solid rgba(248,244,238,.12);}
+.nl-form{display:flex;flex-direction:row-reverse;margin:0;border:1px solid rgba(248,244,238,.12);}
 .nl-input{
   flex:1;background:transparent;border:none;padding:1rem 1.2rem;
   color:var(--cream);font-family:'Cairo',sans-serif;font-size:.9rem;outline:none;
@@ -379,6 +379,10 @@ a.ticker-item:hover{color:var(--cream);}
   cursor:pointer;transition:background .25s;
 }
 .nl-btn:hover{background:#d4ae5a;}
+.nl-btn:disabled{opacity:.6;cursor:wait;}
+.nl-status{margin-top:.8rem;font-size:.75rem;color:#d4ae5a;text-align:right;font-family:'Cairo',sans-serif;}
+.nl-status.is-error{color:#e8a0a0;}
+.nl-status.is-hidden{display:none;}
 
 /* ── FOOTER ── */
 footer{background:#080705;border-top:3px solid var(--ink);}

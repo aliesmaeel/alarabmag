@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardLocaleController;
 use App\Http\Controllers\MagazineController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\S3VideoUploadController;
 use App\Http\Controllers\SiteController;
@@ -60,6 +61,10 @@ Route::get('/vote/audio/{entry}', [VoteController::class, 'audio'])
     ])
     ->name('vote.audio');
 Route::get('/songs-vote', fn () => redirect()->route('vote.index', status: 301));
+
+Route::post('/newsletter', [NewsletterController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('newsletter.store');
 
 Route::get('/about', [StaticPageController::class, 'about'])->name('about');
 Route::get('/editorial', [StaticPageController::class, 'editorial'])->name('editorial');
