@@ -11,13 +11,13 @@ class SongPollSeeder extends Seeder
     public function run(): void
     {
         $poll = SongPoll::updateOrCreate(
-            ['slug' => 'top-arabic-songs-2025'],
+            ['slug' => 'top-arabic-songs-2026'],
             [
                 'title' => 'أفضل 10 أغاني عربية في العام الماضي',
                 'title_en' => 'Top 10 Arabic Songs of Last Year',
                 'eyebrow' => 'Vote · أغنية العام',
-                'subtitle' => 'صوّت لأغنية واحدة — اختيار مجلة العرب لأبرز الإصدارات العربية في 2025. صوت واحد لكل قارئ.',
-                'year' => 2025,
+                'subtitle' => 'صوّت لأغنية واحدة — اختيار مجلة العرب لأبرز الإصدارات العربية في 2026. صوت واحد لكل قارئ.',
+                'year' => 2026,
                 'status' => 'published',
                 'starts_at' => now()->subDay(),
                 'ends_at' => now()->endOfYear(),
@@ -156,6 +156,6 @@ class SongPollSeeder extends Seeder
             $entry->save();
         }
 
-        $this->command?->info('  → Song poll seeded: '.$poll->title);
+        $this->command?->info('  → Song poll seeded: ' . $poll->title);
     }
 }
