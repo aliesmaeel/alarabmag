@@ -9,4 +9,5 @@ return [
     'people_desc' => ':influencers influencers · :artists artists · :doctors doctors · :business business',
     'views' => 'Total views',
     'views_desc' => 'Across news and blogs',
+    'records_count' => ':count records',
 ];
