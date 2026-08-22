@@ -1,17 +1,18 @@
 <div class="ticker-bar">
     <div class="ticker-label">{{ $label }}</div>
     <div class="ticker-wrap">
-        <div class="ticker-track" id="tickerTrack">
+        <div class="ticker-track" id="tickerTrack" data-speed="{{ $speed }}">
+            @php
+                $copies = max(1, (int) ceil(4 / max(1, $texts->count())));
+            @endphp
             @foreach ([false, true] as $duplicate)
-                <div style="display:flex;gap:4rem;flex-shrink:0" @if($duplicate) aria-hidden="true" @endif>
-                    @forelse ($entries as $entry)
-                        <a href="{{ $entry['url'] }}" class="ticker-item">
-                            <b>{{ $entry['kicker'] }}:</b> {{ $entry['title'] }}
-                        </a>
-                        <span class="ticker-sep">◆</span>
-                    @empty
-                        <span class="ticker-item"><b>مجلة العرب:</b> تابع آخر الأخبار من فريق التحرير</span>
-                    @endforelse
+                <div class="ticker-loop" @if($duplicate) aria-hidden="true" @endif>
+                    @for ($copy = 0; $copy < $copies; $copy++)
+                        @foreach ($texts as $text)
+                            <span class="ticker-item">{{ $text }}</span>
+                            <span class="ticker-sep">◆</span>
+                        @endforeach
+                    @endfor
                 </div>
             @endforeach
         </div>

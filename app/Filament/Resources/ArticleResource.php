@@ -125,16 +125,6 @@ class ArticleResource extends Resource
                     ->native(false),
                 Forms\Components\Toggle::make('featured')
                     ->label(__('مميز')),
-                Forms\Components\Toggle::make('in_ticker')
-                    ->label(__('عرض في شريط العاجل'))
-                    ->helperText(__('يظهر العنوان في الشريط المتحرك أعلى الموقع'))
-                    ->live(),
-                Forms\Components\TextInput::make('ticker_order')
-                    ->label(__('ترتيب الشريط'))
-                    ->numeric()
-                    ->minValue(0)
-                    ->default(0)
-                    ->visible(fn (Forms\Get $get) => (bool) $get('in_ticker')),
             ])->columns(2),
 
             Forms\Components\Section::make(__('الصورة'))->schema([
@@ -158,7 +148,6 @@ class ArticleResource extends Resource
                 Tables\Columns\TextColumn::make('author')->label(__('الكاتب'))->searchable()->toggleable(),
                 Tables\Columns\TextColumn::make('region')->label(__('المنطقة'))->toggleable(),
                 Tables\Columns\IconColumn::make('featured')->label(__('مميز'))->boolean(),
-                Tables\Columns\IconColumn::make('in_ticker')->label(__('الشريط'))->boolean()->toggleable(),
                 Tables\Columns\TextColumn::make('status')->label(__('الحالة'))->badge()
                     ->color(fn (string $state): string => $state === 'published' ? 'success' : 'gray')
                     ->formatStateUsing(fn (string $state) => $state === 'published' ? __('منشور') : __('مسودة')),
@@ -171,7 +160,6 @@ class ArticleResource extends Resource
                 SelectFilter::make('category')->label(__('القسم'))
                     ->options(fn () => Article::query()->distinct()->pluck('category', 'category')->toArray()),
                 TernaryFilter::make('featured')->label(__('مميز فقط')),
-                TernaryFilter::make('in_ticker')->label(__('في شريط العاجل')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

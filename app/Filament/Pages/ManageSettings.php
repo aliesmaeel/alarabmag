@@ -119,11 +119,6 @@ class ManageSettings extends Page implements HasForms
                             TextInput::make('editor_email')->label(__('بريد التحرير'))->email(),
                             TextInput::make('site_email')->label(__('البريد الإلكتروني العام'))->email(),
                             TextInput::make('site_phone')->label(__('الهاتف')),
-                            TextInput::make('ticker_label')
-                                ->label(__('تسمية شريط العاجل'))
-                                ->default('عاجل')
-                                ->maxLength(50)
-                                ->helperText(__('النص الذهبي على يسار الشريط المتحرك في كل الصفحات')),
                         ])->columns(2),
 
                         Section::make(__('روابط التواصل'))->schema([

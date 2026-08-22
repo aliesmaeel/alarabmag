@@ -16,18 +16,6 @@ class Article extends Model
             if (blank($article->slug) && filled($article->title)) {
                 $article->slug = static::uniqueSlug($article->title, $article->id);
             }
-
-            if ($article->in_ticker) {
-                if ((int) $article->ticker_order === 0) {
-                    $query = static::query()->where('in_ticker', true);
-                    if ($article->exists) {
-                        $query->where('id', '!=', $article->id);
-                    }
-                    $article->ticker_order = (int) $query->max('ticker_order') + 1;
-                }
-            } else {
-                $article->ticker_order = 0;
-            }
         });
     }
 
