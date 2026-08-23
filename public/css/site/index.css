@@ -42,11 +42,10 @@ body{
 }
 .ticker-wrap{overflow:hidden;flex:1;}
 .ticker-track{
-  display:flex;gap:4rem;white-space:nowrap;will-change:transform;
-  /* RTL ticker scrolls right to left same as LTR visually */
+  display:flex;gap:4rem;white-space:nowrap;will-change:transform;direction:ltr;
 }
-.ticker-loop{display:flex;align-items:center;gap:4rem;flex-shrink:0;}
-.ticker-item{font-size:.75rem;letter-spacing:.02em;color:rgba(248,244,238,.65);flex-shrink:0;font-family:'Cairo',sans-serif;text-decoration:none;transition:color .2s;}
+.ticker-loop{display:flex;align-items:center;gap:4rem;flex-shrink:0;direction:ltr;}
+.ticker-item{font-size:.75rem;letter-spacing:.02em;color:rgba(248,244,238,.65);flex-shrink:0;font-family:'Cairo',sans-serif;text-decoration:none;transition:color .2s;direction:rtl;}
 a.ticker-item:hover{color:var(--cream);}
 .ticker-item b{color:#d4ae5a;font-weight:600;margin-left:.5rem;}
 .ticker-sep{color:var(--gold);margin:0 1.5rem;}

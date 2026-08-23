@@ -142,6 +142,6 @@
     if (tr) {
         const speed = Math.min(10, Math.max(1, Number(tr.dataset.speed) || 5));
         const duration = 80 - ((speed - 1) / 9) * 68;
-        gsap.to(tr, { x: -tr.scrollWidth / 2, duration, repeat: -1, ease: 'none' });
+        gsap.fromTo(tr, { x: -tr.scrollWidth / 2 }, { x: 0, duration, repeat: -1, ease: 'none' });
     }
 })();
