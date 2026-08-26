@@ -267,6 +267,7 @@ class SiteController extends Controller
 
         return view('site.interview-details', [
             'seo' => $this->seo->fromInterview($interview),
+            'jsonLdEntity' => $interview,
             'activeNav' => 'interviews',
             'interview' => $interview,
             'videoUrl' => $videoUrl,

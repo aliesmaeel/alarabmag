@@ -74,8 +74,4 @@ $googleVerification = app(\App\Services\SeoService::class)->googleSiteVerificati
 <meta name="twitter:image" content="{{ e($seo->ogImage) }}">
 @endif
 
-@foreach(app(\App\Services\SeoService::class)->jsonLd($seo, $entity) as $graph)
-<script type="application/ld+json">
-{!! json_encode($graph, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) !!}
-</script>
-@endforeach
+<x-site.json-ld :seo="$seo" :entity="$entity" />

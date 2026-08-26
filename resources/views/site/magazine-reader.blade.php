@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @isset($seo)
-        <x-site.seo-meta :seo="$seo" />
+        <x-site.seo-meta :seo="$seo" :entity="$jsonLdEntity ?? $issue ?? null" />
     @else
         <title>{{ $issue->name ?? 'المجلة' }} — مجلة العرب</title>
     @endisset

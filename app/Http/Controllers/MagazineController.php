@@ -40,6 +40,7 @@ class MagazineController extends Controller
 
         return view('site.magazine-reader', [
             'seo' => $this->seo->fromMagazineIssue($issue),
+            'jsonLdEntity' => $issue,
             'issue' => $issue,
             'htmlUrl' => $htmlUrl,
         ]);

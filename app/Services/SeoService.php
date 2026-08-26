@@ -278,9 +278,34 @@ class SeoService
             $graphs[] = $this->blogPostingSchema($entity);
         } elseif ($entity instanceof Person) {
             $graphs[] = $this->personSchema($entity);
+        } elseif ($entity instanceof Interview) {
+            $graphs[] = $this->interviewSchema($entity);
+        } elseif ($entity instanceof MagazineIssue) {
+            $graphs[] = $this->magazineIssueSchema($entity);
         }
 
         return $graphs;
+    }
+
+    /** @return list<string> */
+    public function jsonLdScripts(?SeoMeta $seo = null, mixed $entity = null): array
+    {
+        $scripts = [];
+
+        foreach ($this->jsonLd($seo, $entity) as $graph) {
+            $json = json_encode(
+                $graph,
+                JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE
+            );
+
+            if (! is_string($json) || $json === '') {
+                continue;
+            }
+
+            $scripts[] = str_replace('</', '<\/', $json);
+        }
+
+        return $scripts;
     }
 
     /** @return array<string, mixed> */
@@ -453,6 +478,37 @@ class SeoService
             'image' => $this->resolveImage($person->image_url),
             'jobTitle' => $person->role,
             'nationality' => $person->country,
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    protected function interviewSchema(Interview $interview): array
+    {
+        return array_filter([
+            '@context' => 'https://schema.org',
+            '@type' => 'VideoObject',
+            'name' => $interview->title,
+            'description' => $interview->meta_description ?: $interview->description,
+            'thumbnailUrl' => $this->resolveImage($interview->og_image ?: $interview->thumbnail_url),
+            'uploadDate' => $interview->created_at?->toIso8601String(),
+            'url' => route('interviews.show', $interview),
+            'inLanguage' => 'ar',
+            'publisher' => ['@id' => url('/') . '#organization'],
+        ], fn ($value) => $value !== null && $value !== '');
+    }
+
+    /** @return array<string, mixed> */
+    protected function magazineIssueSchema(MagazineIssue $issue): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'PublicationIssue',
+            'name' => $issue->name,
+            'url' => route('magazine.show', $issue),
+            'datePublished' => $issue->created_at?->toIso8601String(),
+            'isPartOf' => ['@id' => rtrim(url('/'), '/').'/magazine'],
+            'inLanguage' => 'ar',
+            'publisher' => ['@id' => url('/') . '#organization'],
         ];
     }
 }
