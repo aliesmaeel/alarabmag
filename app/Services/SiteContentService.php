@@ -56,28 +56,28 @@ class SiteContentService
 
         $sidebarArticles = Article::query()
             ->published()
-            ->when($hero, fn ($q) => $q->where('id', '!=', $hero->id))
+            ->when($hero, fn($q) => $q->where('id', '!=', $hero->id))
             ->orderByDesc('created_at')
             ->limit(3)
             ->get()
-            ->each(fn (Article $a) => $a->setAttribute('image_url', $this->resolveArticleImage($a)));
+            ->each(fn(Article $a) => $a->setAttribute('image_url', $this->resolveArticleImage($a)));
 
-        $mapPeople = fn (string $category, int $limit = 4) => Person::query()
+        $mapPeople = fn(string $category, int $limit = 4) => Person::query()
             ->where('category', $category)
             ->orderByDesc('featured')
             ->orderByDesc('updated_at')
             ->limit($limit)
             ->get()
-            ->each(fn (Person $p) => $p->setAttribute('image_url', $this->resolvePersonImage($p)));
+            ->each(fn(Person $p) => $p->setAttribute('image_url', $this->resolvePersonImage($p)));
 
         $businessArticles = Article::query()
             ->published()
             ->where('category', 'أعمال')
             ->orderByDesc('featured')
-            ->orderByDesc('created_at')
+            ->orderByDesc('published_at')
             ->limit(3)
             ->get()
-            ->each(fn (Article $a) => $a->setAttribute('image_url', $this->resolveArticleImage($a)));
+            ->each(fn(Article $a) => $a->setAttribute('image_url', $this->resolveArticleImage($a)));
 
         $fashionArticles = Article::query()
             ->published()
@@ -86,21 +86,21 @@ class SiteContentService
             ->orderByDesc('created_at')
             ->limit(3)
             ->get()
-            ->each(fn (Article $a) => $a->setAttribute('image_url', $this->resolveArticleImage($a)));
+            ->each(fn(Article $a) => $a->setAttribute('image_url', $this->resolveArticleImage($a)));
 
         $newsArticles = Article::query()
             ->published()
             ->orderByDesc('created_at')
             ->limit(6)
             ->get()
-            ->each(fn (Article $a) => $a->setAttribute('image_url', $this->resolveArticleImage($a)));
+            ->each(fn(Article $a) => $a->setAttribute('image_url', $this->resolveArticleImage($a)));
 
         $blogs = Blog::query()
             ->published()
             ->orderByDesc('created_at')
             ->limit(3)
             ->get()
-            ->each(fn (Blog $b) => $b->setAttribute('image_url', $this->resolveBlogImage($b)));
+            ->each(fn(Blog $b) => $b->setAttribute('image_url', $this->resolveBlogImage($b)));
 
         return [
             'hero' => $hero,
@@ -130,11 +130,11 @@ class SiteContentService
     {
         return Article::query()
             ->published()
-            ->when(filled($category) && $category !== 'all', fn ($q) => $q->where('category', $category))
+            ->when(filled($category) && $category !== 'all', fn($q) => $q->where('category', $category))
             ->orderByDesc('created_at')
             ->limit($limit)
             ->get()
-            ->each(fn (Article $a) => $a->setAttribute('image_url', $this->resolveArticleImage($a)));
+            ->each(fn(Article $a) => $a->setAttribute('image_url', $this->resolveArticleImage($a)));
     }
 
     /** @return Collection<int, Blog> */
@@ -145,7 +145,7 @@ class SiteContentService
             ->orderByDesc('created_at')
             ->limit($limit)
             ->get()
-            ->each(fn (Blog $b) => $b->setAttribute('image_url', $this->resolveBlogImage($b)));
+            ->each(fn(Blog $b) => $b->setAttribute('image_url', $this->resolveBlogImage($b)));
     }
 
     /** @return Collection<int, Person> */
@@ -157,7 +157,7 @@ class SiteContentService
             ->orderByDesc('updated_at')
             ->limit($limit)
             ->get()
-            ->each(fn (Person $p) => $p->setAttribute('image_url', $this->resolvePersonImage($p)));
+            ->each(fn(Person $p) => $p->setAttribute('image_url', $this->resolvePersonImage($p)));
     }
 
     public function preparePerson(Person $person): Person
@@ -177,7 +177,7 @@ class SiteContentService
             ->orderByDesc('updated_at')
             ->limit($limit)
             ->get()
-            ->each(fn (Person $p) => $p->setAttribute('image_url', $this->resolvePersonImage($p)));
+            ->each(fn(Person $p) => $p->setAttribute('image_url', $this->resolvePersonImage($p)));
     }
 
     public function personShowRoute(Person $person): string

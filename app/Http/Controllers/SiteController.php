@@ -25,6 +25,7 @@ class SiteController extends Controller
 
     public function home(): View
     {
+
         return view('site.home', [
             'seo' => $this->seo->page('home'),
             'home' => $this->content->homeData(),
@@ -57,11 +58,11 @@ class SiteController extends Controller
         $relatedArticles = Article::query()
             ->published()
             ->where('id', '!=', $article->id)
-            ->when(filled($article->category), fn ($q) => $q->where('category', $article->category))
+            ->when(filled($article->category), fn($q) => $q->where('category', $article->category))
             ->orderByDesc('created_at')
             ->limit(3)
             ->get()
-            ->each(fn (Article $related) => $related->setAttribute('image_url', $this->content->resolveArticleImage($related)));
+            ->each(fn(Article $related) => $related->setAttribute('image_url', $this->content->resolveArticleImage($related)));
 
         return view('site.news-details', [
             'seo' => $this->seo->fromArticle($article),
@@ -109,7 +110,7 @@ class SiteController extends Controller
             ->orderByDesc('created_at')
             ->limit(3)
             ->get()
-            ->each(fn (Blog $related) => $related->setAttribute('image_url', $this->content->resolveBlogImage($related)));
+            ->each(fn(Blog $related) => $related->setAttribute('image_url', $this->content->resolveBlogImage($related)));
 
         return view('site.blog-details', [
             'seo' => $this->seo->fromBlog($blog),
@@ -263,7 +264,7 @@ class SiteController extends Controller
             ->orderByDesc('created_at')
             ->limit(8)
             ->get()
-            ->each(fn (Article $article) => $article->setAttribute('image_url', $this->content->resolveArticleImage($article)));
+            ->each(fn(Article $article) => $article->setAttribute('image_url', $this->content->resolveArticleImage($article)));
 
         return view('site.interview-details', [
             'seo' => $this->seo->fromInterview($interview),
