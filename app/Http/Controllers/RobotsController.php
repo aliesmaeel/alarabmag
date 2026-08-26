@@ -13,6 +13,10 @@ class RobotsController extends Controller
             'Allow: /',
             'Disallow: /dashboard',
             'Disallow: /admin',
+            'Disallow: /api',
+            'Disallow: /up',
+            'Disallow: /vote/audio',
+            'Disallow: /*/stream',
             '',
             'Sitemap: ' . url('/sitemap.xml'),
         ]);

@@ -288,7 +288,10 @@ class SiteController extends Controller
 
         abort_unless($key && Storage::disk('s3')->exists($key), 404);
 
-        return Storage::disk('s3')->response($key);
+        $response = Storage::disk('s3')->response($key);
+        $response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+
+        return $response;
     }
 
     protected function personShow(int $id, string $category, string $navKey, string $view): View

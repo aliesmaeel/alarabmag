@@ -61,7 +61,7 @@ class SeoService
             ?: $this->setting('seo_keywords')
             ?: SiteBrand::KEYWORDS;
 
-        return $this->makeMeta(
+        $meta = $this->makeMeta(
             title: $this->suffixSiteName($title, $siteName, $pageKey === 'home'),
             description: $description,
             keywords: $keywords,
@@ -71,6 +71,12 @@ class SeoService
             ogImage: $this->resolveImage($this->setting("og_{$pageKey}_image")),
             ogType: 'website',
         );
+
+        if (request()->hasAny(['category', 'region', 'tag', 'page', 'q', 'search'])) {
+            $meta->robots = 'noindex, follow';
+        }
+
+        return $meta;
     }
 
     public function fromArticle(Article $article, string $routeName = 'news.show'): SeoMeta

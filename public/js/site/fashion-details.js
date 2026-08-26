@@ -23,7 +23,7 @@ function bodyHTML(raw){
 function relatedCardHTML(it){
   const kicker = it.subtitle || it.region || 'موضة';
   return `
-    <a href="/fashion/${encodeURIComponent(it.id)}" class="list-card">
+    <a href="/news/${encodeURIComponent(it.slug || it.id)}" class="list-card">
       <div class="list-img">
         <img src="${esc(it.image_url || fallbackImg)}" alt="${esc(it.title)}" onerror="this.src='${fallbackImg}'">
       </div>

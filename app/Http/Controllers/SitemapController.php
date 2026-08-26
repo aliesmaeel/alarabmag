@@ -8,6 +8,7 @@ use App\Models\Interview;
 use App\Models\MagazineIssue;
 use App\Models\Person;
 use App\Support\HomeSections;
+use App\Support\SongVoting;
 use Illuminate\Http\Response;
 
 class SitemapController extends Controller
@@ -30,8 +31,11 @@ class SitemapController extends Controller
             $this->entry(route('business.index'), now(), 'weekly', '0.8'),
             $this->entry(route('fashion.index'), now(), 'weekly', '0.8'),
             $this->entry(route('magazine.index'), now(), 'weekly', '0.9'),
-            $this->entry(route('vote.index'), now(), 'daily', '0.8'),
         ]);
+
+        if (SongVoting::currentPoll()) {
+            $urls->push($this->entry(route('vote.index'), now(), 'daily', '0.8'));
+        }
 
         if (HomeSections::hasInterviews()) {
             $urls->push($this->entry(route('interviews.index'), now(), 'weekly', '0.9'));

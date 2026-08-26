@@ -6,10 +6,14 @@ const featuredSection = document.getElementById('featured');
 const featuredGrid = document.getElementById('featuredGrid');
 const resultsCountEl = document.getElementById('resultsCount');
 
+function articleHref(it){
+  return `/news/${encodeURIComponent(it.slug || it.id)}`;
+}
+
 function cardHTML(it){
   const kicker = it.subtitle || it.region || 'موضة';
   return `
-    <a href="/fashion/${encodeURIComponent(it.id)}" class="fash">
+    <a href="${articleHref(it)}" class="fash">
       <img src="${esc(it.image_url || fallbackImg)}" alt="${esc(it.title)}" onerror="this.src='${fallbackImg}'">
       <div class="fash-overlay"></div>
       <div class="fash-body">
@@ -26,10 +30,10 @@ function featuredHTML(it){
     </div>
     <div class="feat-hero-body">
       <div class="feat-hero-kicker">✦ ${esc(it.subtitle || 'الموضة العربية')}</div>
-      <h2 class="feat-hero-title"><a href="/fashion/${encodeURIComponent(it.id)}">${esc(it.title)}</a></h2>
+      <h2 class="feat-hero-title"><a href="${articleHref(it)}">${esc(it.title)}</a></h2>
       <p class="feat-hero-deck">${esc(it.excerpt || '')}</p>
       <div class="feat-hero-meta">بقلم <b>${esc(it.author || 'فريق التحرير')}</b> · ${esc(it.read_time || '6 دقائق')}</div>
-      <a href="/fashion/${encodeURIComponent(it.id)}" class="feat-hero-cta">اقرأ التقرير →</a>
+      <a href="${articleHref(it)}" class="feat-hero-cta">اقرأ التقرير →</a>
     </div>`;
 }
 

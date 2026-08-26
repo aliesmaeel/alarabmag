@@ -156,6 +156,7 @@ class VoteController extends Controller
             'Content-Type' => 'audio/mpeg',
             'Accept-Ranges' => 'bytes',
             'Cache-Control' => 'public, max-age=86400',
+            'X-Robots-Tag' => 'noindex, nofollow',
         ]);
     }
 

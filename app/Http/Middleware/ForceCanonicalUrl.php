@@ -30,12 +30,20 @@ class ForceCanonicalUrl
 
         $schemeMatches = strtolower($this->requestScheme($request)) === strtolower($canonicalScheme);
         $hostMatches = strcasecmp($request->getHost(), $canonicalHost) === 0;
+        $path = $request->getPathInfo();
+        $needsSlashTrim = $path !== '/' && str_ends_with($path, '/');
 
-        if ($schemeMatches && $hostMatches) {
+        if ($schemeMatches && $hostMatches && ! $needsSlashTrim) {
             return $next($request);
         }
 
-        return redirect()->to($canonicalRoot.$request->getRequestUri(), 301);
+        $canonicalPath = $needsSlashTrim ? rtrim($path, '/') : $path;
+        $target = $canonicalRoot.$canonicalPath;
+        if ($query = $request->getQueryString()) {
+            $target .= '?'.$query;
+        }
+
+        return redirect()->to($target, 301);
     }
 
     protected function defersCanonicalRedirect(Request $request): bool
@@ -43,7 +51,7 @@ class ForceCanonicalUrl
         $path = $request->getPathInfo();
 
         return (bool) preg_match(
-            '#^/(?:(?:blogs|news)/\d+|search/label/[^/]+|\d{4}/\d{2}/[^/]+\.html)$#',
+            '#^/(?:(?:blogs|news|fashion)/\d+|search/label/[^/]+|\d{4}/\d{2}/[^/]+\.html)$#',
             $path
         );
     }
