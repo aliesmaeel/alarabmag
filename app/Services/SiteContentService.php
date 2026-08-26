@@ -74,7 +74,7 @@ class SiteContentService
             ->published()
             ->where('category', 'أعمال')
             ->orderByDesc('featured')
-            ->orderByDesc('published_at')
+            ->orderByDesc('updated_at')
             ->limit(3)
             ->get()
             ->each(fn(Article $a) => $a->setAttribute('image_url', $this->resolveArticleImage($a)));
