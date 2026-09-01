@@ -4,7 +4,7 @@ namespace App\Support;
 
 class PublishValidation
 {
-    public const MIN_BODY_CHARS = 3000;
+    public const MIN_BODY_CHARS = 1500;
 
     public const MIN_BIO_CHARS = 1200;
 
@@ -20,7 +20,7 @@ class PublishValidation
         }
 
         if (static::bodyLength($body) < static::MIN_BODY_CHARS) {
-            return __('النص الكامل قصير جداً للنشر. يُرجى كتابة مقال بحد أدنى :count حرف (حوالي 600–800 كلمة).', [
+            return __('النص الكامل قصير جداً للنشر. يُرجى كتابة مقال بحد أدنى :count حرف (حوالي 300–400 كلمة).', [
                 'count' => number_format(static::MIN_BODY_CHARS),
             ]);
         }
