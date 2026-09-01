@@ -6,6 +6,7 @@ use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\BlogResource\Pages;
 use App\Filament\Support\AiAssist;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\RichEditorField;
 use App\Filament\Support\SeoFields;
 use App\Models\Blog;
 use Filament\Forms;
@@ -82,7 +83,7 @@ class BlogResource extends Resource
                     'excerpt',
                     'blog'
                 ),
-                Forms\Components\RichEditor::make('body')->label(__('النص الكامل'))->columnSpanFull(),
+                RichEditorField::make('body')->label(__('النص الكامل'))->columnSpanFull(),
             ]),
 
             Forms\Components\Section::make(__('بيانات الكاتب'))->schema([

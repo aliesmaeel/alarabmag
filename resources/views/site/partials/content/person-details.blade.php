@@ -1,6 +1,7 @@
 @php
+    use App\Support\HtmlContent;
+
     $fallbackImg = 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=600&q=80';
-    $bodyIsHtml = filled($person->bio) && preg_match('/<\/?(p|h\d|ul|ol|li|blockquote|img|a|strong|em|br)\b/i', $person->bio);
     $categoryLabels = [
         'doctor' => ['Doctor Profile · ملف طبيب', 'doctors.index', 'أطباء'],
         'influencer' => ['Influencer Profile · ملف مؤثر', 'influencers.index', 'المؤثرون'],
@@ -84,11 +85,7 @@
     <article class="profile-body-wrap">
       <div class="profile-body">
         @if (filled($person->bio))
-          @if ($bodyIsHtml)
-            {!! $person->bio !!}
-          @else
-            {!! nl2br(e($person->bio)) !!}
-          @endif
+          {!! HtmlContent::render($person->bio) !!}
         @else
           <p>لم تتم إضافة سيرة بعد.</p>
         @endif

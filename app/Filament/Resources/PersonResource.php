@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\PersonResource\Pages;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\RichEditorField;
 use App\Filament\Support\SeoFields;
 use App\Models\Person;
 use Filament\Forms;
@@ -52,7 +53,7 @@ class PersonResource extends Resource
 
             Forms\Components\Section::make(__('نبذة'))->schema([
                 Forms\Components\Textarea::make('excerpt')->label(__('وصف مختصر'))->rows(3)->columnSpanFull(),
-                Forms\Components\RichEditor::make('bio')->label(__('السيرة الكاملة'))->columnSpanFull(),
+                RichEditorField::make('bio')->label(__('السيرة الكاملة'))->columnSpanFull(),
             ]),
 
             Forms\Components\Section::make(__('إحصائية بارزة'))->schema([

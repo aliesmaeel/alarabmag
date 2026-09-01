@@ -6,6 +6,7 @@ use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\ArtistResource\Pages;
 use App\Filament\Support\AiAssist;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\RichEditorField;
 use App\Filament\Support\SeoFields;
 use App\Models\Person;
 use Filament\Forms;
@@ -67,7 +68,7 @@ class ArtistResource extends Resource
                     'excerpt',
                     'artist'
                 ),
-                Forms\Components\RichEditor::make('bio')->label(__('السيرة الكاملة'))->columnSpanFull(),
+                RichEditorField::make('bio')->label(__('السيرة الكاملة'))->columnSpanFull(),
             ]),
 
             Forms\Components\Section::make(__('إنجاز / إحصائية'))->schema([

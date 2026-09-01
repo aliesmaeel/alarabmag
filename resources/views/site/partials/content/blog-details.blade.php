@@ -1,6 +1,7 @@
 @php
+    use App\Support\HtmlContent;
+
     $tags = $blog->tags ? array_filter(array_map('trim', explode(',', $blog->tags))) : [];
-    $bodyIsHtml = filled($blog->body) && preg_match('/<\/?(p|h\d|ul|ol|li|blockquote|img|a|strong|em|br)\b/i', $blog->body);
     $shareUrl = route('blogs.show', $blog);
 @endphp
 
@@ -37,11 +38,7 @@
     <article class="blog-wrap">
       <div class="blog-body">
         @if (filled($blog->body))
-          @if ($bodyIsHtml)
-            {!! $blog->body !!}
-          @else
-            {!! nl2br(e($blog->body)) !!}
-          @endif
+          {!! HtmlContent::render($blog->body) !!}
         @else
           <p>لا يوجد محتوى لعرضه.</p>
         @endif

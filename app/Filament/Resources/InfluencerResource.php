@@ -6,6 +6,7 @@ use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\InfluencerResource\Pages;
 use App\Filament\Support\AiAssist;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\RichEditorField;
 use App\Filament\Support\SeoFields;
 use App\Models\Person;
 use Filament\Forms;
@@ -75,7 +76,7 @@ class InfluencerResource extends Resource
                     'excerpt',
                     'influencer'
                 ),
-                Forms\Components\RichEditor::make('bio')->label(__('السيرة الكاملة'))->columnSpanFull(),
+                RichEditorField::make('bio')->label(__('السيرة الكاملة'))->columnSpanFull(),
             ]),
 
             Forms\Components\Section::make(__('إحصائية إضافية'))->schema([

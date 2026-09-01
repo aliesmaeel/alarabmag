@@ -6,6 +6,7 @@ use App\Filament\Concerns\TranslatesResourceLabels;
 use App\Filament\Resources\FashionResource\Pages;
 use App\Filament\Support\AiAssist;
 use App\Filament\Support\ImageUpload;
+use App\Filament\Support\RichEditorField;
 use App\Filament\Support\SeoFields;
 use App\Models\Article;
 use Filament\Forms;
@@ -69,7 +70,7 @@ class FashionResource extends Resource
                     'excerpt',
                     'article'
                 ),
-                Forms\Components\RichEditor::make('body')
+                RichEditorField::make('body')
                     ->label(__('النص الكامل'))
                     ->columnSpanFull(),
             ])->columns(2),

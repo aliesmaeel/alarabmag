@@ -22,6 +22,9 @@
 .article-body a:hover{text-decoration-color:var(--gold);}
 .article-body blockquote{font-family:'Amiri',serif;font-style:italic;font-size:1.5rem;line-height:1.7;color:var(--ink);border-right:3px solid var(--gold);padding:1rem 1.5rem;margin:2rem 0;background:var(--white);}
 .article-body img{max-width:100%;height:auto;margin:2rem 0;display:block;}
+.article-body figure{margin:2rem 0;}
+.article-body figure img{margin:0;}
+.article-body figcaption,.article-body .attachment__caption{display:none;}
 .article-body ul,.article-body ol{margin:0 1.5rem 1.6rem 0;padding-right:.5rem;}
 .article-body li{margin-bottom:.6rem;}
 

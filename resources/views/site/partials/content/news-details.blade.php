@@ -1,5 +1,6 @@
 @php
-    $bodyIsHtml = filled($article->body) && preg_match('/<\/?(p|h\d|ul|ol|li|blockquote|img|a|strong|em|br)\b/i', $article->body);
+    use App\Support\HtmlContent;
+
     $shareUrl = route('news.show', $article);
     $heroImg = $article->image_url ?: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1400&q=85';
 @endphp
@@ -34,11 +35,7 @@
 
       <div class="article-body">
         @if (filled($article->body))
-          @if ($bodyIsHtml)
-            {!! $article->body !!}
-          @else
-            {!! nl2br(e($article->body)) !!}
-          @endif
+          {!! HtmlContent::render($article->body) !!}
         @else
           <p>لا يوجد محتوى لعرضه.</p>
         @endif
