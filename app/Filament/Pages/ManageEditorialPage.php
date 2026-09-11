@@ -56,48 +56,17 @@ class ManageEditorialPage extends Page implements HasForms
                         ->columnSpanFull(),
                 ]),
 
-                Section::make(__('فريق التحرير'))->schema([
+                Section::make(__('الفريق'))->schema([
                     TextInput::make('editorial_team_title')
                         ->label(__('عنوان القسم'))
                         ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->columnSpanFull(),
                     Textarea::make('editorial_team_body')
                         ->label(__('نص القسم'))
                         ->rows(3)
                         ->columnSpanFull(),
-                ]),
-
-                Section::make(__('المحررة الأولى'))->schema([
-                    TextInput::make('editorial_lead_editor_title')
-                        ->label(__('عنوان القسم'))
-                        ->required()
-                        ->maxLength(255)
-                        ->columnSpanFull(),
-                    Repeater::make('editorial_lead_editors')
-                        ->label(__('أعضاء القسم'))
-                        ->schema([
-                            TextInput::make('name')
-                                ->label(__('الاسم'))
-                                ->required()
-                                ->maxLength(255),
-                            TextInput::make('role')
-                                ->label(__('المنصب / الوصف'))
-                                ->required()
-                                ->maxLength(500),
-                        ])
-                        ->columns(2)
-                        ->defaultItems(1)
-                        ->addActionLabel(__('إضافة عضو'))
-                        ->columnSpanFull(),
-                ]),
-
-                Section::make(__('فريق الأخبار'))->schema([
-                    TextInput::make('editorial_news_title')
-                        ->label(__('عنوان القسم'))
-                        ->required()
-                        ->maxLength(255)
-                        ->columnSpanFull(),
-                    Repeater::make('editorial_news_team')
+                    Repeater::make('editorial_team')
                         ->label(__('أعضاء الفريق'))
                         ->schema([
                             TextInput::make('name')
@@ -148,12 +117,8 @@ class ManageEditorialPage extends Page implements HasForms
     public function save(): void
     {
         $state = $this->form->getState();
-        $state['editorial_lead_editors'] = json_encode(
-            $state['editorial_lead_editors'] ?? [],
-            JSON_UNESCAPED_UNICODE,
-        );
-        $state['editorial_news_team'] = json_encode(
-            $state['editorial_news_team'] ?? [],
+        $state['editorial_team'] = json_encode(
+            $state['editorial_team'] ?? [],
             JSON_UNESCAPED_UNICODE,
         );
 

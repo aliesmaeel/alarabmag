@@ -10,17 +10,13 @@ class EditorialPage
         return [
             'editorial_title' => 'هيئة التحرير',
             'editorial_lead' => 'فريق تحريري متخصص يجمع بين الصحافة العربية والتحليل العميق.',
-            'editorial_team_title' => 'فريق التحرير',
+            'editorial_team_title' => 'الفريق',
             'editorial_team_body' => 'يعمل في مجلة العرب فريق تحريري متعدد التخصصات، يجمع بين صحفيين ومحللين وكتّاب عرب من مختلف أنحاء المنطقة. نلتزم بمعايير صحفية عالية ونغطي المشهد العربي بعمق وموضوعية.',
-            'editorial_lead_editor_title' => 'المحررة الأولى',
-            'editorial_lead_editors' => [
+            'editorial_team' => [
                 [
                     'name' => 'ليلى منصور',
                     'role' => 'محررة أولى، متخصصة في ملفات الأعمال والاقتصاد. سبق لها العمل في صحف ومجلات عربية ودولية.',
                 ],
-            ],
-            'editorial_news_title' => 'فريق الأخبار',
-            'editorial_news_team' => [
                 ['name' => 'عمر الفيصل', 'role' => 'محرر أخبار وتحليلات اقتصادية وسياسية.'],
                 ['name' => 'سارة خليل', 'role' => 'مراسلة أعمال وريادة أعمال.'],
                 ['name' => 'زينة الخوري', 'role' => 'محررة فن وثقافة.'],
@@ -42,11 +38,54 @@ class EditorialPage
             return '';
         }
 
-        return SiteSettings::get($key, $default) ?? $default;
+        $value = SiteSettings::get($key, $default) ?? $default;
+
+        // Rename legacy section title.
+        if ($key === 'editorial_team_title' && $value === 'فريق التحرير') {
+            return 'الفريق';
+        }
+
+        return $value;
     }
 
     /** @return list<array{name: string, role: string}> */
-    public static function leadEditors(): array
+    public static function team(): array
+    {
+        $raw = SiteSettings::get('editorial_team');
+
+        if (filled($raw)) {
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded) && $decoded !== []) {
+                return static::normalizeMembers($decoded);
+            }
+        }
+
+        // Migrate from the old split sections if present.
+        $legacy = array_merge(static::legacyLeadEditors(), static::legacyNewsTeam());
+
+        if ($legacy !== []) {
+            return $legacy;
+        }
+
+        return static::defaults()['editorial_team'];
+    }
+
+    /** @return array<string, mixed> */
+    public static function formData(): array
+    {
+        $data = [];
+
+        foreach (static::defaults() as $key => $default) {
+            $data[$key] = $key === 'editorial_team'
+                ? static::team()
+                : static::get($key);
+        }
+
+        return $data;
+    }
+
+    /** @return list<array{name: string, role: string}> */
+    private static function legacyLeadEditors(): array
     {
         $raw = SiteSettings::get('editorial_lead_editors');
 
@@ -57,7 +96,6 @@ class EditorialPage
             }
         }
 
-        // Backward compatible with the old single name + bio fields.
         $name = SiteSettings::get('editorial_lead_editor_name');
         $bio = SiteSettings::get('editorial_lead_editor_bio');
 
@@ -68,11 +106,11 @@ class EditorialPage
             ]];
         }
 
-        return static::defaults()['editorial_lead_editors'];
+        return [];
     }
 
     /** @return list<array{name: string, role: string}> */
-    public static function newsTeam(): array
+    private static function legacyNewsTeam(): array
     {
         $raw = SiteSettings::get('editorial_news_team');
 
@@ -83,22 +121,7 @@ class EditorialPage
             }
         }
 
-        return static::defaults()['editorial_news_team'];
-    }
-
-    /** @return array<string, mixed> */
-    public static function formData(): array
-    {
-        $data = [];
-        $listKeys = ['editorial_news_team', 'editorial_lead_editors'];
-
-        foreach (static::defaults() as $key => $default) {
-            $data[$key] = in_array($key, $listKeys, true)
-                ? ($key === 'editorial_lead_editors' ? static::leadEditors() : static::newsTeam())
-                : static::get($key);
-        }
-
-        return $data;
+        return [];
     }
 
     /**

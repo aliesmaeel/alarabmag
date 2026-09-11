@@ -4,17 +4,8 @@
 
 <h2>{{ EditorialPage::get('editorial_team_title') }}</h2>
 <p>{{ EditorialPage::get('editorial_team_body') }}</p>
-
-<h2>{{ EditorialPage::get('editorial_lead_editor_title') }}</h2>
 <p>
-    @foreach (EditorialPage::leadEditors() as $member)
-        <strong>{{ $member['name'] }}</strong> — {{ $member['role'] }}@if (! $loop->last)<br>@endif
-    @endforeach
-</p>
-
-<h2>{{ EditorialPage::get('editorial_news_title') }}</h2>
-<p>
-    @foreach (EditorialPage::newsTeam() as $member)
+    @foreach (EditorialPage::team() as $member)
         <strong>{{ $member['name'] }}</strong> — {{ $member['role'] }}@if (! $loop->last)<br>@endif
     @endforeach
 </p>
