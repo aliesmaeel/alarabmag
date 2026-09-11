@@ -71,14 +71,23 @@ class ManageEditorialPage extends Page implements HasForms
                     TextInput::make('editorial_lead_editor_title')
                         ->label(__('عنوان القسم'))
                         ->required()
-                        ->maxLength(255),
-                    TextInput::make('editorial_lead_editor_name')
-                        ->label(__('الاسم'))
-                        ->required()
-                        ->maxLength(255),
-                    Textarea::make('editorial_lead_editor_bio')
-                        ->label(__('الوصف'))
-                        ->rows(2)
+                        ->maxLength(255)
+                        ->columnSpanFull(),
+                    Repeater::make('editorial_lead_editors')
+                        ->label(__('أعضاء القسم'))
+                        ->schema([
+                            TextInput::make('name')
+                                ->label(__('الاسم'))
+                                ->required()
+                                ->maxLength(255),
+                            TextInput::make('role')
+                                ->label(__('المنصب / الوصف'))
+                                ->required()
+                                ->maxLength(500),
+                        ])
+                        ->columns(2)
+                        ->defaultItems(1)
+                        ->addActionLabel(__('إضافة عضو'))
                         ->columnSpanFull(),
                 ]),
 
@@ -139,6 +148,10 @@ class ManageEditorialPage extends Page implements HasForms
     public function save(): void
     {
         $state = $this->form->getState();
+        $state['editorial_lead_editors'] = json_encode(
+            $state['editorial_lead_editors'] ?? [],
+            JSON_UNESCAPED_UNICODE,
+        );
         $state['editorial_news_team'] = json_encode(
             $state['editorial_news_team'] ?? [],
             JSON_UNESCAPED_UNICODE,

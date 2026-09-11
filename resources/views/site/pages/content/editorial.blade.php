@@ -6,7 +6,11 @@
 <p>{{ EditorialPage::get('editorial_team_body') }}</p>
 
 <h2>{{ EditorialPage::get('editorial_lead_editor_title') }}</h2>
-<p><strong>{{ EditorialPage::get('editorial_lead_editor_name') }}</strong> — {{ EditorialPage::get('editorial_lead_editor_bio') }}</p>
+<p>
+    @foreach (EditorialPage::leadEditors() as $member)
+        <strong>{{ $member['name'] }}</strong> — {{ $member['role'] }}@if (! $loop->last)<br>@endif
+    @endforeach
+</p>
 
 <h2>{{ EditorialPage::get('editorial_news_title') }}</h2>
 <p>

@@ -13,8 +13,12 @@ class EditorialPage
             'editorial_team_title' => 'فريق التحرير',
             'editorial_team_body' => 'يعمل في مجلة العرب فريق تحريري متعدد التخصصات، يجمع بين صحفيين ومحللين وكتّاب عرب من مختلف أنحاء المنطقة. نلتزم بمعايير صحفية عالية ونغطي المشهد العربي بعمق وموضوعية.',
             'editorial_lead_editor_title' => 'المحررة الأولى',
-            'editorial_lead_editor_name' => 'ليلى منصور',
-            'editorial_lead_editor_bio' => 'محررة أولى، متخصصة في ملفات الأعمال والاقتصاد. سبق لها العمل في صحف ومجلات عربية ودولية.',
+            'editorial_lead_editors' => [
+                [
+                    'name' => 'ليلى منصور',
+                    'role' => 'محررة أولى، متخصصة في ملفات الأعمال والاقتصاد. سبق لها العمل في صحف ومجلات عربية ودولية.',
+                ],
+            ],
             'editorial_news_title' => 'فريق الأخبار',
             'editorial_news_team' => [
                 ['name' => 'عمر الفيصل', 'role' => 'محرر أخبار وتحليلات اقتصادية وسياسية.'],
@@ -42,6 +46,32 @@ class EditorialPage
     }
 
     /** @return list<array{name: string, role: string}> */
+    public static function leadEditors(): array
+    {
+        $raw = SiteSettings::get('editorial_lead_editors');
+
+        if (filled($raw)) {
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded) && $decoded !== []) {
+                return static::normalizeMembers($decoded);
+            }
+        }
+
+        // Backward compatible with the old single name + bio fields.
+        $name = SiteSettings::get('editorial_lead_editor_name');
+        $bio = SiteSettings::get('editorial_lead_editor_bio');
+
+        if (filled($name)) {
+            return [[
+                'name' => (string) $name,
+                'role' => (string) ($bio ?? ''),
+            ]];
+        }
+
+        return static::defaults()['editorial_lead_editors'];
+    }
+
+    /** @return list<array{name: string, role: string}> */
     public static function newsTeam(): array
     {
         $raw = SiteSettings::get('editorial_news_team');
@@ -49,13 +79,7 @@ class EditorialPage
         if (filled($raw)) {
             $decoded = json_decode($raw, true);
             if (is_array($decoded) && $decoded !== []) {
-                return array_values(array_map(
-                    fn (array $member) => [
-                        'name' => (string) ($member['name'] ?? ''),
-                        'role' => (string) ($member['role'] ?? ''),
-                    ],
-                    $decoded,
-                ));
+                return static::normalizeMembers($decoded);
             }
         }
 
@@ -66,13 +90,29 @@ class EditorialPage
     public static function formData(): array
     {
         $data = [];
+        $listKeys = ['editorial_news_team', 'editorial_lead_editors'];
 
         foreach (static::defaults() as $key => $default) {
-            $data[$key] = $key === 'editorial_news_team'
-                ? static::newsTeam()
+            $data[$key] = in_array($key, $listKeys, true)
+                ? ($key === 'editorial_lead_editors' ? static::leadEditors() : static::newsTeam())
                 : static::get($key);
         }
 
         return $data;
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $members
+     * @return list<array{name: string, role: string}>
+     */
+    private static function normalizeMembers(array $members): array
+    {
+        return array_values(array_map(
+            fn (array $member) => [
+                'name' => (string) ($member['name'] ?? ''),
+                'role' => (string) ($member['role'] ?? $member['bio'] ?? ''),
+            ],
+            $members,
+        ));
     }
 }
