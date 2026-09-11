@@ -131,7 +131,7 @@ class EditorialPage
     private static function normalizeMembers(array $members): array
     {
         return array_values(array_map(
-            fn (array $member) => [
+            fn(array $member) => [
                 'name' => (string) ($member['name'] ?? ''),
                 'role' => (string) ($member['role'] ?? $member['bio'] ?? ''),
             ],
