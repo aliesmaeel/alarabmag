@@ -37,7 +37,8 @@
             @if(! session('newsletter_success') && ! $errors->has('email')) hidden @endif
         >{{ session('newsletter_success') ?: $errors->first('email') }}</p>
         <p style="margin-top:.8rem;font-size:.7rem;color:rgba(248,244,238,.2);text-align:right;font-family:'Cairo',sans-serif;">
-            لا رسائل مزعجة. يمكنك إلغاء الاشتراك في أي وقت.
+            لا رسائل مزعجة. يمكنك إلغاء الاشتراك في أي وقت. بالاشتراك فإنك توافق على
+            <a href="{{ route('privacy') }}" style="color:inherit;text-decoration:underline;">سياسة الخصوصية</a>.
         </p>
     </div>
 </section>

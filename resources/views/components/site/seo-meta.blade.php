@@ -20,8 +20,8 @@ $googleVerification = app(\App\Services\SeoService::class)->googleSiteVerificati
 <meta name="application-name" content="{{ e(SiteBrand::NAME_AR) }}">
 <meta name="author" content="{{ e(SiteBrand::NAME_AR) }}">
 <meta name="publisher" content="{{ e(SiteBrand::NAME_EN) }}">
-<meta name="geo.region" content="AE-DU">
-<meta name="geo.placename" content="Dubai">
+<meta name="geo.region" content="AE-SH">
+<meta name="geo.placename" content="Sharjah">
 
 @if (filled($googleVerification))
 <meta name="google-site-verification" content="{{ e($googleVerification) }}">

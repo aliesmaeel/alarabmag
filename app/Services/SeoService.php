@@ -333,10 +333,11 @@ class SeoService
 
         $schema['location'] = [
             '@type' => 'Place',
-            'name' => 'مدينة دبي للإعلام',
+            'name' => 'Sharjah Media City Free Zone',
             'address' => [
                 '@type' => 'PostalAddress',
-                'addressLocality' => 'Dubai',
+                'streetAddress' => 'Shams Business Center, Al Messaned',
+                'addressLocality' => 'Sharjah',
                 'addressCountry' => 'AE',
             ],
         ];

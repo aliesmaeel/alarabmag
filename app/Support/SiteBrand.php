@@ -29,7 +29,7 @@ class SiteBrand
 
     public static function homeDescription(): string
     {
-        return 'مجلة العرب — المجلة العربية الأولى للإنسان المتميّز. أخبار، مقابلات فيديو، مؤثرون، فنانون وأطباء عرب. Al Arab Magazine من دبي للعالم العربي.';
+        return 'مجلة العرب — المجلة العربية الأولى للإنسان المتميّز. أخبار، مقابلات فيديو، مؤثرون، فنانون وأطباء عرب. Al Arab Magazine من الشارقة للعالم العربي.';
     }
 
     /** @return list<string> */

@@ -11,7 +11,7 @@ class StaticPageController extends Controller
 {
     public function about(): View
     {
-        return $this->render('about', 'مجلة العرب — عن المجلة', 'تعرّف على مجلة العرب (Al Arab Magazine) — المجلة العربية الأولى التي تحتفي بالإنسان العربي المتميّز، صادرة من دبي للعالم العربي.', view('site.pages.content.about')->render());
+        return $this->render('about', 'مجلة العرب — عن المجلة', 'تعرّف على مجلة العرب (Al Arab Magazine) — المجلة العربية الأولى التي تحتفي بالإنسان العربي المتميّز، صادرة من الشارقة للعالم العربي.', view('site.pages.content.about')->render());
     }
 
     public function editorial(): View
@@ -26,7 +26,7 @@ class StaticPageController extends Controller
 
     public function privacy(): View
     {
-        return $this->render('privacy', 'سياسة الخصوصية', 'كيف نجمع ونستخدم ونحمي بياناتك عند زيارة مجلة العرب.', view('site.pages.content.privacy')->render(), '13 يونيو 2026');
+        return $this->render('privacy', 'سياسة الخصوصية', 'كيف نجمع ونستخدم ونحمي بياناتك عند زيارة مجلة العرب.', view('site.pages.content.privacy')->render(), '12 سبتمبر 2026');
     }
 
     public function terms(): View

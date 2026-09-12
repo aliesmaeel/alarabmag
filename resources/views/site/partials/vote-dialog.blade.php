@@ -24,7 +24,7 @@
                 data-voter-email
             >
             <p class="vote-dialog-error" id="voter-email-error" data-email-error role="alert" hidden></p>
-            <p class="vote-dialog-hint" id="voter-email-hint">للتأكيد فقط — لن نشارك بريدك، ونستخدمه لإعلان النتيجة.</p>
+            <p class="vote-dialog-hint" id="voter-email-hint">للتأكيد فقط — لن نشارك بريدك، ونستخدمه لإعلان النتيجة. بالتصويت فإنك توافق على <a href="{{ route('privacy') }}" target="_blank" rel="noopener">سياسة الخصوصية</a>.</p>
             <button type="submit" class="vote-btn vote-dialog-submit" data-dialog-submit>
                 <svg class="vote-btn-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M5 12l5 5L20 7"/>

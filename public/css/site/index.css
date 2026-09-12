@@ -404,9 +404,9 @@ footer{background:#080705;border-top:3px solid var(--ink);}
 .fcol a{font-size:.8rem;color:rgba(248,244,238,.35);text-decoration:none;transition:color .2s;font-family:'Cairo',sans-serif;}
 .fcol a:hover{color:var(--gold);}
 .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 3rem;flex-direction:row-reverse;}
-.fcopy{font-size:.68rem;color:rgba(248,244,238,.18);font-family:'Cairo',sans-serif;}
+.fcopy{font-size:.68rem;color:rgba(248,244,238,.45);font-family:'Cairo',sans-serif;}
 .flegal{display:flex;gap:2rem;}
-.flegal a{font-size:.68rem;color:rgba(248,244,238,.18);text-decoration:none;transition:color .2s;font-family:'Cairo',sans-serif;}
+.flegal a{font-size:.74rem;color:rgba(248,244,238,.68);text-decoration:none;transition:color .2s;font-family:'Cairo',sans-serif;}
 .flegal a:hover{color:var(--gold);}
 
 /* ── SKELETONS ── */

@@ -26,7 +26,7 @@ class EditorialPage
             'editorial_blogs_body' => 'نشرف على قسم المدونات لضمان تنوع الآراء والخبرات، مع الحفاظ على معايير الجودة والاحترام. آراء الكتّاب لا تعكس بالضرورة موقف المجلة الرسمي.',
             'editorial_contact_title' => 'التواصل التحريري',
             'editorial_contact_intro' => 'للاقتراحات التحريرية أو التصحيحات:',
-            'editorial_contact_email' => 'editor@alarab.com',
+            'editorial_contact_email' => 'info@alarabmag.com',
         ];
     }
 
