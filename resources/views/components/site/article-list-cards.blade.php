@@ -19,7 +19,7 @@
       @endif
       <div class="list-meta">
         <span>{{ $article->read_time ?: '5 دقائق' }}</span>
-        <span><b>{{ $article->author ?: 'فريق التحرير' }}</b></span>
+        <span><b>{{ $article->author ?: 'فريق التحرير' }}</b> · <x-site.post-date :date="$article->created_at" format="j M Y" /></span>
       </div>
     </div>
   </a>

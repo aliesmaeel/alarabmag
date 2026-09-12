@@ -73,3 +73,6 @@
 @media(max-width:600px){
   .related-grid .list-img{height:200px;}
 }
+
+.article-date{font-variant-numeric:tabular-nums;}
+.article-date-updated{color:var(--gold-lt,#d4ae5a);}

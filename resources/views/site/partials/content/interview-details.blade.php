@@ -3,6 +3,9 @@
     $hasS3Video = ! $isYouTube && filled($videoUrl);
     $videoType = $hasS3Video && preg_match('/\.webm(\?|$)/i', $videoUrl) ? 'video/webm' : ($hasS3Video && preg_match('/\.ogg(\?|$)/i', $videoUrl) ? 'video/ogg' : 'video/mp4');
     $poster = $thumbnailUrl ?: null;
+
+    $isUpdated = $interview->updated_at && $interview->created_at
+        && $interview->updated_at->gt($interview->created_at->copy()->addHour());
 @endphp
 
 <main id="main">
@@ -12,7 +15,10 @@
         <div class="interview-head__eyebrow">مقابلة · {{ $interview->category ?: 'عام' }}</div>
         <h1 class="interview-head__title">{{ $interview->title }}</h1>
         <div class="interview-head__meta">
-          {{ $interview->created_at?->locale('ar')->translatedFormat('j F Y') }}
+          <x-site.post-date :date="$interview->created_at" class="article-date" />
+          @if ($isUpdated)
+            · <x-site.post-date :date="$interview->updated_at" class="article-date article-date-updated" prefix="آخر تحديث: " />
+          @endif
           · {{ number_format($interview->views ?? 0) }} مشاهدة
         </div>
       </header>
@@ -129,7 +135,7 @@
               <div class="news-side-item__body">
                 <div class="news-side-item__kicker">{{ $article->category ?: 'عام' }}</div>
                 <h3 class="news-side-item__title">{{ $article->title }}</h3>
-                <span class="news-side-item__meta">{{ $article->created_at?->locale('ar')->diffForHumans() }}</span>
+                <span class="news-side-item__meta"><x-site.post-date :date="$article->created_at" format="j M Y" /></span>
               </div>
             </a>
           @empty

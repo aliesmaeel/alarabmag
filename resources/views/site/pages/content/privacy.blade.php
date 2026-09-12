@@ -13,9 +13,34 @@
 <p>نستخدم Google Analytics (GA4) لقياس حركة الزوار وفهم طريقة استخدام الموقع. تجمع هذه الخدمة بيانات مثل الصفحات التي تزورها ومدة الزيارة ونوع الجهاز، وقد تستخدم ملفات تعريف الارتباط لذلك. يمكنك إلغاء التتبع عبر <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">أداة إلغاء الاشتراك من Google Analytics</a>.</p>
 
 <h2>الإعلانات وGoogle AdSense</h2>
-<p id="cookies">نستخدم Google AdSense لعرض إعلانات على الموقع. قد تستخدم Google ملفات تعريف الارتباط (بما في ذلك ملف DART) لعرض إعلانات بناءً على زياراتك لموقعنا ومواقع أخرى. يمكنك إلغاء الاشتراك في استخدام ملف DART عبر <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">سياسة إعلانات Google</a>، كما يمكنك ضبط تفضيلاتك الإعلانية عبر <a href="https://adssettings.google.com" target="_blank" rel="noopener">إعدادات إعلانات Google</a>.</p>
+<p>نستخدم Google AdSense لعرض إعلانات على الموقع. قد تستخدم Google ملفات تعريف الارتباط (بما في ذلك ملف DART) لعرض إعلانات بناءً على زياراتك لموقعنا ومواقع أخرى. يمكنك إلغاء الاشتراك في استخدام ملف DART عبر <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">سياسة إعلانات Google</a>، كما يمكنك ضبط تفضيلاتك الإعلانية عبر <a href="https://adssettings.google.com" target="_blank" rel="noopener">إعدادات إعلانات Google</a>.</p>
 <p>للزوار من المنطقة الاقتصادية الأوروبية والمملكة المتحدة وسويسرا: تظهر نافذة موافقة على ملفات تعريف الارتباط قبل تفعيل الإعلانات المخصّصة، ويمكنك تغيير اختيارك في أي وقت من خلالها.</p>
 <p>لمزيد من المعلومات عن كيفية تعامل Google مع البيانات، راجع <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسة خصوصية Google</a>.</p>
+
+<h2 id="cookies">ملفات تعريف الارتباط وإعدادات الموافقة</h2>
+<p>ملفات تعريف الارتباط (Cookies) ملفات نصية صغيرة يحفظها متصفحك عند زيارة الموقع. نستخدم الفئات التالية:</p>
+<ul>
+    <li><strong>ضرورية:</strong> لازمة لعمل الموقع (الجلسة، الأمان، حماية النماذج من التزوير). لا يمكن تعطيلها ولا تحتاج موافقة.</li>
+    <li><strong>تفضيلات:</strong> تحفظ اختياراتك مثل إخفاء الإشعارات أو تفضيلات العرض.</li>
+    <li><strong>قياس وتحليل:</strong> Google Analytics (GA4) لفهم حركة الزوار بشكل مجمّع.</li>
+    <li><strong>إعلانات:</strong> Google AdSense لعرض الإعلانات وقياس أدائها، وقد تُستخدم لتخصيص الإعلانات عند موافقتك.</li>
+</ul>
+
+<p>نعتمد على منصة موافقة معتمدة من Google (Google Funding Choices) ضمن إطار الشفافية والموافقة (TCF v2.2). لزوار المنطقة الاقتصادية الأوروبية والمملكة المتحدة وسويسرا تظهر نافذة الموافقة قبل تفعيل ملفات التحليل والإعلانات، وتبقى جميع فئات التتبّع معطّلة إلى حين تسجيل اختيارك.</p>
+
+<div class="cookie-settings">
+    <button type="button" id="cookieSettingsBtn" class="cookie-settings__btn">تغيير إعدادات الكوكيز</button>
+    <p class="cookie-settings__note" id="cookieSettingsNote" hidden>
+        نافذة الموافقة غير متاحة في منطقتك، لأن الموافقة المسبقة مطلوبة فقط لزوار المنطقة الاقتصادية الأوروبية والمملكة المتحدة وسويسرا.
+        يمكنك مع ذلك التحكّم بالإعلانات المخصّصة من
+        <a href="https://myadcenter.google.com" target="_blank" rel="noopener">مركز إعلانات Google</a>،
+        وإلغاء تتبّع التحليلات عبر
+        <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">أداة إلغاء الاشتراك من Google Analytics</a>،
+        أو حذف ملفات تعريف الارتباط من إعدادات متصفحك.
+    </p>
+</div>
+
+<p>يمكنك أيضاً حذف ملفات تعريف الارتباط أو حظرها من إعدادات المتصفح، مع العلم أن حظر الملفات الضرورية قد يعطّل بعض وظائف الموقع.</p>
 
 <h2>كيف نستخدم معلوماتك</h2>
 <ul>
@@ -49,3 +74,42 @@ Al Messaned، الشارقة، الإمارات العربية المتحدة<br
 <a href="mailto:info@alarabmag.com">info@alarabmag.com</a></p>
 
 <p><a href="{{ route('terms') }}">شروط الاستخدام ←</a> · <a href="{{ route('contact') }}">اتصل بنا ←</a></p>
+
+<style>
+    .cookie-settings { background: #f8f4ee; padding: 1.25rem 1.5rem; border-radius: 4px; margin: 1.5rem 0; }
+    .cookie-settings__btn {
+        font-family: 'Cairo', sans-serif; font-size: .92rem; font-weight: 600;
+        background: var(--gold, #c9a227); color: #fff; border: 0; border-radius: 3px;
+        padding: .7rem 1.4rem; cursor: pointer; transition: opacity .2s;
+    }
+    .cookie-settings__btn:hover { opacity: .85; }
+    .cookie-settings__btn:focus-visible { outline: 2px solid var(--ink, #1a1a1a); outline-offset: 2px; }
+    .cookie-settings__note { margin: 1rem 0 0; font-size: .85rem; line-height: 1.8; color: var(--ink-soft, #555); }
+    .cookie-settings__note[hidden] { display: none; }
+</style>
+
+<script>
+(function () {
+    var btn  = document.getElementById('cookieSettingsBtn');
+    var note = document.getElementById('cookieSettingsNote');
+    if (!btn) return;
+
+    function openOrExplain() {
+        if (typeof window.openCookieSettings === 'function' && window.openCookieSettings()) return;
+
+        // The CMP tag may still be loading; give it a moment before falling back.
+        setTimeout(function () {
+            if (window.googlefc && typeof window.googlefc.showRevocationMessage === 'function') {
+                window.googlefc.showRevocationMessage();
+            } else if (note) {
+                note.hidden = false;
+            }
+        }, 1200);
+    }
+
+    btn.addEventListener('click', openOrExplain);
+
+    // Deep link: /privacy#cookies-settings opens the dialog straight away.
+    if (location.hash === '#cookies-settings') openOrExplain();
+})();
+</script>

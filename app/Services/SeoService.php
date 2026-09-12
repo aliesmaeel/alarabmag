@@ -95,6 +95,10 @@ class SeoService
             ogDescription: $article->og_description ?: $description,
             ogImage: $this->resolveImage($article->og_image ?: $article->image_url),
             ogType: 'article',
+            publishedTime: $article->created_at?->toIso8601String(),
+            modifiedTime: $article->updated_at?->toIso8601String(),
+            articleAuthor: $article->author ?: 'فريق التحرير',
+            articleSection: $article->category ?: null,
         );
     }
 
@@ -114,6 +118,10 @@ class SeoService
             ogDescription: $blog->og_description ?: $description,
             ogImage: $this->resolveImage($blog->og_image ?: $blog->image_url),
             ogType: 'article',
+            publishedTime: $blog->created_at?->toIso8601String(),
+            modifiedTime: $blog->updated_at?->toIso8601String(),
+            articleAuthor: $blog->author ?: 'فريق التحرير',
+            articleSection: 'مدونة',
         );
     }
 
@@ -133,6 +141,9 @@ class SeoService
             ogDescription: $interview->og_description ?: $description,
             ogImage: $this->resolveImage($interview->og_image ?: $interview->thumbnail_url),
             ogType: 'video.other',
+            publishedTime: $interview->created_at?->toIso8601String(),
+            modifiedTime: $interview->updated_at?->toIso8601String(),
+            articleSection: $interview->category ?: null,
         );
     }
 
@@ -183,6 +194,10 @@ class SeoService
         ?string $ogDescription,
         ?string $ogImage,
         string $ogType,
+        ?string $publishedTime = null,
+        ?string $modifiedTime = null,
+        ?string $articleAuthor = null,
+        ?string $articleSection = null,
     ): SeoMeta {
         return new SeoMeta(
             title: $title,
@@ -196,6 +211,10 @@ class SeoService
             ogType: $ogType,
             ogSiteName: $this->setting('og_site_name') ?: $this->setting('site_name', SiteBrand::NAME_AR),
             twitterCard: $this->setting('twitter_card', 'summary_large_image') ?: 'summary_large_image',
+            publishedTime: $publishedTime,
+            modifiedTime: $modifiedTime,
+            articleAuthor: $articleAuthor,
+            articleSection: $articleSection,
         );
     }
 

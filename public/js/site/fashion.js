@@ -1,5 +1,19 @@
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fallbackImg = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=900&q=85';
+const isoAttr = iso => {
+  if (!iso) return '';
+  const d = new Date(String(iso).replace(' ', 'T'));
+  return isNaN(d) ? '' : d.toISOString();
+};
+const fmtDateTag = (iso, opts) => {
+  if (!iso) return '';
+  const d = new Date(String(iso).replace(' ', 'T'));
+  if (isNaN(d)) return '';
+  const txt = d.toLocaleDateString('ar-u-nu-latn', opts || { day: 'numeric', month: 'long', year: 'numeric' });
+  return `<time datetime="${isoAttr(iso)}">${txt}</time>`;
+};
+const fmtDateShort = iso => fmtDateTag(iso, { day: 'numeric', month: 'short', year: 'numeric' });
+
 
 const grid = document.getElementById('fashionGrid');
 const featuredSection = document.getElementById('featured');
@@ -19,6 +33,7 @@ function cardHTML(it){
       <div class="fash-body">
         <div class="fash-kicker">${esc(kicker)}</div>
         <h3 class="fash-headline">${esc(it.title)}</h3>
+        <div class="fash-date">${fmtDateShort(it.created_at)}</div>
       </div>
     </a>`;
 }
@@ -32,7 +47,7 @@ function featuredHTML(it){
       <div class="feat-hero-kicker">✦ ${esc(it.subtitle || 'الموضة العربية')}</div>
       <h2 class="feat-hero-title"><a href="${articleHref(it)}">${esc(it.title)}</a></h2>
       <p class="feat-hero-deck">${esc(it.excerpt || '')}</p>
-      <div class="feat-hero-meta">بقلم <b>${esc(it.author || 'فريق التحرير')}</b> · ${esc(it.read_time || '6 دقائق')}</div>
+      <div class="feat-hero-meta">بقلم <b>${esc(it.author || 'فريق التحرير')}</b> · ${esc(it.read_time || '6 دقائق')} · ${fmtDateTag(it.created_at)}</div>
       <a href="${articleHref(it)}" class="feat-hero-cta">اقرأ التقرير →</a>
     </div>`;
 }

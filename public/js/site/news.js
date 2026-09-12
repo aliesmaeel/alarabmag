@@ -1,14 +1,19 @@
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fallbackImg = 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=900&q=80';
-const fmtAgo = iso => {
+const isoAttr = iso => {
   if (!iso) return '';
-  const d = new Date(iso.replace(' ','T'));
-  const diff = (Date.now() - d.getTime())/1000;
-  if (diff < 3600) return `منذ ${Math.max(1,Math.floor(diff/60))} دقيقة`;
-  if (diff < 86400) return `منذ ${Math.floor(diff/3600)} ساعة`;
-  if (diff < 2592000) return `منذ ${Math.floor(diff/86400)} يوم`;
-  return d.toISOString().slice(0,10);
+  const d = new Date(String(iso).replace(' ', 'T'));
+  return isNaN(d) ? '' : d.toISOString();
 };
+const fmtDateTag = (iso, opts) => {
+  if (!iso) return '';
+  const d = new Date(String(iso).replace(' ', 'T'));
+  if (isNaN(d)) return '';
+  const txt = d.toLocaleDateString('ar-u-nu-latn', opts || { day: 'numeric', month: 'long', year: 'numeric' });
+  return `<time datetime="${isoAttr(iso)}">${txt}</time>`;
+};
+const fmtDateShort = iso => fmtDateTag(iso, { day: 'numeric', month: 'short', year: 'numeric' });
+
 const params = new URLSearchParams(location.search);
 const initialCategory = params.get('category') || 'all';
 const initialRegion   = params.get('region') || '';
@@ -41,7 +46,7 @@ function cardHTML(it){
         <p class="list-excerpt">${esc(it.excerpt || it.subtitle || '')}</p>
         <div class="list-meta">
           <span>${esc(it.read_time || '5 دقائق')}</span>
-          <span><b>${esc(it.author || 'فريق التحرير')}</b> · ${fmtAgo(it.created_at)}</span>
+          <span><b>${esc(it.author || 'فريق التحرير')}</b> · ${fmtDateShort(it.created_at)}</span>
         </div>
       </div>
     </a>`;
@@ -57,7 +62,7 @@ function featuredHTML(it){
       <h2 class="feat-hero-title"><a href="${newsHref(it)}">${esc(it.title)}</a></h2>
       ${it.subtitle ? `<p class="feat-hero-deck" style="font-style:italic;">${esc(it.subtitle)}</p>` : ''}
       <p class="feat-hero-deck">${esc(it.excerpt || '')}</p>
-      <div class="feat-hero-meta">بقلم <b>${esc(it.author || 'فريق التحرير')}</b> · ${esc(it.read_time || '5 دقائق')} للقراءة · ${fmtAgo(it.created_at)}</div>
+      <div class="feat-hero-meta">بقلم <b>${esc(it.author || 'فريق التحرير')}</b> · ${esc(it.read_time || '5 دقائق')} للقراءة · ${fmtDateTag(it.created_at)}</div>
       <a href="${newsHref(it)}" class="feat-hero-cta">اقرأ القصة كاملة →</a>
     </div>`;
 }

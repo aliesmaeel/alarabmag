@@ -18,6 +18,10 @@ class SeoMeta
         public string $ogLocale = 'ar_AE',
         public string $twitterCard = 'summary_large_image',
         public ?string $robots = null,
+        public ?string $publishedTime = null,
+        public ?string $modifiedTime = null,
+        public ?string $articleAuthor = null,
+        public ?string $articleSection = null,
     ) {}
 
     public function ogTitleResolved(): string

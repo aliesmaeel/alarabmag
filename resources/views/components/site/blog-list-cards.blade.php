@@ -18,6 +18,7 @@
         <p class="list-excerpt">{{ $blog->excerpt }}</p>
       @endif
       <div class="list-meta">
+        <span><x-site.post-date :date="$blog->created_at" format="j M Y" /></span>
         <span><b>{{ $blog->author ?: 'فريق التحرير' }}</b></span>
       </div>
     </div>

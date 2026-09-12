@@ -23,6 +23,7 @@
             <div class="fash-kicker">{{ $article->category }}</div>
             <h3 class="fash-headline">{{ $article->title }}</h3>
             @if ($article->excerpt)<p class="fash-excerpt">{{ $article->excerpt }}</p>@endif
+            <div class="fash-date"><x-site.post-date :date="$article->created_at" format="j M Y" /></div>
           </div>
         </a>
       @endforeach

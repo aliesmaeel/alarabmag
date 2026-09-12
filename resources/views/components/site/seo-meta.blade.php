@@ -63,6 +63,23 @@ $googleVerification = app(\App\Services\SeoService::class)->googleSiteVerificati
 <meta property="og:site_name" content="{{ e($seo->ogSiteName) }}">
 @endif
 
+@if($seo->publishedTime)
+<meta property="article:published_time" content="{{ e($seo->publishedTime) }}">
+@endif
+
+@if($seo->modifiedTime)
+<meta property="article:modified_time" content="{{ e($seo->modifiedTime) }}">
+<meta property="og:updated_time" content="{{ e($seo->modifiedTime) }}">
+@endif
+
+@if($seo->articleAuthor)
+<meta property="article:author" content="{{ e($seo->articleAuthor) }}">
+@endif
+
+@if($seo->articleSection)
+<meta property="article:section" content="{{ e($seo->articleSection) }}">
+@endif
+
 <meta name="twitter:card" content="{{ e($seo->twitterCard) }}">
 <meta name="twitter:title" content="{{ e($seo->ogTitleResolved()) }}">
 

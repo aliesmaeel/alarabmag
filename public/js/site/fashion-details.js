@@ -1,10 +1,19 @@
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fallbackImg = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1400&q=85';
-const fmtDate = iso => {
+const isoAttr = iso => {
   if (!iso) return '';
-  const d = new Date(iso.replace(' ','T'));
-  return d.toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' });
+  const d = new Date(String(iso).replace(' ', 'T'));
+  return isNaN(d) ? '' : d.toISOString();
 };
+const fmtDateTag = (iso, opts) => {
+  if (!iso) return '';
+  const d = new Date(String(iso).replace(' ', 'T'));
+  if (isNaN(d)) return '';
+  const txt = d.toLocaleDateString('ar-u-nu-latn', opts || { day: 'numeric', month: 'long', year: 'numeric' });
+  return `<time datetime="${isoAttr(iso)}">${txt}</time>`;
+};
+const fmtDateShort = iso => fmtDateTag(iso, { day: 'numeric', month: 'short', year: 'numeric' });
+
 
 function getId(){
   if (window.SITE_ARTICLE_ID != null) return String(window.SITE_ARTICLE_ID);
@@ -33,7 +42,7 @@ function relatedCardHTML(it){
         <p class="list-excerpt">${esc(it.excerpt || '')}</p>
         <div class="list-meta">
           <span>${esc(it.read_time || '6 دقائق')}</span>
-          <span><b>${esc(it.author || 'فريق التحرير')}</b></span>
+          <span><b>${esc(it.author || 'فريق التحرير')}</b> · ${fmtDateShort(it.created_at)}</span>
         </div>
       </div>
     </a>`;
@@ -83,7 +92,7 @@ async function init(){
           <div class="article-byline">
             <span>بقلم <b>${esc(a.author || 'فريق التحرير')}</b></span>
             <span class="byline-sep">·</span>
-            <span>${fmtDate(a.created_at)}</span>
+            <span>${fmtDateTag(a.created_at)}</span>
             <span class="byline-sep">·</span>
             <span>${esc(a.read_time || '6 دقائق')} للقراءة</span>
           </div>

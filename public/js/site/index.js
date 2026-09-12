@@ -7,15 +7,14 @@
   if (blogsGrid && blogsGrid.querySelector('.news-card')) return;
 
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const fmtAgo = iso => {
+  const fmtDateTag = (iso, opts) => {
     if (!iso) return '';
-    const d = new Date(iso.replace(' ','T'));
-    const diff = (Date.now() - d.getTime())/1000;
-    if (diff < 3600) return `منذ ${Math.max(1,Math.floor(diff/60))} دقيقة`;
-    if (diff < 86400) return `منذ ${Math.floor(diff/3600)} ساعة`;
-    if (diff < 2592000) return `منذ ${Math.floor(diff/86400)} يوم`;
-    return d.toISOString().slice(0,10);
+    const d = new Date(String(iso).replace(' ','T'));
+    if (isNaN(d)) return '';
+    const txt = d.toLocaleDateString('ar-u-nu-latn', opts || { day:'numeric', month:'long', year:'numeric' });
+    return `<time datetime="${d.toISOString()}">${txt}</time>`;
   };
+  const fmtDateShort = iso => fmtDateTag(iso, { day:'numeric', month:'short', year:'numeric' });
   const fallback = 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=800&q=80';
 
   const articleCard = a => `
@@ -25,7 +24,7 @@
         <div class="news-kicker">${esc(a.category || 'عام')}${a.region ? ' · ' + esc(a.region) : ''}</div>
         <h3 class="news-headline">${esc(a.title)}</h3>
         <p class="news-excerpt">${esc(a.excerpt || '')}</p>
-        <div class="news-meta">قسم ${esc(a.category || 'عام')} · <b>${fmtAgo(a.created_at)}</b></div>
+        <div class="news-meta">قسم ${esc(a.category || 'عام')} · <b>${fmtDateShort(a.created_at)}</b></div>
       </div>
     </a>`;
 
@@ -36,7 +35,7 @@
         <div class="news-kicker">مدونة · ${esc(b.author || 'فريق التحرير')}</div>
         <h3 class="news-headline">${esc(b.title)}</h3>
         <p class="news-excerpt">${esc(b.excerpt || '')}</p>
-        <div class="news-meta">بقلم <b>${esc(b.author || 'فريق التحرير')}</b> · ${fmtAgo(b.created_at)}</div>
+        <div class="news-meta">بقلم <b>${esc(b.author || 'فريق التحرير')}</b> · ${fmtDateShort(b.created_at)}</div>
       </div>
     </a>`;
 

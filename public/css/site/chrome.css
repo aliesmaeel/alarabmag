@@ -87,6 +87,7 @@ a.ticker-item:hover{color:var(--cream);}
 .list-excerpt{font-size:.85rem;line-height:1.85;color:var(--ink-soft);margin-bottom:1rem;font-family:'Cairo',sans-serif;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 .list-meta{font-size:.68rem;color:rgba(90,85,78,.6);font-family:'Cairo',sans-serif;margin-top:auto;display:flex;justify-content:space-between;align-items:center;flex-direction:row-reverse;}
 .list-meta b{color:var(--ink-mid);}
+.list-meta time{white-space:nowrap;font-variant-numeric:tabular-nums;}
 
 /* LOAD MORE */
 .load-more-wrap{display:flex;justify-content:center;padding:3rem;background:var(--cream);}

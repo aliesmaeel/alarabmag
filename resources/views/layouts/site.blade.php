@@ -2,6 +2,8 @@
 <html lang="ar" dir="rtl">
 
 <head>
+    <x-site.consent-mode />
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-19YYY1LW0J"></script>
     <script>

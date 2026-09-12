@@ -1,6 +1,20 @@
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fallbackImg = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=900&q=80';
 const storyFallback = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80';
+const isoAttr = iso => {
+  if (!iso) return '';
+  const d = new Date(String(iso).replace(' ', 'T'));
+  return isNaN(d) ? '' : d.toISOString();
+};
+const fmtDateTag = (iso, opts) => {
+  if (!iso) return '';
+  const d = new Date(String(iso).replace(' ', 'T'));
+  if (isNaN(d)) return '';
+  const txt = d.toLocaleDateString('ar-u-nu-latn', opts || { day: 'numeric', month: 'long', year: 'numeric' });
+  return `<time datetime="${isoAttr(iso)}">${txt}</time>`;
+};
+const fmtDateShort = iso => fmtDateTag(iso, { day: 'numeric', month: 'short', year: 'numeric' });
+
 
 const leadersGrid = document.getElementById('leadersGrid');
 const storiesGrid = document.getElementById('storiesGrid');
@@ -63,7 +77,7 @@ function storyCardHTML(it){
         <p class="list-excerpt">${esc(it.excerpt || '')}</p>
         <div class="list-meta">
           <span>${esc(it.read_time || '5 دقائق')}</span>
-          <span><b>${esc(it.author || 'فريق التحرير')}</b></span>
+          <span><b>${esc(it.author || 'فريق التحرير')}</b> · ${fmtDateShort(it.created_at)}</span>
         </div>
       </div>
     </a>`;

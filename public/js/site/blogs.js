@@ -1,14 +1,20 @@
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fallbackImg = 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=80';
-const fallbackAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
-const fmtAgo = iso => {
+const isoAttr = iso => {
   if (!iso) return '';
-  const d = new Date(iso.replace(' ','T'));
-  const diff = (Date.now() - d.getTime())/1000;
-  if (diff < 86400) return `منذ ${Math.max(1,Math.floor(diff/3600))} ساعة`;
-  if (diff < 2592000) return `منذ ${Math.floor(diff/86400)} يوم`;
-  return d.toISOString().slice(0,10);
+  const d = new Date(String(iso).replace(' ', 'T'));
+  return isNaN(d) ? '' : d.toISOString();
 };
+const fmtDateTag = (iso, opts) => {
+  if (!iso) return '';
+  const d = new Date(String(iso).replace(' ', 'T'));
+  if (isNaN(d)) return '';
+  const txt = d.toLocaleDateString('ar-u-nu-latn', opts || { day: 'numeric', month: 'long', year: 'numeric' });
+  return `<time datetime="${isoAttr(iso)}">${txt}</time>`;
+};
+const fmtDateShort = iso => fmtDateTag(iso, { day: 'numeric', month: 'short', year: 'numeric' });
+
+const fallbackAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
 const tagsOf = b => (b.tags ? String(b.tags).split(',').map(s=>s.trim()).filter(Boolean) : []);
 
 const params = new URLSearchParams(location.search);
@@ -43,7 +49,7 @@ function blogCardHTML(b){
           <div class="list-author-img"><img src="${esc(b.author_img || fallbackAvatar)}" alt="${esc(b.author)}" onerror="this.src='${fallbackAvatar}'"></div>
           <div class="list-author-info">
             <div class="list-author-name">${esc(b.author || 'فريق التحرير')}</div>
-            <div class="list-author-date">${fmtAgo(b.created_at)}</div>
+            <div class="list-author-date">${fmtDateTag(b.created_at)}</div>
           </div>
         </div>
       </div>

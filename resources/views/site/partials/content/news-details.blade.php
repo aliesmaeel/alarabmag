@@ -3,6 +3,9 @@
 
     $shareUrl = route('news.show', $article);
     $heroImg = $article->image_url ?: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1400&q=85';
+
+    $isUpdated = $article->updated_at && $article->created_at
+        && $article->updated_at->gt($article->created_at->copy()->addHour());
 @endphp
 
 <main id="main">
@@ -18,7 +21,11 @@
       <div class="article-byline">
         <span>بقلم <b>{{ $article->author ?: 'فريق التحرير' }}</b></span>
         <span class="byline-sep">·</span>
-        <span>{{ $article->created_at?->locale('ar')->translatedFormat('j F Y') }}</span>
+        <span><x-site.post-date :date="$article->created_at" class="article-date" /></span>
+        @if ($isUpdated)
+          <span class="byline-sep">·</span>
+          <span><x-site.post-date :date="$article->updated_at" class="article-date article-date-updated" prefix="آخر تحديث: " /></span>
+        @endif
         <span class="byline-sep">·</span>
         <span>{{ $article->read_time ?: '5 دقائق' }} للقراءة</span>
         <span class="byline-sep">·</span>
@@ -77,7 +84,7 @@
               @endif
               <div class="list-meta">
                 <span>{{ $related->read_time ?: '5 دقائق' }}</span>
-                <span><b>{{ $related->author ?: 'فريق التحرير' }}</b></span>
+                <span><b>{{ $related->author ?: 'فريق التحرير' }}</b> · <x-site.post-date :date="$related->created_at" format="j M Y" /></span>
               </div>
             </div>
           </a>

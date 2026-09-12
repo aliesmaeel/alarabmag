@@ -3,6 +3,9 @@
 
     $tags = $blog->tags ? array_filter(array_map('trim', explode(',', $blog->tags))) : [];
     $shareUrl = route('blogs.show', $blog);
+
+    $isUpdated = $blog->updated_at && $blog->created_at
+        && $blog->updated_at->gt($blog->created_at->copy()->addHour());
 @endphp
 
 <main id="main">
@@ -21,7 +24,10 @@
         @endif
         <div class="blog-hero-meta-text">
           بقلم <b>{{ $blog->author ?: 'فريق التحرير' }}</b><br>
-          {{ $blog->created_at?->locale('ar')->translatedFormat('j F Y') }}
+          <x-site.post-date :date="$blog->created_at" class="article-date" />
+          @if ($isUpdated)
+            · <x-site.post-date :date="$blog->updated_at" class="article-date article-date-updated" prefix="آخر تحديث: " />
+          @endif
           · {{ number_format($blog->views ?? 0) }} مشاهدة
         </div>
       </div>
@@ -103,7 +109,7 @@
               @endif
               <div class="list-meta">
                 <span>{{ number_format($related->views ?? 0) }} مشاهدة</span>
-                <span><b>{{ $related->author ?: 'فريق التحرير' }}</b></span>
+                <span><b>{{ $related->author ?: 'فريق التحرير' }}</b> · <x-site.post-date :date="$related->created_at" format="j M Y" /></span>
               </div>
             </div>
           </a>

@@ -17,7 +17,7 @@
           </div>
           <div class="story-kicker">{{ $story->category }}</div>
           <h3 class="story-headline">{{ $story->title }}</h3>
-          <div class="story-meta">{{ $story->read_time ?: '5 دقائق' }} · {{ $story->category }}</div>
+          <div class="story-meta">{{ $story->read_time ?: '5 دقائق' }} · {{ $story->category }} · <x-site.post-date :date="$story->created_at" format="j M Y" /></div>
         </a>
       @endforeach
     </div>
@@ -32,7 +32,7 @@
             @if ($hero->excerpt)
               <p class="hero-deck">{{ $hero->excerpt }}</p>
             @endif
-            <div class="hero-byline">بقلم <b>{{ $hero->author ?: 'فريق التحرير' }}</b> · {{ $hero->read_time ?: '5 دقائق' }}</div>
+            <div class="hero-byline">بقلم <b>{{ $hero->author ?: 'فريق التحرير' }}</b> · {{ $hero->read_time ?: '5 دقائق' }} · <x-site.post-date :date="$hero->created_at" /></div>
           </div>
         </div>
       </a>
@@ -143,7 +143,7 @@
               @else
                 <h3 class="feat-headline">{{ $article->title }}</h3>
               @endif
-              <div class="feat-meta">بقلم {{ $article->author }} · {{ $article->read_time ?: '5 دقائق' }}</div>
+              <div class="feat-meta">بقلم {{ $article->author }} · {{ $article->read_time ?: '5 دقائق' }} · <x-site.post-date :date="$article->created_at" format="j M Y" /></div>
             </div>
           </div>
         </a>
@@ -242,7 +242,7 @@
           @if ($article->excerpt)
             <p class="news-excerpt">{{ $article->excerpt }}</p>
           @endif
-          <div class="news-meta">قسم {{ $article->category ?: 'عام' }} · <b>{{ $article->read_time ?: '5 دقائق' }}</b></div>
+          <div class="news-meta">قسم {{ $article->category ?: 'عام' }} · <b>{{ $article->read_time ?: '5 دقائق' }}</b> · <x-site.post-date :date="$article->created_at" format="j M Y" /></div>
         </div>
       </a>
     @endforeach
@@ -266,7 +266,7 @@
           @if ($blog->excerpt)
             <p class="news-excerpt">{{ $blog->excerpt }}</p>
           @endif
-          <div class="news-meta">بقلم <b>{{ $blog->author ?: 'فريق التحرير' }}</b></div>
+          <div class="news-meta">بقلم <b>{{ $blog->author ?: 'فريق التحرير' }}</b> · <x-site.post-date :date="$blog->created_at" format="j M Y" /></div>
         </div>
       </a>
     @endforeach

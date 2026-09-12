@@ -1,13 +1,19 @@
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fallbackImg = 'https://images.unsplash.com/photo-1611162616475-46b635cb6868?auto=format&fit=crop&w=900&q=80';
-const fmtAgo = iso => {
+const isoAttr = iso => {
   if (!iso) return '';
-  const d = new Date(iso.replace(' ','T'));
-  const diff = (Date.now() - d.getTime())/1000;
-  if (diff < 86400) return `منذ ${Math.max(1,Math.floor(diff/3600))} ساعة`;
-  if (diff < 2592000) return `منذ ${Math.floor(diff/86400)} يوم`;
-  return d.toISOString().slice(0,10);
+  const d = new Date(String(iso).replace(' ', 'T'));
+  return isNaN(d) ? '' : d.toISOString();
 };
+const fmtDateTag = (iso, opts) => {
+  if (!iso) return '';
+  const d = new Date(String(iso).replace(' ', 'T'));
+  if (isNaN(d)) return '';
+  const txt = d.toLocaleDateString('ar-u-nu-latn', opts || { day: 'numeric', month: 'long', year: 'numeric' });
+  return `<time datetime="${isoAttr(iso)}">${txt}</time>`;
+};
+const fmtDateShort = iso => fmtDateTag(iso, { day: 'numeric', month: 'short', year: 'numeric' });
+
 
 const params = new URLSearchParams(location.search);
 let state = { category: params.get('category') || 'all', offset:0, pageSize:9, all:[], filtered:[], loading:false };
@@ -33,7 +39,7 @@ function interviewCardHTML(item){
         <h3 class="list-headline">${esc(item.title)}</h3>
         <p class="list-excerpt">${esc(item.description || '')}</p>
         <div class="list-meta">
-          <span>${fmtAgo(item.created_at)}</span>
+          <span>${fmtDateShort(item.created_at)}</span>
           <span>${(item.views || 0).toLocaleString('ar-EG')} مشاهدة</span>
         </div>
       </div>
@@ -51,7 +57,7 @@ function featuredHTML(item){
       <div class="feat-interview-eyebrow">Featured Interview</div>
       <h2 class="feat-interview-title"><a href="/interviews/${encodeURIComponent(item.slug)}">${esc(item.title)}</a></h2>
       <p class="feat-interview-excerpt">${esc(item.description || '')}</p>
-      <div class="feat-interview-meta">${esc(item.category || 'عام')} · ${fmtAgo(item.created_at)}</div>
+      <div class="feat-interview-meta">${esc(item.category || 'عام')} · ${fmtDateTag(item.created_at)}</div>
       <a href="/interviews/${encodeURIComponent(item.slug)}" class="feat-interview-cta">شاهد المقابلة →</a>
     </div>`;
 }
