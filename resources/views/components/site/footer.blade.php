@@ -43,6 +43,7 @@
                 @endif
                 <li><a href="{{ url('/blogs') }}">المدونات</a></li>
                 <li><a href="{{ route('vote.index') }}">أغنية العام</a></li>
+                <li><a href="{{ route('creators.index') }}">صنّاع المحتوى</a></li>
             </ul>
         </div>
         <div class="fcol">

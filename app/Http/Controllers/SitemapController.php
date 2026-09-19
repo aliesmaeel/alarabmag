@@ -31,6 +31,7 @@ class SitemapController extends Controller
             $this->entry(route('business.index'), now(), 'weekly', '0.8'),
             $this->entry(route('fashion.index'), now(), 'weekly', '0.8'),
             $this->entry(route('magazine.index'), now(), 'weekly', '0.9'),
+            $this->entry(route('creators.index'), now(), 'monthly', '0.7'),
         ]);
 
         if (SongVoting::currentPoll()) {

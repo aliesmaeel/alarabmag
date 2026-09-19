@@ -267,6 +267,7 @@ class SeoService
             'magazine' => route('magazine.index'),
             'interviews' => route('interviews.index'),
             'vote' => route('vote.index'),
+            'creators' => route('creators.index'),
             'about' => route('about'),
             'editorial' => route('editorial'),
             'privacy' => route('privacy'),

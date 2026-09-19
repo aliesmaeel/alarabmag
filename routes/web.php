@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CreatorApplicationController;
 use App\Http\Controllers\DashboardLocaleController;
 use App\Http\Controllers\MagazineController;
 use App\Http\Controllers\NewsletterController;
@@ -61,6 +62,11 @@ Route::get('/vote/audio/{entry}', [VoteController::class, 'audio'])
     ])
     ->name('vote.audio');
 Route::get('/songs-vote', fn () => redirect()->route('vote.index', status: 301));
+
+Route::get('/creators', [CreatorApplicationController::class, 'index'])->name('creators.index');
+Route::post('/creators', [CreatorApplicationController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('creators.store');
 
 Route::post('/newsletter', [NewsletterController::class, 'store'])
     ->middleware('throttle:10,1')
