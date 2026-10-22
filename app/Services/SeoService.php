@@ -344,7 +344,7 @@ class SeoService
             ],
             'description' => $this->setting('site_description', SiteBrand::defaultDescription()),
             'knowsAbout' => SiteBrand::knowsAbout(),
-            'inLanguage' => 'ar',
+            'knowsLanguage' => 'ar',
         ];
 
         if ($email = $this->setting('editor_email')) {
@@ -399,7 +399,7 @@ class SeoService
     {
         return [
             '@context' => 'https://schema.org',
-            '@type' => 'Magazine',
+            '@type' => 'Periodical',
             '@id' => url('/') . 'magazine',
             'name' => SiteBrand::NAME_AR,
             'alternateName' => SiteBrand::alternateNames(),
