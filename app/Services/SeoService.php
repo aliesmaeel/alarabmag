@@ -505,14 +505,33 @@ class SeoService
     /** @return array<string, mixed> */
     protected function interviewSchema(Interview $interview): array
     {
+        $rawVideo = $interview->getAttributes()['video_url'] ?? null;
+        $youtube = app(YouTubeService::class);
+        $files = app(FileUploadService::class);
+
+        $contentUrl = null;
+        $embedUrl = null;
+
+        if ($youtube->isYouTubeUrl($rawVideo)) {
+            $contentUrl = $youtube->canonicalUrl($rawVideo);
+            $embedUrl = $youtube->embedUrl($rawVideo);
+        } else {
+            $contentUrl = $files->playbackUrl($rawVideo, route('interviews.stream', $interview))
+                ?? $files->resolveUrl($rawVideo)
+                ?? $rawVideo;
+        }
+
         return array_filter([
             '@context' => 'https://schema.org',
             '@type' => 'VideoObject',
             'name' => $interview->title,
             'description' => $interview->meta_description ?: $interview->description,
-            'thumbnailUrl' => $this->resolveImage($interview->og_image ?: $interview->thumbnail_url),
+            'thumbnailUrl' => $this->resolveImage($interview->og_image ?: $interview->thumbnail_url)
+                ?: ($youtube->isYouTubeUrl($rawVideo) ? $youtube->thumbnailUrl($rawVideo) : null),
             'uploadDate' => $interview->created_at?->toIso8601String(),
             'url' => route('interviews.show', $interview),
+            'contentUrl' => $contentUrl,
+            'embedUrl' => $embedUrl,
             'inLanguage' => 'ar',
             'publisher' => ['@id' => url('/') . '#organization'],
         ], fn ($value) => $value !== null && $value !== '');
